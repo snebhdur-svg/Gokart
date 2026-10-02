@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Bilet Takip">
+<meta name="theme-color" content="#123540">
+<title>Bilet Takip</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎟️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+
+<!-- Firebase (eş zamanlı veritabanı) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<style>
+:root{
+  --bg:#E9EEF0; --paper:#FFFFFF; --ink:#123540; --muted:#5E737B;
+  --line:#C9D4D8; --accent:#F2B705; --accent-ink:#2A2000; --danger:#B83A26;
+  --ok:#2E8B57;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1D22; --paper:#17292F; --ink:#E6EEF0; --muted:#8FA5AC;
+    --line:#2B434A; --accent:#F2B705; --accent-ink:#2A2000; --danger:#E0664F; --ok:#5CC08A;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1D22; --paper:#17292F; --ink:#E6EEF0; --muted:#8FA5AC;
+  --line:#2B434A; --danger:#E0664F; --ok:#5CC08A;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%}
+body{
+  margin:0; min-height:100%; background:var(--bg); color:var(--ink);
+  font-family:"Barlow",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  font-size:17px; line-height:1.45; -webkit-tap-highlight-color:transparent;
+}
+.num{font-family:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;font-weight:700;letter-spacing:.01em}
+
+header{
+  position:sticky; top:env(safe-area-inset-top,0px); z-index:5;
+  background:var(--ink); color:var(--bg);
+  padding:14px 18px 12px;
+}
+:root[data-theme="dark"] header, header{ }
+header h1{margin:0;font-size:1.6rem;line-height:1}
+header .alt{display:flex;justify-content:space-between;align-items:center;margin-top:4px;font-size:.92rem;opacity:.85}
+.durum{display:inline-flex;align-items:center;gap:6px}
+.durum i{width:8px;height:8px;border-radius:50%;background:var(--ok);display:inline-block}
+.durum.demo i{background:var(--accent)}
+
+main{max-width:640px;margin:0 auto;padding:16px 14px 110px}
+.ozet{font-size:1.05rem;color:var(--muted);margin:2px 4px 14px}
+.ozet b{color:var(--ink);font-weight:600}
+
+.uyari{background:var(--accent);color:var(--accent-ink);padding:10px 14px;border-radius:8px;font-size:.92rem;margin-bottom:14px}
+
+/* Bilet kartı */
+.liste{display:flex;flex-direction:column;gap:10px}
+.bilet{
+  display:grid;grid-template-columns:88px 1fr auto;align-items:stretch;
+  background:var(--paper);border-radius:10px;position:relative;
+}
+.bilet .koc{
+  border-right:2px dashed var(--line);padding:12px 8px;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;
+}
+.bilet .koc::before,.bilet .koc::after{
+  content:"";position:absolute;right:-9px;width:16px;height:16px;border-radius:50%;background:var(--bg);
+}
+.bilet .koc::before{top:-8px}.bilet .koc::after{bottom:-8px}
+.bilet .saat{font-size:1.7rem;line-height:1}
+.bilet .saat-et{font-size:.75rem;color:var(--muted);margin-top:2px}
+.bilet .govde{padding:12px 14px;min-width:0}
+.bilet .no{font-size:2.1rem;line-height:1;word-break:break-all}
+.bilet .no small{font-size:.95rem;color:var(--muted);font-family:"Barlow",system-ui,sans-serif;font-weight:500;margin-right:4px}
+.bilet .detay{margin-top:6px;color:var(--muted);font-size:.98rem}
+.bilet .detay b{color:var(--ink);font-weight:600}
+.bilet .islem{display:flex;flex-direction:column;justify-content:center;gap:6px;padding:8px 10px 8px 0}
+.yeni{animation:gel .9s ease-out}
+@keyframes gel{from{box-shadow:0 0 0 3px var(--accent)}to{box-shadow:0 0 0 0 transparent}}
+@media (prefers-reduced-motion:reduce){.yeni{animation:none}}
+
+.bos{text-align:center;color:var(--muted);padding:40px 16px;border:2px dashed var(--line);border-radius:10px}
+
+/* Butonlar ve formlar */
+button{font:inherit;cursor:pointer;border:0;border-radius:8px}
+button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn{background:var(--ink);color:var(--bg);padding:14px 18px;font-weight:600;font-size:1.05rem;width:100%}
+.btn.sari{background:var(--accent);color:var(--accent-ink)}
+.btn.ince{background:transparent;color:var(--ink);border:1.5px solid var(--line);width:auto;padding:10px 14px;font-size:.95rem}
+.kucuk{background:transparent;border:1.5px solid var(--line);color:var(--ink);padding:6px 10px;font-size:.88rem;font-weight:600}
+.kucuk.sil{color:var(--danger);border-color:var(--danger)}
+
+.kart{background:var(--paper);border-radius:12px;padding:18px;margin-bottom:18px}
+.kart h2{margin:0 0 12px;font-size:1.15rem}
+label{display:block;font-size:.92rem;color:var(--muted);margin-bottom:4px;font-weight:500}
+input{
+  width:100%;font:inherit;font-size:1.25rem;padding:12px 14px;border-radius:8px;
+  border:1.5px solid var(--line);background:var(--bg);color:var(--ink);
+}
+.alanlar{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.alanlar .tam{grid-column:1/-1}
+.hata{color:var(--danger);font-size:.92rem;min-height:1.2em;margin:6px 0 0}
+.ust-satir{display:flex;justify-content:space-between;align-items:center;margin:0 4px 12px;gap:10px}
+.ust-satir h2{margin:0;font-size:1.2rem}
+
+/* Geçmiş günler */
+.gun{
+  display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;
+  background:var(--paper);color:var(--ink);padding:14px 16px;border-radius:10px;
+}
+.gun span{color:var(--muted);font-size:.95rem}
+
+/* Alt menü */
+nav{
+  position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--paper);
+  border-top:1px solid var(--line);display:flex;
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+nav button{
+  flex:1;background:transparent;color:var(--muted);padding:12px 4px 14px;border-radius:0;
+  font-weight:600;font-size:.95rem;display:flex;flex-direction:column;align-items:center;gap:2px;
+}
+nav button .ik{font-size:1.25rem;line-height:1}
+nav button[aria-current="true"]{color:var(--ink);box-shadow:inset 0 3px 0 var(--accent)}
+
+dialog{border:0;border-radius:14px;padding:0;background:var(--paper);color:var(--ink);width:min(92vw,420px)}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+dialog form{padding:20px}
+.dugmeler{display:flex;gap:10px;margin-top:6px}
+.dugmeler .btn{flex:1}
+.gizli{display:none!important}
+</style>
+</head>
+<body>
+
+<header>
+  <h1 class="num">Bilet Takip</h1>
+  <div class="alt">
+    <span id="bugunYazi"></span>
+    <span id="durum" class="durum"><i></i><span>Bağlanıyor</span></span>
+  </div>
+</header>
+
+<main>
+  <div id="demoUyari" class="uyari gizli">
+    Demo modu: Firebase ayarları girilmedi. Kayıtlar sadece bu telefonda tutuluyor, başkaları göremez.
+  </div>
+
+  <!-- KONTROL -->
+  <section id="sayfa-kontrol">
+    <p class="ozet" id="ozetBugun"></p>
+    <div class="liste" id="listeBugun"></div>
+  </section>
+
+  <!-- GEÇMİŞ -->
+  <section id="sayfa-gecmis" class="gizli">
+    <div id="gunListesiKutu">
+      <div class="ust-satir"><h2>Geçmiş günler</h2></div>
+      <div class="liste" id="gunListesi"></div>
+    </div>
+    <div id="gunDetayKutu" class="gizli">
+      <div class="ust-satir">
+        <button class="btn ince" id="geriBtn">‹ Günler</button>
+        <h2 id="gunBaslik"></h2>
+      </div>
+      <p class="ozet" id="ozetGun"></p>
+      <div class="liste" id="listeGun"></div>
+    </div>
+  </section>
+
+  <!-- ADMIN -->
+  <section id="sayfa-admin" class="gizli">
+    <div id="girisKutu" class="kart">
+      <h2>Admin girişi</h2>
+      <label for="sifre">Şifre</label>
+      <input id="sifre" type="password" inputmode="numeric" autocomplete="off">
+      <p class="hata" id="sifreHata"></p>
+      <button class="btn" id="girisBtn">Giriş yap</button>
+    </div>
+
+    <div id="adminKutu" class="gizli">
+      <div class="kart">
+        <h2>Yeni bilet</h2>
+        <div class="alanlar">
+          <div class="tam">
+            <label for="fBilet">Bilet numarası</label>
+            <input id="fBilet" inputmode="numeric" autocomplete="off" placeholder="örn. 3515 veya 01">
+          </div>
+          <div>
+            <label for="fKisi">Kişi sayısı</label>
+            <input id="fKisi" inputmode="numeric" autocomplete="off" placeholder="örn. 2">
+          </div>
+          <div>
+            <label for="fSure">Süre (dakika)</label>
+            <input id="fSure" inputmode="numeric" autocomplete="off" placeholder="örn. 20">
+          </div>
+        </div>
+        <button class="btn sari" id="kaydetBtn">Bileti kaydet</button>
+        <p class="hata" id="formHata"></p>
+      </div>
+
+      <div class="ust-satir">
+        <h2>Bugünkü biletler</h2>
+        <button class="btn ince" id="cikisBtn">Çıkış</button>
+      </div>
+      <p class="ozet" id="ozetAdmin"></p>
+      <div class="liste" id="listeAdmin"></div>
+    </div>
+  </section>
+</main>
+
+<nav>
+  <button data-sayfa="kontrol" aria-current="true"><span class="ik">🎟️</span>Bugün</button>
+  <button data-sayfa="gecmis"><span class="ik">📅</span>Geçmiş</button>
+  <button data-sayfa="admin"><span class="ik">🔑</span>Admin</button>
+</nav>
+
+<!-- Düzenleme penceresi -->
+<dialog id="duzenle">
+  <form method="dialog" id="duzenleForm">
+    <h2 style="margin:0 0 14px;font-size:1.2rem">Bileti düzenle</h2>
+    <div class="alanlar">
+      <div class="tam">
+        <label for="dBilet">Bilet numarası</label>
+        <input id="dBilet" inputmode="numeric" autocomplete="off">
+      </div>
+      <div>
+        <label for="dKisi">Kişi sayısı</label>
+        <input id="dKisi" inputmode="numeric" autocomplete="off">
+      </div>
+      <div>
+        <label for="dSure">Süre (dakika)</label>
+        <input id="dSure" inputmode="numeric" autocomplete="off">
+      </div>
+      <div class="tam">
+        <label for="dSaat">Satış saati</label>
+        <input id="dSaat" type="time">
+      </div>
+    </div>
+    <p class="hata" id="dHata"></p>
+    <div class="dugmeler">
+      <button type="button" class="btn ince" id="dIptal">Vazgeç</button>
+      <button type="button" class="btn sari" id="dKaydet">Değişikliği kaydet</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+/* =========================================================
+   AYARLAR — sadece burayı değiştirmeniz yeterli
+   ========================================================= */
+const ADMIN_SIFRE = "0000";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAhFKv9979KOfyg7nLM0PE-jJDhyjzEtPw",
+  authDomain: "gokart-e3cac.firebaseapp.com",
+  projectId: "gokart-e3cac",
+  storageBucket: "gokart-e3cac.firebasestorage.app",
+  messagingSenderId: "478582130774",
+  appId: "1:478582130774:web:48b18e183c4dd6e71d93f7"
+};
+/* ========================================================= */
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const iki = n => String(n).padStart(2, "0");
+const gunAnahtari = (d = new Date()) => `${d.getFullYear()}-${iki(d.getMonth()+1)}-${iki(d.getDate())}`;
+const saatYazi = (d = new Date()) => `${iki(d.getHours())}:${iki(d.getMinutes())}`;
+const gunYazi = key => {
+  const [y,m,d] = key.split("-").map(Number);
+  return new Date(y, m-1, d).toLocaleDateString("tr-TR", {weekday:"long", day:"numeric", month:"long", year:"numeric"});
+};
+const zamanHesapla = (gun, saat) => {
+  const [y,m,d] = gun.split("-").map(Number);
+  const [h,mi] = saat.split(":").map(Number);
+  return new Date(y, m-1, d, h, mi).getTime();
+};
+
+/* ---------- Veri katmanı ---------- */
+const demoMod = firebaseConfig.apiKey === "BURAYA";
+let Veri;
+
+if (!demoMod) {
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const inc = firebase.firestore.FieldValue.increment;
+  Veri = {
+    async ekle(k) {
+      const b = db.batch();
+      b.set(db.collection("biletler").doc(), k);
+      b.set(db.collection("gunler").doc(k.gun), {tarih:k.gun, sayi:inc(1)}, {merge:true});
+      await b.commit();
+    },
+    async guncelle(id, alanlar) { await db.collection("biletler").doc(id).update(alanlar); },
+    async sil(id, gun) {
+      const b = db.batch();
+      b.delete(db.collection("biletler").doc(id));
+      b.set(db.collection("gunler").doc(gun), {tarih:gun, sayi:inc(-1)}, {merge:true});
+      await b.commit();
+    },
+    gunuDinle(gun, cb) {
+      return db.collection("biletler").where("gun","==",gun).onSnapshot(
+        s => { durum(true); cb(s.docs.map(d => ({id:d.id, ...d.data()}))); },
+        e => { durum(false); console.error(e); }
+      );
+    },
+    gunleriDinle(cb) {
+      return db.collection("gunler").orderBy("tarih","desc").limit(365).onSnapshot(
+        s => cb(s.docs.map(d => d.data()).filter(g => (g.sayi||0) > 0)),
+        e => console.error(e)
+      );
+    }
+  };
+} else {
+  // Demo: sadece bu cihazda saklar
+  const dinleyiciler = new Set();
+  const oku = () => { try { return JSON.parse(localStorage.getItem("biletler") || "[]"); } catch { return []; } };
+  const yaz = l => { try { localStorage.setItem("biletler", JSON.stringify(l)); } catch {} dinleyiciler.forEach(f => f()); };
+  Veri = {
+    async ekle(k) { const l = oku(); l.push({id:Date.now()+""+Math.random().toString(36).slice(2,6), ...k}); yaz(l); },
+    async guncelle(id, a) { yaz(oku().map(x => x.id === id ? {...x, ...a} : x)); },
+    async sil(id) { yaz(oku().filter(x => x.id !== id)); },
+    gunuDinle(gun, cb) { const f = () => cb(oku().filter(x => x.gun === gun)); dinleyiciler.add(f); f(); return () => dinleyiciler.delete(f); },
+    gunleriDinle(cb) {
+      const f = () => {
+        const say = {}; oku().forEach(x => say[x.gun] = (say[x.gun]||0) + 1);
+        cb(Object.keys(say).sort().reverse().map(t => ({tarih:t, sayi:say[t]})));
+      };
+      dinleyiciler.add(f); f(); return () => dinleyiciler.delete(f);
+    }
+  };
+}
+
+function durum(bagli) {
+  const el = $("durum");
+  if (demoMod) { el.className = "durum demo"; el.lastElementChild.textContent = "Demo"; return; }
+  el.className = "durum"; el.lastElementChild.textContent = bagli ? "Canlı" : "Bağlantı yok";
+  el.querySelector("i").style.background = bagli ? "" : "var(--danger)";
+}
+if (demoMod) { $("demoUyari").classList.remove("gizli"); durum(false); }
+
+/* ---------- Durum ---------- */
+let admin = false;
+try { admin = sessionStorage.getItem("admin") === "1"; } catch {}
+let bugun = gunAnahtari();
+let bugunListe = [];
+let oncekiIdler = new Set();
+let ilkYukleme = true;
+let gunDetayListe = [];
+let seciliGun = null;
+let gunAbonelik = null, detayAbonelik = null;
+
+/* ---------- Görüntüleme ---------- */
+function biletHTML(b, adminGoster, yeni) {
+  return `<div class="bilet${yeni ? " yeni" : ""}">
+    <div class="koc"><span class="saat num">${esc(b.saat)}</span><span class="saat-et">satış</span></div>
+    <div class="govde">
+      <div class="no num"><small>No</small>${esc(b.bilet)}</div>
+      <div class="detay"><b>${esc(b.kisi)}</b> kişi, <b>${esc(b.sure)}</b> dakika</div>
+    </div>
+    ${adminGoster ? `<div class="islem">
+      <button class="kucuk" data-duzenle="${esc(b.id)}">Düzenle</button>
+      <button class="kucuk sil" data-sil="${esc(b.id)}">Sil</button>
+    </div>` : "<div></div>"}
+  </div>`;
+}
+function ozet(l) {
+  const kisi = l.reduce((t, b) => t + (parseInt(b.kisi) || 0), 0);
+  return `<b>${l.length}</b> bilet, toplam <b>${kisi}</b> kişi`;
+}
+const sirala = l => [...l].sort((a, b) => b.zaman - a.zaman);
+
+function bugunuCiz() {
+  const l = sirala(bugunListe);
+  const yeniIdler = new Set(l.map(b => b.id));
+  const html = l.map(b => biletHTML(b, false, !ilkYukleme && !oncekiIdler.has(b.id))).join("");
+  $("listeBugun").innerHTML = html || `<div class="bos">Bugün henüz bilet satılmadı.<br>Yeni biletler burada anında görünecek.</div>`;
+  $("ozetBugun").innerHTML = ozet(l);
+  $("listeAdmin").innerHTML = l.map(b => biletHTML(b, true, false)).join("") || `<div class="bos">Bugün kayıt yok. İlk bileti yukarıdan girin.</div>`;
+  $("ozetAdmin").innerHTML = ozet(l);
+  oncekiIdler = yeniIdler; ilkYukleme = false;
+}
+
+function gunDetayCiz() {
+  const l = sirala(gunDetayListe);
+  $("listeGun").innerHTML = l.map(b => biletHTML(b, admin, false)).join("") || `<div class="bos">Bu güne ait kayıt kalmadı.</div>`;
+  $("ozetGun").innerHTML = ozet(l);
+}
+
+function bugunuDinle() {
+  if (gunAbonelik) gunAbonelik();
+  ilkYukleme = true; oncekiIdler = new Set();
+  $("bugunYazi").textContent = gunYazi(bugun);
+  gunAbonelik = Veri.gunuDinle(bugun, l => { bugunListe = l; bugunuCiz(); });
+}
+bugunuDinle();
+
+// Gece yarısı geçince otomatik yeni güne geç
+setInterval(() => { const g = gunAnahtari(); if (g !== bugun) { bugun = g; bugunuDinle(); } }, 30000);
+
+Veri.gunleriDinle(gunler => {
+  $("gunListesi").innerHTML = gunler.map(g =>
+    `<button class="gun" data-gun="${esc(g.tarih)}"><b>${esc(gunYazi(g.tarih))}</b><span>${g.sayi} bilet ›</span></button>`
+  ).join("") || `<div class="bos">Henüz kayıtlı gün yok.</div>`;
+});
+
+/* ---------- Sayfa geçişleri ---------- */
+function sayfaAc(ad) {
+  ["kontrol","gecmis","admin"].forEach(s => $("sayfa-"+s).classList.toggle("gizli", s !== ad));
+  document.querySelectorAll("nav button").forEach(b => b.setAttribute("aria-current", b.dataset.sayfa === ad));
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => sayfaAc(b.dataset.sayfa));
+
+$("gunListesi").onclick = e => {
+  const b = e.target.closest("[data-gun]"); if (!b) return;
+  seciliGun = b.dataset.gun;
+  $("gunBaslik").textContent = gunYazi(seciliGun);
+  $("gunListesiKutu").classList.add("gizli"); $("gunDetayKutu").classList.remove("gizli");
+  if (detayAbonelik) detayAbonelik();
+  detayAbonelik = Veri.gunuDinle(seciliGun, l => { gunDetayListe = l; gunDetayCiz(); });
+};
+$("geriBtn").onclick = () => {
+  if (detayAbonelik) { detayAbonelik(); detayAbonelik = null; }
+  $("gunDetayKutu").classList.add("gizli"); $("gunListesiKutu").classList.remove("gizli");
+};
+
+/* ---------- Admin ---------- */
+function adminGorunum() {
+  $("girisKutu").classList.toggle("gizli", admin);
+  $("adminKutu").classList.toggle("gizli", !admin);
+  if (seciliGun) gunDetayCiz();
+}
+adminGorunum();
+
+function girisYap() {
+  if ($("sifre").value === ADMIN_SIFRE) {
+    admin = true; try { sessionStorage.setItem("admin","1"); } catch {}
+    $("sifre").value = ""; $("sifreHata").textContent = ""; adminGorunum();
+  } else { $("sifreHata").textContent = "Şifre yanlış. Tekrar deneyin."; }
+}
+$("girisBtn").onclick = girisYap;
+$("sifre").onkeydown = e => { if (e.key === "Enter") girisYap(); };
+$("cikisBtn").onclick = () => { admin = false; try { sessionStorage.removeItem("admin"); } catch {} adminGorunum(); };
+
+function kontrol(bilet, kisi, sure) {
+  if (!bilet) return "Bilet numarasını girin.";
+  if (!/^\d+$/.test(kisi) || +kisi < 1) return "Kişi sayısını rakamla girin.";
+  if (!/^\d+$/.test(sure) || +sure < 1) return "Süreyi dakika olarak rakamla girin.";
+  return "";
+}
+
+let kaydediliyor = false;
+async function kaydet() {
+  if (kaydediliyor) return;
+  const bilet = $("fBilet").value.trim(), kisi = $("fKisi").value.trim(), sure = $("fSure").value.trim();
+  const h = kontrol(bilet, kisi, sure); $("formHata").textContent = h; if (h) return;
+  if (bugunListe.some(b => b.bilet === bilet) && !confirm(`${bilet} numaralı bilet bugün zaten girilmiş. Yine de kaydedilsin mi?`)) return;
+  const simdi = new Date();
+  kaydediliyor = true; $("kaydetBtn").textContent = "Kaydediliyor...";
+  try {
+    await Veri.ekle({bilet, kisi, sure, gun:gunAnahtari(simdi), saat:saatYazi(simdi), zaman:simdi.getTime()});
+    $("fBilet").value = ""; $("fKisi").value = ""; $("fSure").value = "";
+    $("fBilet").focus();
+  } catch (e) { $("formHata").textContent = "Kayıt yapılamadı. İnternet bağlantısını kontrol edin."; console.error(e); }
+  kaydediliyor = false; $("kaydetBtn").textContent = "Bileti kaydet";
+}
+$("kaydetBtn").onclick = kaydet;
+["fBilet","fKisi","fSure"].forEach((id, i, a) => $(id).onkeydown = e => {
+  if (e.key === "Enter") { e.preventDefault(); i < a.length - 1 ? $(a[i+1]).focus() : kaydet(); }
+});
+
+/* ---------- Düzenle / Sil ---------- */
+let duzenlenen = null;
+const bul = id => bugunListe.find(b => b.id === id) || gunDetayListe.find(b => b.id === id);
+
+document.addEventListener("click", async e => {
+  const d = e.target.closest("[data-duzenle]"), s = e.target.closest("[data-sil]");
+  if (!admin || (!d && !s)) return;
+  if (d) {
+    duzenlenen = bul(d.dataset.duzenle); if (!duzenlenen) return;
+    $("dBilet").value = duzenlenen.bilet; $("dKisi").value = duzenlenen.kisi;
+    $("dSure").value = duzenlenen.sure; $("dSaat").value = duzenlenen.saat; $("dHata").textContent = "";
+    $("duzenle").showModal();
+  }
+  if (s) {
+    const b = bul(s.dataset.sil); if (!b) return;
+    if (!confirm(`${b.bilet} numaralı bilet (${b.saat}) silinsin mi?`)) return;
+    try { await Veri.sil(b.id, b.gun); } catch (err) { alert("Silinemedi. İnternet bağlantısını kontrol edin."); }
+  }
+});
+$("dIptal").onclick = () => $("duzenle").close();
+$("dKaydet").onclick = async () => {
+  const bilet = $("dBilet").value.trim(), kisi = $("dKisi").value.trim(), sure = $("dSure").value.trim(), saat = $("dSaat").value;
+  const h = kontrol(bilet, kisi, sure) || (!saat ? "Saati girin." : ""); $("dHata").textContent = h; if (h) return;
+  try {
+    await Veri.guncelle(duzenlenen.id, {bilet, kisi, sure, saat, zaman:zamanHesapla(duzenlenen.gun, saat)});
+    $("duzenle").close();
+  } catch (e) { $("dHata").textContent = "Kaydedilemedi. İnternet bağlantısını kontrol edin."; }
+};
+</script>
+</body>
+</html>
