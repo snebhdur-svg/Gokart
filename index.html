@@ -137,6 +137,9 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline
 .kucuk.pasifle{border-color:var(--ink)}
 .kucuk.aktifle{border-color:var(--ok);color:var(--ok)}
 .kucuk.sil{color:var(--danger);border-color:var(--danger)}
+.kucuk.durdur{border-color:var(--accent)}
+.kucuk.bitir{border-color:var(--ink)}
+.bilet.durdu .krono{opacity:.55}
 
 .kart{background:var(--paper);border-radius:12px;padding:16px;margin-bottom:16px}
 .kart h2{margin:0 0 12px;font-size:1.15rem}
@@ -293,7 +296,6 @@ dialog form{padding:20px}
         <input id="dSaat" type="time">
       </div>
     </div>
-    <button type="button" class="btn ince gizli" id="dSifirla" style="width:100%;margin-bottom:12px">Süre başlangıcını sıfırla</button>
     <p class="hata" id="dHata"></p>
     <div class="dugmeler">
       <button type="button" class="btn ince" id="dIptal">Vazgeç</button>
@@ -337,6 +339,14 @@ const gunYazi = key => { const [y,m,d] = key.split("-").map(Number); return new 
 const zamanHesapla = (gun, saat) => { const [y,m,d] = gun.split("-").map(Number); const [h,mi] = saat.split(":").map(Number); return new Date(y,m-1,d,h,mi).getTime(); };
 const sureYazi = ms => { const s = Math.max(0, Math.floor(ms/1000)); const h = Math.floor(s/3600), m = Math.floor(s%3600/60), sn = s%60; return h ? `${h}:${iki(m)}:${iki(sn)}` : `${iki(m)}:${iki(sn)}`; };
 const aktifMi = b => b.aktif !== false;
+// Kronometre: birikim = önceki çalışma süreleri (ms), calisiyor = şu anki çalışmanın başladığı an (durdurulduysa null)
+const zamanBilgi = b => {
+  if (!b.baslama) return { basladi:false, birikim:0, calisiyor:null };
+  if (b.calisiyor === undefined && b.birikim === undefined) {   // eski sürüm kayıtları
+    return b.durma ? { basladi:true, birikim:b.durma - b.baslama, calisiyor:null } : { basladi:true, birikim:0, calisiyor:b.baslama };
+  }
+  return { basladi:true, birikim:b.birikim || 0, calisiyor:b.calisiyor || null };
+};
 const siraDegeri = b => (typeof b.sira === "number" ? b.sira : -(b.zaman || 0));
 const sirala = l => [...l].sort((a, b) => siraDegeri(a) - siraDegeri(b));
 const sonrakiNumara = s => { const m = String(s).match(/^(.*?)(\d+)$/); if (!m) return ""; return m[1] + String(parseInt(m[2],10) + 1).padStart(m[2].length, "0"); };
@@ -400,7 +410,14 @@ function biletHTML(b, mod, yeni) {
   const yonetim = mod === "pist" || mod === "admin";
   let butonlar = "";
   if (yonetim) {
-    if (aktif && !b.baslama) butonlar += `<button class="kucuk baslat" data-is="baslat" data-id="${esc(b.id)}">▶ Başlat</button>`;
+    const z = zamanBilgi(b);
+    if (aktif && !z.basladi) butonlar += `<button class="kucuk baslat" data-is="baslat" data-id="${esc(b.id)}">▶ Başlat</button>`;
+    if (aktif && z.basladi) {
+      butonlar += z.calisiyor
+        ? `<button class="kucuk durdur" data-is="durdur" data-id="${esc(b.id)}">⏸ Durdur</button>`
+        : `<button class="kucuk baslat" data-is="devam" data-id="${esc(b.id)}">▶ Devam</button>`;
+      butonlar += `<button class="kucuk bitir" data-is="bitir" data-id="${esc(b.id)}">⏹ Bitir</button>`;
+    }
     butonlar += aktif
       ? `<button class="kucuk pasifle" data-is="durum" data-id="${esc(b.id)}">Pasif yap</button>`
       : `<button class="kucuk aktifle" data-is="durum" data-id="${esc(b.id)}">Aktif yap</button>`;
@@ -409,8 +426,9 @@ function biletHTML(b, mod, yeni) {
     butonlar += `<button class="kucuk" data-is="duzenle" data-id="${esc(b.id)}">Düzenle</button>
                  <button class="kucuk sil" data-is="sil" data-id="${esc(b.id)}">Sil</button>`;
   }
+  const zb = zamanBilgi(b);
   return `<div class="bilet${yeni ? " yeni" : ""}" data-id="${esc(b.id)}" data-aktif="${aktif ? 1 : 0}"
-      data-baslama="${b.baslama || ""}" data-durma="${b.durma || ""}" data-sure="${parseInt(b.sure) || 0}">
+      data-basladi="${zb.basladi ? 1 : 0}" data-birikim="${zb.birikim}" data-calisiyor="${zb.calisiyor || ""}" data-sure="${parseInt(b.sure) || 0}">
     <div class="koc"><span class="saat num">${esc(b.saat)}</span><span class="saat-et">satış</span></div>
     <div class="govde">
       <div class="ust">
@@ -419,7 +437,7 @@ function biletHTML(b, mod, yeni) {
         ${yonetim ? `<button class="tutamac" aria-label="Sürükleyerek sırayı değiştir">⠿</button>` : ""}
       </div>
       <div class="detay"><b>${esc(b.kisi)}</b> kişi, <b>${esc(b.sure)}</b> dakika</div>
-      ${b.baslama ? `<div class="zaman"><span class="krono num"></span><span class="bitis">Bitiş ${saatYazi(new Date(b.baslama + (parseInt(b.sure)||0)*60000))}</span></div>` : ""}
+      ${zb.basladi ? `<div class="zaman"><span class="krono num"></span><span class="bitis"></span></div>` : ""}
       ${butonlar ? `<div class="islemler">${butonlar}</div>` : ""}
     </div>
   </div>`;
@@ -427,20 +445,24 @@ function biletHTML(b, mod, yeni) {
 
 // Kartın rengini, etiketini ve kronometresini günceller (her saniye çağrılır)
 function kartGuncelle(k, simdi = Date.now()) {
-  const aktif = k.dataset.aktif === "1", bas = +k.dataset.baslama || 0, dur = +k.dataset.durma || 0, sure = +k.dataset.sure * 60000;
-  let sinif, etiket;
-  const gecen = bas ? ((!aktif && dur) ? dur : simdi) - bas : 0;
+  const aktif = k.dataset.aktif === "1", basladi = k.dataset.basladi === "1";
+  const birikim = +k.dataset.birikim || 0, cal = +k.dataset.calisiyor || 0, sure = +k.dataset.sure * 60000;
+  const gecen = birikim + (cal ? simdi - cal : 0);
+  let sinif, etiket, bitis = "";
   if (!aktif) { sinif = "pasif"; etiket = "PASİF"; }
-  else if (!bas) { sinif = "aktif"; etiket = "BEKLİYOR"; }
+  else if (!basladi) { sinif = "aktif"; etiket = "BEKLİYOR"; }
   else if (gecen > sure) { sinif = "doldu"; etiket = "SÜRE DOLDU"; }
-  else { sinif = "aktif"; etiket = "PİSTTE"; }
+  else { sinif = "aktif"; etiket = cal ? "PİSTTE" : "DURDU"; }
+  if (basladi && aktif) bitis = cal ? "Bitiş " + saatYazi(new Date(cal + sure - birikim)) : "Durduruldu";
   k.classList.toggle("aktif", sinif === "aktif");
   k.classList.toggle("doldu", sinif === "doldu");
   k.classList.toggle("pasif", sinif === "pasif");
+  k.classList.toggle("durdu", basladi && !cal);
   const c = k.querySelector(".cip"); if (c.textContent !== etiket) c.textContent = etiket;
   const kr = k.querySelector(".krono"); if (kr) kr.textContent = sureYazi(gecen);
+  const bt = k.querySelector(".bitis"); if (bt && bt.textContent !== bitis) bt.textContent = bitis;
 }
-setInterval(() => { const s = Date.now(); document.querySelectorAll(".bilet[data-baslama]:not([data-baslama=''])").forEach(k => kartGuncelle(k, s)); }, 1000);
+setInterval(() => { const s = Date.now(); document.querySelectorAll('.bilet[data-basladi="1"]').forEach(k => kartGuncelle(k, s)); }, 1000);
 
 function sayacHTML(l) {
   const say = f => { const x = l.filter(f); return [x.length, x.reduce((t,b) => t + (parseInt(b.kisi)||0), 0)]; };
@@ -584,7 +606,7 @@ async function kaydet() {
   kaydediliyor = true; $("kaydetBtn").textContent = "Kaydediliyor...";
   try {
     await Veri.ekle({ bilet, kisi, sure, gun:gunAnahtari(simdi), saat:saatYazi(simdi), zaman:simdi.getTime(),
-                      sira: enUst - 1024, aktif:true, baslama:null, durma:null });
+                      sira: enUst - 1024, aktif:true, baslama:null, calisiyor:null, birikim:0 });
     $("fBilet").value = sonrakiNumara(bilet);
     $("fKisi").value = ""; $("fSure").value = "";
     $("fKisi").focus();
@@ -607,17 +629,29 @@ document.addEventListener("click", async e => {
   const is = t.dataset.is;
   if ((is === "duzenle" || is === "sil") && rol !== "admin") return;
   try {
+    const z = zamanBilgi(b), simdi = Date.now();
     if (is === "baslat") {
       if (!confirm(`${b.bilet} numaralı biletin süresi başlatılsın mı?`)) return;
-      await Veri.guncelle(b.id, {baslama: Date.now(), durma: null});
+      await Veri.guncelle(b.id, {baslama:simdi, calisiyor:simdi, birikim:0, durma:null});
+    }
+    if (is === "durdur" && z.calisiyor) {
+      await Veri.guncelle(b.id, {calisiyor:null, birikim:z.birikim + (simdi - z.calisiyor), durma:null});
+    }
+    if (is === "devam" && z.basladi && !z.calisiyor) {
+      await Veri.guncelle(b.id, {calisiyor:simdi, birikim:z.birikim, durma:null});
+    }
+    if (is === "bitir") {
+      await Veri.guncelle(b.id, {baslama:null, calisiyor:null, birikim:0, durma:null});
     }
     if (is === "durum") {
       if (aktifMi(b)) {
         if (!confirm(`${b.bilet} numaralı bilet PASİF (kullanıldı) yapılsın mı?`)) return;
-        await Veri.guncelle(b.id, {aktif:false, durma: b.baslama ? Date.now() : null});
+        const a = {aktif:false};
+        if (z.calisiyor) Object.assign(a, {calisiyor:null, birikim:z.birikim + (simdi - z.calisiyor), durma:null});
+        await Veri.guncelle(b.id, a);
       } else {
         if (!confirm(`${b.bilet} numaralı bilet tekrar AKTİF yapılsın mı?`)) return;
-        await Veri.guncelle(b.id, {aktif:true, durma:null});
+        await Veri.guncelle(b.id, {aktif:true});
       }
     }
     if (is === "sil") {
@@ -628,7 +662,6 @@ document.addEventListener("click", async e => {
   if (is === "duzenle") {
     duzenlenen = b;
     $("dBilet").value = b.bilet; $("dKisi").value = b.kisi; $("dSure").value = b.sure; $("dSaat").value = b.saat;
-    $("dSifirla").classList.toggle("gizli", !b.baslama);
     $("dHata").textContent = "";
     $("duzenle").showModal();
   }
@@ -638,11 +671,6 @@ $("dKaydet").onclick = async () => {
   const bilet = $("dBilet").value.trim(), kisi = $("dKisi").value.trim(), sure = $("dSure").value.trim(), saat = $("dSaat").value;
   const h = kontrol(bilet, kisi, sure) || (!saat ? "Saati girin." : ""); $("dHata").textContent = h; if (h) return;
   try { await Veri.guncelle(duzenlenen.id, {bilet, kisi, sure, saat, zaman:zamanHesapla(duzenlenen.gun, saat)}); $("duzenle").close(); }
-  catch (e) { $("dHata").textContent = "Kaydedilemedi. İnternet bağlantısını kontrol edin."; }
-};
-$("dSifirla").onclick = async () => {
-  if (!confirm("Bu biletin süre başlangıcı silinsin mi? Bilet tekrar 'Bekliyor' durumuna döner.")) return;
-  try { await Veri.guncelle(duzenlenen.id, {baslama:null, durma:null}); $("duzenle").close(); }
   catch (e) { $("dHata").textContent = "Kaydedilemedi. İnternet bağlantısını kontrol edin."; }
 };
 
