@@ -179,12 +179,105 @@ dialog::backdrop{background:rgba(0,0,0,.5)}
 dialog form{padding:20px}
 .dugmeler{display:flex;gap:10px;margin-top:6px}
 .dugmeler .btn{flex:1}
+
+/* ===== Ana seçim ===== */
+.secim-buyuk{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--bg);color:var(--ink);
+  border:2px solid var(--line);padding:18px 16px;margin-bottom:10px;font-size:1.15rem}
+.secim-buyuk span{font-size:1.8rem;line-height:1}
+.secim-buyuk:active{border-color:var(--accent)}
+
+/* ===== Batarya takibi ===== */
+.ekle-btn{font-size:1.3rem!important;line-height:1;padding:4px 12px!important;background:#F2B705!important;color:#2A2000!important;border:0!important;font-weight:700}
+.arac{background:var(--paper);border-radius:12px;padding:10px 10px 12px;border:2px solid transparent;cursor:pointer;transition:transform .18s ease, box-shadow .18s ease}
+.arac-ust{display:flex;align-items:center;gap:8px}
+.arac-no{flex:none;width:30px;height:30px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:1rem}
+.plaka{flex:1;min-width:0;font-family:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;font-weight:700;font-size:1.45rem;
+  text-transform:uppercase;padding:4px 10px;border:1.5px dashed var(--line);background:transparent;letter-spacing:.04em}
+.plaka:not(:placeholder-shown){border:1.5px solid var(--ink);background:var(--paper)}
+.plaka::placeholder{text-transform:none;font-family:"Barlow",system-ui,sans-serif;font-weight:500;font-size:1rem;letter-spacing:0}
+.arac-govde{display:flex;align-items:center;gap:12px;margin-top:6px}
+.araba{width:44%;max-width:190px;flex:none;color:var(--muted)}
+.arac-bilgi{flex:1;min-width:0}
+.bat-rozet{font-weight:600;font-size:.98rem;margin-top:6px}
+.arac-bilgi{text-align:left}
+.arac-bilgi .cip{display:table;margin:0}
+.bat-rozet.yok{color:var(--muted);font-weight:500}
+.arac .krono{font-size:2.1rem;line-height:1.1;margin-top:2px}
+.arac .alt-yazi{font-size:.9rem;color:var(--muted)}
+.arac.hazir,.arac.geldi{border-color:var(--ok)} .arac.hazir .araba,.arac.geldi .araba{color:var(--ok)}
+.arac.hazir .cip,.arac.geldi .cip{background:var(--ok);color:#fff}
+.arac.yolda{border-color:var(--accent)} .arac.yolda .araba{color:var(--accent)}
+.arac.yolda .cip{background:var(--accent);color:var(--accent-ink)}
+.arac.gecikti{border-color:var(--danger);background:var(--danger-soft)} .arac.gecikti .araba{color:var(--danger)}
+.arac.gecikti .cip{background:var(--danger);color:#fff} .arac.gecikti .krono{color:var(--danger)}
+.arac.kalkik,.bat.kalkik{z-index:10;box-shadow:0 14px 30px rgba(0,0,0,.28)}
+.surukleme-acik .arac:not(.kalkik),.surukleme-acik .bat:not(.kalkik){transition:transform .18s ease}
+
+.bat{background:var(--paper);border-radius:12px;padding:10px 12px 12px;border:2px solid transparent;transition:transform .18s ease, box-shadow .18s ease}
+.bat.sarjda{border-color:var(--accent)}
+.bat.arabada{border-color:var(--ok)}
+.bat-ust{display:flex;align-items:center;gap:8px}
+.bat-ad{flex:1;min-width:0;font-weight:600;font-size:1.15rem;padding:6px 10px;border:1.5px solid transparent;background:var(--bg)}
+.bat-cip-satir{display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:8px}
+.bat .cip,.ap-bat .cip{margin:0}
+.bat.sarjda .cip,.ap-bat.sarjda .cip{background:var(--accent);color:var(--accent-ink)}
+.bat.arabada .cip,.ap-bat.arabada .cip{background:var(--ok);color:#fff}
+.kapasite{font-size:.9rem;color:var(--muted)}
+.bar{height:8px;border-radius:4px;background:var(--bg);margin:8px 0;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok);border-radius:4px;transition:width .4s}
+.bar i.az{background:var(--accent)} .bar i.bitti{background:var(--danger)}
+.bat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.bat-grid div{display:flex;flex-direction:column}
+.bat-grid span{font-size:.75rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+.bat-grid b{font-size:1.05rem}
+
+dialog.alt-pencere{margin:auto auto 0;width:100%;max-width:640px;max-height:88vh;border-radius:16px 16px 0 0;overflow-y:auto;
+  padding-bottom:env(safe-area-inset-bottom,0px)}
+.ap-ic{padding:14px 16px 24px}
+.ap-bas{display:flex;justify-content:space-between;align-items:center;gap:10px;position:sticky;top:0;background:var(--paper);padding:4px 0 10px;z-index:2}
+.ap-bas h2{margin:0;font-size:1.5rem}
+.kapat{background:var(--bg);color:var(--ink);width:40px;height:40px;font-size:1.1rem;flex:none}
+.ap-kutu{background:var(--bg);border-radius:10px;padding:12px;margin-bottom:14px}
+.ap-kutu .krono{font-size:2.4rem;line-height:1.1}
+.ap-kutu .krono.kirmizi{color:var(--danger)}
+.ap-kutu .btn{margin-top:10px}
+.hizli{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.hizli .kucuk{background:var(--paper)}
+.ap-liste{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+.ap-bat{text-align:left;background:var(--bg);color:var(--ink);padding:10px 12px;border:2px solid transparent;width:100%}
+.ap-bat.secili{border-color:var(--ok);background:var(--ok-soft)}
+.ap-bat-ust{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ap-bat-ust b{font-size:1.08rem}
+.ap-bat-alt{font-size:.88rem;color:var(--muted);margin-top:4px}
+.ap-bat-alt b{color:var(--ink);font-weight:600}
+h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
+.sil-btn{width:100%!important;color:var(--danger)!important;border-color:var(--danger)!important}
 </style>
 </head>
 <body>
 
+<!-- ANA SEÇİM -->
+<section id="anaSecim" class="giris gizli">
+  <div class="giris-kart">
+    <h1 class="num">Gokart Takip</h1>
+    <div id="secimGorunum">
+      <p class="aciklama">Hangi bölüme girmek istiyorsunuz?</p>
+      <button class="secim-buyuk" id="secBilet"><span>🎟️</span><b>Bilet takibi</b></button>
+      <button class="secim-buyuk" id="secBatarya"><span>🔋</span><b>Batarya takibi</b></button>
+    </div>
+    <div id="bGirisGorunum" class="gizli">
+      <p class="aciklama">Batarya takibi şifresini girin.</p>
+      <label for="bSifre">Şifre</label>
+      <input id="bSifre" type="password" inputmode="numeric" autocomplete="off">
+      <p class="hata" id="bSifreHata"></p>
+      <button class="btn sari" id="bGirisBtn">Giriş yap</button>
+      <button class="btn ince" id="bGirisGeri">‹ Geri</button>
+    </div>
+  </div>
+</section>
+
 <!-- GİRİŞ -->
-<section id="giris" class="giris">
+<section id="giris" class="giris gizli">
   <div class="giris-kart">
     <h1 class="num">Bilet Takip</h1>
     <p class="aciklama" id="girisAciklama">Giriş türünü seçip şifrenizi girin.</p>
@@ -197,9 +290,11 @@ dialog form{padding:20px}
     <p class="hata" id="sifreHata"></p>
     <button class="btn sari" id="girisBtn">Giriş yap</button>
     <button class="btn ince gizli" id="girisIptal">Vazgeç</button>
+    <button class="btn ince" id="girisAnaMenu">‹ Ana menü</button>
   </div>
 </section>
 
+<div id="biletUygulama" class="gizli">
 <header>
   <div class="bas-ust">
     <h1 class="num">Bilet Takip</h1>
@@ -215,7 +310,7 @@ dialog form{padding:20px}
   <!-- BUGÜN -->
   <section id="sayfa-bugun">
     <div class="sayaclar" data-sayac></div>
-    <div class="liste" id="listeBugun"></div>
+    <div class="liste" id="listeBugun" data-tur="bilet"></div>
   </section>
 
   <!-- GEÇMİŞ -->
@@ -238,7 +333,7 @@ dialog form{padding:20px}
   <section id="sayfa-pist" class="gizli">
     <div class="sayaclar" data-sayac></div>
     <p class="ipucu">Sırayı değiştirmek için biletin sağ üstündeki ⠿ tutamağına basılı tutup sürükleyin.</p>
-    <div class="liste" id="listePist"></div>
+    <div class="liste" id="listePist" data-tur="bilet"></div>
   </section>
 
   <!-- ADMIN -->
@@ -263,11 +358,11 @@ dialog form{padding:20px}
       <p class="hata" id="formHata"></p>
     </div>
     <div class="sayaclar" data-sayac></div>
-    <div class="liste" id="listeAdmin"></div>
+    <div class="liste" id="listeAdmin" data-tur="bilet"></div>
   </section>
 </main>
 
-<nav>
+<nav id="biletNav">
   <button data-sayfa="bugun"><span class="ik">🎟️</span>Bugün</button>
   <button data-sayfa="gecmis"><span class="ik">📅</span>Geçmiş</button>
   <button data-sayfa="pist"><span class="ik">🏁</span>Pist</button>
@@ -303,6 +398,83 @@ dialog form{padding:20px}
     </div>
   </form>
 </dialog>
+</div>
+
+<!-- ================= BATARYA TAKİBİ ================= -->
+<div id="bataryaUygulama" class="gizli">
+<header>
+  <div class="bas-ust">
+    <h1 class="num">Batarya Takip</h1>
+    <div class="rol"><button id="bEkleBtn" class="ekle-btn" aria-label="Araç veya batarya ekle">＋</button><button id="bCikisBtn">Çıkış</button></div>
+  </div>
+  <div class="alt">
+    <span id="bOzet"></span>
+    <span id="bDurum" class="durum"><i></i><span>Bağlanıyor</span></span>
+  </div>
+</header>
+<main>
+  <section id="bSayfa-araclar">
+    <p class="ipucu">Araca dokunarak batarya seçin ve çıkış başlatın. Sırayı ⠿ tutamacıyla değiştirebilirsiniz.</p>
+    <div class="liste" id="aracListe" data-tur="arac"></div>
+  </section>
+  <section id="bSayfa-bataryalar" class="gizli">
+    <p class="ipucu">"Kalan" tahminidir: tam şarj süresinden kullanılan süre düşülür. Şarj bitince "Sıfırla" ile doluya çekin.</p>
+    <div class="liste" id="bataryaListe" data-tur="batarya"></div>
+  </section>
+</main>
+<nav id="bNav">
+  <button data-bsayfa="araclar" aria-current="true"><span class="ik">🚗</span>Araçlar</button>
+  <button data-bsayfa="bataryalar" aria-current="false"><span class="ik">🔋</span>Bataryalar</button>
+</nav>
+
+<dialog id="aracPencere" class="alt-pencere">
+  <div class="ap-ic">
+    <div class="ap-bas"><h2 class="num" id="apBaslik"></h2><button class="kapat" id="apKapat" aria-label="Kapat">✕</button></div>
+    <div id="apSefer"></div>
+    <div id="apSureKutu" class="ap-kutu">
+      <label for="apDk">Çıkış süresi (dakika)</label>
+      <div class="hizli">
+        <button class="kucuk" data-hizli="30">30</button><button class="kucuk" data-hizli="60">60</button>
+        <button class="kucuk" data-hizli="90">90</button><button class="kucuk" data-hizli="120">120</button>
+      </div>
+      <input id="apDk" inputmode="numeric" autocomplete="off" placeholder="örn. 60">
+      <button class="btn sari" id="apBaslat">▶ Çıkışı başlat</button>
+      <p class="hata" id="apHata"></p>
+    </div>
+    <h3 class="ap-baslik">Batarya seç</h3>
+    <div id="apBataryalar" class="ap-liste"></div>
+    <button class="btn ince sil-btn" id="apSil">Aracı sil</button>
+  </div>
+</dialog>
+
+<dialog id="ekleMenu">
+  <form method="dialog">
+    <h2 style="margin:0 0 14px;font-size:1.2rem">Ekle</h2>
+    <button type="button" class="secim-buyuk" id="ekleArac"><span>🚗</span><b>Araç ekle</b></button>
+    <button type="button" class="secim-buyuk" id="ekleBatarya"><span>🔋</span><b>Batarya ekle</b></button>
+    <button type="button" class="btn ince" id="ekleIptal" style="width:100%">Vazgeç</button>
+  </form>
+</dialog>
+
+<dialog id="bataryaDuzenle">
+  <form method="dialog">
+    <h2 style="margin:0 0 14px;font-size:1.2rem">Bataryayı düzenle</h2>
+    <div class="alanlar">
+      <div class="tam"><label for="bdAd">Batarya adı</label><input id="bdAd" autocomplete="off"></div>
+      <div><label for="bdKapSa">Tam şarj (saat)</label><input id="bdKapSa" inputmode="numeric" autocomplete="off"></div>
+      <div><label for="bdKapDk">Tam şarj (dakika)</label><input id="bdKapDk" inputmode="numeric" autocomplete="off"></div>
+      <div><label for="bdKul">Kullanılan (dk)</label><input id="bdKul" inputmode="numeric" autocomplete="off"></div>
+      <div><label for="bdSarj">Şarj süresi (dk)</label><input id="bdSarj" inputmode="numeric" autocomplete="off"></div>
+    </div>
+    <p class="hata" id="bdHata"></p>
+    <div class="dugmeler">
+      <button type="button" class="btn ince" id="bdIptal">Vazgeç</button>
+      <button type="button" class="btn sari" id="bdKaydet">Kaydet</button>
+    </div>
+    <button type="button" class="btn ince sil-btn" id="bdSil" style="margin-top:12px">Bataryayı sil</button>
+  </form>
+</dialog>
+</div>
 
 <script>
 /* =========================================================
@@ -310,7 +482,7 @@ dialog form{padding:20px}
    Şifreler açık yazılmaz, özet (hash) olarak saklanır.
    Admin: 4169   Pist: 0000
    ========================================================= */
-const SIFRE_OZET = { admin: "1cqs6431uj8", pist: "1qg2d0b5m92" };
+const SIFRE_OZET = { admin: "1cqs6431uj8", pist: "1qg2d0b5m92", batarya: "1qg2d0b5m92" };  // Batarya: 0000
 
 const firebaseConfig = {
   apiKey: "AIzaSyAhFKv9979KOfyg7nLM0PE-jJDhyjzEtPw",
@@ -427,7 +599,7 @@ function biletHTML(b, mod, yeni) {
                  <button class="kucuk sil" data-is="sil" data-id="${esc(b.id)}">Sil</button>`;
   }
   const zb = zamanBilgi(b);
-  return `<div class="bilet${yeni ? " yeni" : ""}" data-id="${esc(b.id)}" data-aktif="${aktif ? 1 : 0}"
+  return `<div class="bilet surukle-oge${yeni ? " yeni" : ""}" data-id="${esc(b.id)}" data-aktif="${aktif ? 1 : 0}"
       data-basladi="${zb.basladi ? 1 : 0}" data-birikim="${zb.birikim}" data-calisiyor="${zb.calisiyor || ""}" data-sure="${parseInt(b.sure) || 0}">
     <div class="koc"><span class="saat num">${esc(b.saat)}</span><span class="saat-et">satış</span></div>
     <div class="govde">
@@ -519,6 +691,7 @@ function girisAc(onRol, hedef, aciklama) {
   document.querySelectorAll(".secim button").forEach(b => b.setAttribute("aria-pressed", b.dataset.rol === onRol));
   $("girisAciklama").textContent = aciklama || "Giriş türünü seçip şifrenizi girin.";
   $("girisIptal").classList.toggle("gizli", !rol);
+  $("girisAnaMenu").classList.toggle("gizli", !!rol);
   $("sifre").value = ""; $("sifreHata").textContent = "";
   $("giris").classList.remove("gizli");
   setTimeout(() => $("sifre").focus(), 50);
@@ -540,14 +713,14 @@ $("sifre").onkeydown = e => { if (e.key === "Enter") girisYap(); };
 $("girisIptal").onclick = () => $("giris").classList.add("gizli");
 $("cikisBtn").onclick = () => {
   if (!confirm("Çıkış yapılsın mı?")) return;
-  rol = null; try { localStorage.removeItem("rol"); } catch {}
-  girisAc("pist");
+  rol = null; try { localStorage.removeItem("rol"); localStorage.removeItem("mod"); } catch {}
+  anaSecimAc();
 };
 
 const adminSayfasi = s => s === "gecmis" || s === "admin";
 function menuGuncelle() {
   $("rolYazi").textContent = rol === "admin" ? "Admin" : "Pist";
-  document.querySelectorAll("nav button").forEach(b => {
+  document.querySelectorAll("#biletNav button").forEach(b => {
     const kilit = rol !== "admin" && adminSayfasi(b.dataset.sayfa);
     b.classList.toggle("kilitli", kilit);
     b.querySelector(".ik").textContent = kilit ? "🔒" : ({bugun:"🎟️",gecmis:"📅",pist:"🏁",admin:"🔑"})[b.dataset.sayfa];
@@ -557,21 +730,22 @@ function sayfaAc(ad) {
   if (rol !== "admin" && adminSayfasi(ad)) { girisAc("admin", ad, "Bu bölüm için admin şifresi gerekiyor."); return; }
   aktifSayfa = ad;
   ["bugun","gecmis","pist","admin"].forEach(s => $("sayfa-"+s).classList.toggle("gizli", s !== ad));
-  document.querySelectorAll("nav button").forEach(b => b.setAttribute("aria-current", b.dataset.sayfa === ad));
+  document.querySelectorAll("#biletNav button").forEach(b => b.setAttribute("aria-current", b.dataset.sayfa === ad));
   if (ad === "gecmis") gunleriDinle();
   window.scrollTo(0, 0);
 }
-document.querySelectorAll("nav button").forEach(b => b.onclick = () => sayfaAc(b.dataset.sayfa));
+document.querySelectorAll("#biletNav button").forEach(b => b.onclick = () => sayfaAc(b.dataset.sayfa));
 
 let basladi = false;
 function uygulamayiBaslat(sayfa) {
+  try { localStorage.setItem("mod", "bilet"); } catch {}
+  $("anaSecim").classList.add("gizli"); $("bataryaUygulama").classList.add("gizli");
+  $("biletUygulama").classList.remove("gizli");
   menuGuncelle();
   if (!basladi) { basladi = true; bugunuDinle(); } else bugunuCiz();
   if (seciliGun) gunDetayCiz();
   sayfaAc(sayfa);
 }
-if (rol) { $("giris").classList.add("gizli"); uygulamayiBaslat(rol === "admin" ? "admin" : "pist"); }
-else girisAc("pist");
 
 /* ---------- Geçmiş ---------- */
 $("gunListesi").onclick = e => {
@@ -678,7 +852,7 @@ $("dKaydet").onclick = async () => {
 document.addEventListener("pointerdown", e => {
   const h = e.target.closest(".tutamac"); if (!h || surukleniyor) return;
   e.preventDefault();
-  const kart = h.closest(".bilet"), liste = kart.parentElement;
+  const kart = h.closest(".surukle-oge"), liste = kart && kart.parentElement; if (!kart) return;
   try { h.setPointerCapture(e.pointerId); } catch {}
   const st = { h, kart, liste, pid:e.pointerId, y0:e.clientY, y:e.clientY, acik:false };
   st.timer = setTimeout(() => kaldir(st), 160);
@@ -694,7 +868,7 @@ document.addEventListener("pointerdown", e => {
 
 function kaldir(st) {
   st.acik = true; surukleniyor = true;
-  st.kartlar = [...st.liste.querySelectorAll(".bilet")];
+  st.kartlar = [...st.liste.querySelectorAll(":scope > .surukle-oge")];
   st.idx = st.kartlar.indexOf(st.kart); st.hedef = st.idx;
   st.sc0 = window.scrollY;
   st.merkez = st.kartlar.map(k => { const r = k.getBoundingClientRect(); return r.top + window.scrollY + r.height/2; });
@@ -739,6 +913,8 @@ function birak(st) {
   st.kart.classList.remove("kalkik");
   document.body.classList.remove("surukleme-acik");
   surukleniyor = false;
+  const tur = st.liste.dataset.tur;
+  if (tur === "arac" || tur === "batarya") { bSiraBirak(tur, ids, st.hedef !== st.idx); return; }
   if (st.hedef === st.idx) { if (cizimBekliyor) { cizimBekliyor = false; bugunuCiz(); } return; }
   const degisenler = [];
   ids.forEach((id, i) => {
@@ -748,6 +924,436 @@ function birak(st) {
   cizimBekliyor = false; bugunuCiz();
   Veri.siraYaz(degisenler).catch(err => { console.error(err); hataGoster(); });
 }
+
+/* =====================================================================
+   BATARYA TAKİBİ
+   ===================================================================== */
+const C = ad => db.collection(ad);
+let araclar = [], bataryalar = [];
+let bBasladi = false, bCizimBekliyor = false, acikArac = null, duzenlenenBat = null;
+let aracYuklendi = false, batYuklendi = false, tohumlandi = false;
+
+const dkYazi = ms => { const m = Math.max(0, Math.floor(ms / 60000)), h = Math.floor(m / 60); return h ? `${h} sa ${m % 60} dk` : `${m} dk`; };
+const bSirala = l => [...l].sort((a, b) => (a.sira || 0) - (b.sira || 0));
+const aracBul = id => araclar.find(a => a.id === id);
+const batBul = id => bataryalar.find(b => b.id === id);
+const aracAdi = a => a ? (a.plaka ? a.plaka : `Araç ${bSirala(araclar).indexOf(a) + 1}`) : "";
+const bHata = () => alert("İşlem yapılamadı. İnternet bağlantısını kontrol edin.");
+
+function aracDurum(a, simdi = Date.now()) {
+  if (a.durum === "yolda" && a.baslama) return (simdi - a.baslama > (a.planDk || 0) * 60000) ? "gecikti" : "yolda";
+  if (!a.bataryaId) return "bos";
+  return a.durum === "geldi" ? "geldi" : "hazir";
+}
+const AD_ETIKET = { bos:"BATARYA YOK", hazir:"HAZIR", yolda:"YOLDA", gecikti:"SÜRE DOLDU", geldi:"GELDİ" };
+
+function kullanilan(b, simdi = Date.now()) {
+  let ms = b.kullanilanMs || 0;
+  const a = b.aracId && aracBul(b.aracId);
+  if (a && a.durum === "yolda" && a.baslama && a.bataryaId === b.id) ms += simdi - a.baslama;
+  return ms;
+}
+const sarjSure = (b, simdi = Date.now()) => (b.sarjBirikimMs || 0) + (b.sarjBaslama ? simdi - b.sarjBaslama : 0);
+function batDurum(b) {
+  const a = b.aracId && aracBul(b.aracId);
+  if (a) return { sinif:"arabada", etiket:"ARABADA: " + aracAdi(a).toLocaleUpperCase("tr-TR") };
+  if (b.sarjBaslama) return { sinif:"sarjda", etiket:"ŞARJDA" };
+  return { sinif:"", etiket:"BOŞTA" };
+}
+
+/* ---------- Araba çizimi ---------- */
+const teker = cx => `<circle cx="${cx}" cy="52" r="13" fill="var(--ink)"/><circle cx="${cx}" cy="52" r="9" fill="var(--paper)"/>
+  <path d="M${cx-9} 52h18M${cx} 43v18M${cx-6.4} 45.6l12.8 12.8M${cx+6.4} 45.6l-12.8 12.8" stroke="var(--ink)" stroke-width="1.4"/>
+  <circle cx="${cx}" cy="52" r="3" fill="currentColor"/>`;
+const ARABA_SVG = `<svg class="araba" viewBox="0 0 140 68" aria-hidden="true">
+  <path d="M10 46 Q9 31 25 30 L58 30 L61 23 Q62 21 65 21 L73 21 L76 30 L116 30 Q131 31 132 42 L132 47 L10 47 Z" fill="currentColor"/>
+  <path d="M17 50 Q17 35 34 35 Q51 35 51 50 Z M91 50 Q91 35 108 35 Q125 35 125 50 Z" fill="currentColor" opacity=".75"/>
+  <rect x="50" y="46" width="42" height="4" rx="2" fill="var(--ink)" opacity=".7"/>
+  <path d="M80 30 L86 15" stroke="var(--ink)" stroke-width="2.6" stroke-linecap="round"/>
+  <path d="M64 24 Q70 19 75 24" stroke="var(--ink)" stroke-width="2" fill="none"/>
+  <circle cx="128" cy="35" r="4.2" fill="#F2B705" stroke="var(--ink)" stroke-width="1.4"/>
+  ${teker(34)}${teker(108)}
+</svg>`;
+
+/* ---------- Görünüm ---------- */
+function aracKart(a, i) {
+  const b = a.bataryaId && batBul(a.bataryaId);
+  return `<div class="arac surukle-oge" data-id="${esc(a.id)}">
+    <div class="arac-ust">
+      <span class="arac-no num">${i + 1}</span>
+      <input class="plaka" data-plaka="${esc(a.id)}" value="${esc(a.plaka || "")}" placeholder="Plaka girin" maxlength="14" autocomplete="off" enterkeyhint="done">
+      <button class="tutamac" aria-label="Sürükleyerek sırayı değiştir">⠿</button>
+    </div>
+    <div class="arac-govde">
+      ${ARABA_SVG}
+      <div class="arac-bilgi">
+        <span class="cip" data-t="aracCip" data-id="${esc(a.id)}"></span>
+        <div class="bat-rozet${b ? "" : " yok"}">🔋 ${b ? esc(b.ad) : "Batarya takılı değil"}</div>
+        <div class="krono num" data-t="aracKrono" data-id="${esc(a.id)}"></div>
+        <div class="alt-yazi" data-t="aracAlt" data-id="${esc(a.id)}"></div>
+      </div>
+    </div>
+  </div>`;
+}
+function bataryaKart(b) {
+  const a = b.aracId && aracBul(b.aracId);
+  let dug = "";
+  if (!a) dug += b.sarjBaslama
+    ? `<button class="kucuk" data-b="sarjCikar" data-id="${esc(b.id)}">Şarjdan çıkar</button>`
+    : `<button class="kucuk baslat" data-b="sarjTak" data-id="${esc(b.id)}">⚡ Şarja tak</button>`;
+  dug += `<button class="kucuk" data-b="sifirla" data-id="${esc(b.id)}">Sıfırla</button>
+          <button class="kucuk" data-b="duzenle" data-id="${esc(b.id)}">Düzenle</button>`;
+  return `<div class="bat surukle-oge ${batDurum(b).sinif}" data-id="${esc(b.id)}">
+    <div class="bat-ust">
+      <span style="font-size:1.3rem">🔋</span>
+      <input class="bat-ad" data-batad="${esc(b.id)}" value="${esc(b.ad || "")}" placeholder="Batarya adı" maxlength="24" autocomplete="off" enterkeyhint="done">
+      <button class="tutamac" aria-label="Sürükleyerek sırayı değiştir">⠿</button>
+    </div>
+    <div class="bat-cip-satir"><span class="cip" data-t="batCip" data-id="${esc(b.id)}"></span><span class="kapasite">Tam şarj: ${dkYazi((b.kapasiteDk || 0) * 60000)}</span></div>
+    <div class="bar"><i data-t="batBar" data-id="${esc(b.id)}"></i></div>
+    <div class="bat-grid">
+      <div><span>Kalan ≈</span><b data-t="batKalan" data-id="${esc(b.id)}"></b></div>
+      <div><span>Kullanılan</span><b data-t="batKul" data-id="${esc(b.id)}"></b></div>
+      <div><span>Şarj süresi</span><b data-t="batSarj" data-id="${esc(b.id)}"></b></div>
+    </div>
+    <div class="islemler">${dug}</div>
+  </div>`;
+}
+
+// Canlı (her saniye) güncellenen alanlar
+function canli() {
+  const simdi = Date.now();
+  document.querySelectorAll("#bataryaUygulama [data-t]").forEach(el => {
+    const t = el.dataset.t, id = el.dataset.id;
+    if (t.startsWith("arac")) {
+      const a = aracBul(id); if (!a) return;
+      const d = aracDurum(a, simdi);
+      if (t === "aracCip") {
+        el.textContent = AD_ETIKET[d];
+        const k = el.closest(".arac");
+        if (k) ["bos","hazir","yolda","gecikti","geldi"].forEach(c => k.classList.toggle(c, c === d));
+      }
+      if (t === "aracKrono") {
+        const yol = d === "yolda" || d === "gecikti";
+        el.textContent = yol ? sureYazi(simdi - a.baslama) : "";
+        el.classList.toggle("kirmizi", d === "gecikti");
+      }
+      if (t === "aracAlt") {
+        if (d === "yolda" || d === "gecikti") el.textContent = `${a.planDk} dk, dönüş ${saatYazi(new Date(a.baslama + a.planDk * 60000))}`;
+        else if (d === "geldi" && a.sonTurMs != null) el.textContent = `Son tur: ${dkYazi(a.sonTurMs)}`;
+        else el.textContent = "";
+      }
+    } else {
+      const b = batBul(id); if (!b) return;
+      const kul = kullanilan(b, simdi), kap = (b.kapasiteDk || 0) * 60000, kalan = kap - kul;
+      if (t === "batCip") el.textContent = batDurum(b).etiket;
+      if (t === "batKul") el.textContent = dkYazi(kul);
+      if (t === "batSarj") el.textContent = b.sarjBaslama ? sureYazi(sarjSure(b, simdi)) : dkYazi(sarjSure(b, simdi));
+      if (t === "batKalan") el.textContent = kalan > 0 ? dkYazi(Math.ceil(kalan / 60000) * 60000) : "Bitti";
+      if (t === "batBar") {
+        const yuzde = kap ? Math.max(0, Math.min(100, kalan / kap * 100)) : 0;
+        el.style.width = yuzde + "%";
+        el.classList.toggle("az", yuzde > 0 && yuzde < 20); el.classList.toggle("bitti", yuzde <= 0);
+      }
+    }
+  });
+}
+setInterval(() => { if (bBasladi && !$("bataryaUygulama").classList.contains("gizli")) canli(); }, 1000);
+
+function bCiz() {
+  const odak = document.activeElement;
+  if (surukleniyor || (odak && (odak.classList.contains("plaka") || odak.classList.contains("bat-ad")))) { bCizimBekliyor = true; return; }
+  bCizimBekliyor = false;
+  const al = bSirala(araclar), bl = bSirala(bataryalar);
+  $("aracListe").innerHTML = al.map(aracKart).join("") || `<div class="bos">Henüz araç yok. Sağ üstteki ＋ ile ekleyin.</div>`;
+  $("bataryaListe").innerHTML = bl.map(bataryaKart).join("") || `<div class="bos">Henüz batarya yok. Sağ üstteki ＋ ile ekleyin.</div>`;
+  const yolda = araclar.filter(a => a.durum === "yolda").length, sarj = bataryalar.filter(b => b.sarjBaslama).length;
+  $("bOzet").textContent = `${araclar.length} araç, ${yolda} yolda, ${sarj} batarya şarjda`;
+  if (acikArac) apCiz();
+  canli();
+}
+document.addEventListener("focusout", e => {
+  if (e.target.classList && (e.target.classList.contains("plaka") || e.target.classList.contains("bat-ad")) && bCizimBekliyor)
+    setTimeout(bCiz, 0);
+});
+
+/* ---------- Veri ---------- */
+function bDurumGoster(bagli) {
+  $("bDurum").className = "durum" + (bagli ? "" : " yok");
+  $("bDurum").lastElementChild.textContent = bagli ? "Canlı" : "Bağlantı yok";
+}
+function tohumla() {
+  if (tohumlandi || !aracYuklendi || !batYuklendi || araclar.length || bataryalar.length) return;
+  tohumlandi = true;
+  const b = db.batch();
+  for (let i = 1; i <= 8; i++) b.set(C("araclar").doc("arac" + i), { plaka:"", sira:i * 1024, durum:"bosta", bataryaId:null, baslama:null, planDk:null, sonTurMs:null });
+  [300,300,300,180,180,180,120,90,70].forEach((kap, i) =>
+    b.set(C("bataryalar").doc("bat" + (i + 1)), { ad:"Batarya " + (i + 1), kapasiteDk:kap, sira:(i + 1) * 1024, kullanilanMs:0, sarjBirikimMs:0, sarjBaslama:null, aracId:null }));
+  b.commit().catch(e => { console.error(e); tohumlandi = false; });
+}
+function bataryaBaslat() {
+  try { localStorage.setItem("mod", "batarya"); } catch {}
+  $("anaSecim").classList.add("gizli"); $("giris").classList.add("gizli"); $("biletUygulama").classList.add("gizli");
+  $("bataryaUygulama").classList.remove("gizli");
+  window.scrollTo(0, 0);
+  if (bBasladi) { bCiz(); return; }
+  bBasladi = true;
+  C("araclar").onSnapshot(s => {
+    bDurumGoster(true); araclar = s.docs.map(d => ({ id:d.id, ...d.data() }));
+    if (!s.metadata.fromCache) { aracYuklendi = true; tohumla(); }
+    bCiz();
+  }, e => { bDurumGoster(false); console.error(e); });
+  C("bataryalar").onSnapshot(s => {
+    bataryalar = s.docs.map(d => ({ id:d.id, ...d.data() }));
+    if (!s.metadata.fromCache) { batYuklendi = true; tohumla(); }
+    bCiz();
+  }, e => { bDurumGoster(false); console.error(e); });
+}
+
+/* ---------- Sekmeler, çıkış, ekleme ---------- */
+document.querySelectorAll("#bNav button").forEach(btn => btn.onclick = () => {
+  const ad = btn.dataset.bsayfa;
+  ["araclar","bataryalar"].forEach(x => $("bSayfa-" + x).classList.toggle("gizli", x !== ad));
+  document.querySelectorAll("#bNav button").forEach(x => x.setAttribute("aria-current", x === btn));
+  window.scrollTo(0, 0);
+});
+$("bCikisBtn").onclick = () => {
+  if (!confirm("Batarya takibinden çıkılsın mı?")) return;
+  try { localStorage.removeItem("bGiris"); localStorage.removeItem("mod"); } catch {}
+  $("bataryaUygulama").classList.add("gizli"); anaSecimAc();
+};
+$("bEkleBtn").onclick = () => $("ekleMenu").showModal();
+$("ekleIptal").onclick = () => $("ekleMenu").close();
+const sonSira = l => l.length ? Math.max(...l.map(x => x.sira || 0)) + 1024 : 1024;
+$("ekleArac").onclick = async () => {
+  $("ekleMenu").close();
+  try {
+    await C("araclar").add({ plaka:"", sira:sonSira(araclar), durum:"bosta", bataryaId:null, baslama:null, planDk:null, sonTurMs:null });
+    $("bNav").querySelector('[data-bsayfa="araclar"]').click();
+    setTimeout(() => { const g = [...document.querySelectorAll(".plaka")].pop(); if (g) { g.scrollIntoView({block:"center"}); g.focus(); } }, 400);
+  } catch (e) { console.error(e); bHata(); }
+};
+$("ekleBatarya").onclick = async () => {
+  $("ekleMenu").close();
+  try {
+    const ref = C("bataryalar").doc();
+    const yeni = { ad:"Batarya " + (bataryalar.length + 1), kapasiteDk:60, sira:sonSira(bataryalar), kullanilanMs:0, sarjBirikimMs:0, sarjBaslama:null, aracId:null };
+    await ref.set(yeni);
+    $("bNav").querySelector('[data-bsayfa="bataryalar"]').click();
+    bataryaDuzenleAc({ id:ref.id, ...yeni });
+  } catch (e) { console.error(e); bHata(); }
+};
+
+/* ---------- Plaka ve batarya adı (yazınca kaydedilir) ---------- */
+document.addEventListener("change", e => {
+  const el = e.target;
+  if (el.dataset && el.dataset.plaka) C("araclar").doc(el.dataset.plaka).update({ plaka: el.value.trim().toLocaleUpperCase("tr-TR") }).catch(bHata);
+  if (el.dataset && el.dataset.batad) C("bataryalar").doc(el.dataset.batad).update({ ad: el.value.trim() || "Batarya" }).catch(bHata);
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter" && e.target.classList && (e.target.classList.contains("plaka") || e.target.classList.contains("bat-ad"))) e.target.blur();
+});
+
+/* ---------- Araç penceresi ---------- */
+$("aracListe").addEventListener("click", e => {
+  if (e.target.closest("input, .tutamac")) return;
+  const k = e.target.closest(".arac"); if (!k) return;
+  acikArac = k.dataset.id; $("apDk").value = ""; $("apHata").textContent = "";
+  apCiz(); $("aracPencere").showModal();
+});
+$("apKapat").onclick = () => $("aracPencere").close();
+$("aracPencere").addEventListener("close", () => { acikArac = null; });
+
+function apCiz() {
+  const a = aracBul(acikArac);
+  if (!a) { $("aracPencere").close(); return; }
+  const d = aracDurum(a), yolda = d === "yolda" || d === "gecikti";
+  const takili = a.bataryaId && batBul(a.bataryaId);
+  $("apBaslik").textContent = aracAdi(a);
+  let h = "";
+  if (yolda) {
+    h += `<div class="ap-kutu">
+      <div class="alt-yazi">Yolda, ${a.planDk} dk çıkış</div>
+      <div class="krono num" data-t="aracKrono" data-id="${esc(a.id)}"></div>
+      <div class="alt-yazi" data-t="aracAlt" data-id="${esc(a.id)}"></div>
+      <button class="btn sari" data-ap="geldi">🏁 Geldi</button>
+    </div>`;
+  }
+  h += `<div class="ap-kutu">` + (takili
+    ? `<div class="alt-yazi">Takılı batarya</div><div style="font-size:1.25rem;font-weight:600">🔋 ${esc(takili.ad)}</div>
+       <div class="ap-bat-alt">Kullanılan <b data-t="batKul" data-id="${esc(takili.id)}"></b>, şarj <b data-t="batSarj" data-id="${esc(takili.id)}"></b>, kalan ≈ <b data-t="batKalan" data-id="${esc(takili.id)}"></b></div>
+       ${yolda ? "" : `<button class="btn ince" style="width:100%;margin-top:10px" data-ap="sarja">⚡ Bataryayı şarja tak (araçtan çıkar)</button>`}`
+    : `<div class="alt-yazi">Bu araçta batarya yok. Aşağıdan bir batarya seçin.</div>`) + `</div>`;
+  $("apSefer").innerHTML = h;
+  $("apSureKutu").classList.toggle("gizli", yolda);
+  $("apBataryalar").innerHTML = bSirala(bataryalar).map(b => {
+    const bd = batDurum(b);
+    return `<button class="ap-bat ${bd.sinif}${b.id === a.bataryaId ? " secili" : ""}" data-bsec="${esc(b.id)}">
+      <div class="ap-bat-ust"><b>${esc(b.ad)}</b><span class="cip" data-t="batCip" data-id="${esc(b.id)}"></span></div>
+      <div class="ap-bat-alt">Kullanılan <b data-t="batKul" data-id="${esc(b.id)}"></b>, şarj <b data-t="batSarj" data-id="${esc(b.id)}"></b>, kalan ≈ <b data-t="batKalan" data-id="${esc(b.id)}"></b></div>
+    </button>`;
+  }).join("") || `<div class="bos">Batarya yok.</div>`;
+  canli();
+}
+
+document.querySelectorAll("[data-hizli]").forEach(b => b.onclick = () => { $("apDk").value = b.dataset.hizli; });
+$("apBaslat").onclick = async () => {
+  const a = aracBul(acikArac); if (!a) return;
+  const dk = $("apDk").value.trim();
+  if (!a.bataryaId) { $("apHata").textContent = "Önce aşağıdan bir batarya seçin."; return; }
+  if (!/^\d+$/.test(dk) || +dk < 1) { $("apHata").textContent = "Süreyi dakika olarak girin."; return; }
+  $("apHata").textContent = "";
+  try { await C("araclar").doc(a.id).update({ durum:"yolda", baslama:Date.now(), planDk:+dk }); }
+  catch (e) { console.error(e); bHata(); }
+};
+
+$("aracPencere").addEventListener("click", async e => {
+  const a = aracBul(acikArac); if (!a) return;
+  const ap = e.target.closest("[data-ap]"), sec = e.target.closest("[data-bsec]");
+  const yolda = a.durum === "yolda";
+  try {
+    if (ap && ap.dataset.ap === "geldi") {
+      if (!confirm(`${aracAdi(a)} geldi olarak işaretlensin mi?`)) return;
+      const gecen = Date.now() - a.baslama, bt = db.batch();
+      bt.update(C("araclar").doc(a.id), { durum:"geldi", baslama:null, sonTurMs:gecen });
+      if (a.bataryaId && batBul(a.bataryaId)) bt.update(C("bataryalar").doc(a.bataryaId), { kullanilanMs:(batBul(a.bataryaId).kullanilanMs || 0) + gecen });
+      await bt.commit();
+    }
+    if (ap && ap.dataset.ap === "sarja" && !yolda && a.bataryaId) {
+      const bt = db.batch();
+      bt.update(C("araclar").doc(a.id), { bataryaId:null, durum:"bosta" });
+      if (batBul(a.bataryaId)) bt.update(C("bataryalar").doc(a.bataryaId), { aracId:null, sarjBaslama:Date.now() });
+      await bt.commit();
+    }
+    if (sec) {
+      const b = batBul(sec.dataset.bsec); if (!b || b.id === a.bataryaId) return;
+      if (yolda) { alert("Araç yoldayken batarya değiştirilemez. Önce 'Geldi' olarak işaretleyin."); return; }
+      const diger = b.aracId && b.aracId !== a.id ? aracBul(b.aracId) : null;
+      if (diger && diger.durum === "yolda") { alert(`${b.ad} şu an yolda olan ${aracAdi(diger)} aracında.`); return; }
+      if (diger && !confirm(`${b.ad} şu an ${aracAdi(diger)} aracında. Oradan çıkarılıp bu araca takılsın mı?`)) return;
+      const simdi = Date.now(), bt = db.batch();
+      if (a.bataryaId && batBul(a.bataryaId)) bt.update(C("bataryalar").doc(a.bataryaId), { aracId:null });
+      if (diger) bt.update(C("araclar").doc(diger.id), { bataryaId:null, durum:"bosta" });
+      const bg = { aracId:a.id };
+      if (b.sarjBaslama) Object.assign(bg, { sarjBaslama:null, sarjBirikimMs:(b.sarjBirikimMs || 0) + (simdi - b.sarjBaslama) });
+      bt.update(C("bataryalar").doc(b.id), bg);
+      bt.update(C("araclar").doc(a.id), { bataryaId:b.id, durum:"bosta" });
+      await bt.commit();
+    }
+  } catch (err) { console.error(err); bHata(); }
+});
+$("apSil").onclick = async () => {
+  const a = aracBul(acikArac); if (!a) return;
+  if (a.durum === "yolda") { alert("Yoldaki araç silinemez."); return; }
+  if (!confirm(`${aracAdi(a)} silinsin mi?`)) return;
+  try {
+    const bt = db.batch();
+    if (a.bataryaId && batBul(a.bataryaId)) bt.update(C("bataryalar").doc(a.bataryaId), { aracId:null });
+    bt.delete(C("araclar").doc(a.id));
+    await bt.commit(); $("aracPencere").close();
+  } catch (e) { console.error(e); bHata(); }
+};
+
+/* ---------- Batarya işlemleri ---------- */
+$("bataryaListe").addEventListener("click", async e => {
+  const t = e.target.closest("[data-b]"); if (!t) return;
+  const b = batBul(t.dataset.id); if (!b) return;
+  const ref = C("bataryalar").doc(b.id), simdi = Date.now();
+  try {
+    if (t.dataset.b === "sarjTak" && !b.aracId) await ref.update({ sarjBaslama:simdi });
+    if (t.dataset.b === "sarjCikar" && b.sarjBaslama) await ref.update({ sarjBaslama:null, sarjBirikimMs:(b.sarjBirikimMs || 0) + (simdi - b.sarjBaslama) });
+    if (t.dataset.b === "sifirla") {
+      if (!confirm(`${b.ad} sıfırlansın mı? Kullanılan ve şarj süreleri sıfırlanır, batarya dolu görünür.`)) return;
+      await ref.update({ kullanilanMs:0, sarjBirikimMs:0, sarjBaslama: b.sarjBaslama ? simdi : null });
+    }
+    if (t.dataset.b === "duzenle") bataryaDuzenleAc(b);
+  } catch (err) { console.error(err); bHata(); }
+});
+function bataryaDuzenleAc(b) {
+  duzenlenenBat = b;
+  $("bdAd").value = b.ad || "";
+  $("bdKapSa").value = Math.floor((b.kapasiteDk || 0) / 60); $("bdKapDk").value = (b.kapasiteDk || 0) % 60;
+  $("bdKul").value = Math.floor((b.kullanilanMs || 0) / 60000);
+  $("bdSarj").value = Math.floor(sarjSure(b) / 60000);
+  $("bdHata").textContent = "";
+  $("bataryaDuzenle").showModal();
+}
+$("bdIptal").onclick = () => $("bataryaDuzenle").close();
+$("bdKaydet").onclick = async () => {
+  const b = batBul(duzenlenenBat.id) || duzenlenenBat;
+  const v = id => $(id).value.trim() === "" ? "0" : $(id).value.trim();
+  const sa = v("bdKapSa"), dk = v("bdKapDk"), kul = v("bdKul"), sj = v("bdSarj");
+  if (![sa, dk, kul, sj].every(x => /^\d+$/.test(x))) { $("bdHata").textContent = "Süreleri rakamla girin."; return; }
+  const kap = +sa * 60 + +dk;
+  if (kap < 1) { $("bdHata").textContent = "Tam şarj süresini girin."; return; }
+  try {
+    await C("bataryalar").doc(b.id).update({
+      ad: $("bdAd").value.trim() || "Batarya", kapasiteDk:kap, kullanilanMs:+kul * 60000,
+      sarjBirikimMs:+sj * 60000, sarjBaslama: b.sarjBaslama ? Date.now() : null
+    });
+    $("bataryaDuzenle").close();
+  } catch (e) { $("bdHata").textContent = "Kaydedilemedi. İnternet bağlantısını kontrol edin."; }
+};
+$("bdSil").onclick = async () => {
+  const b = batBul(duzenlenenBat.id) || duzenlenenBat;
+  const a = b.aracId && aracBul(b.aracId);
+  if (a && a.durum === "yolda") { alert("Yoldaki bir araçta takılı batarya silinemez."); return; }
+  if (!confirm(`${b.ad} silinsin mi?`)) return;
+  try {
+    const bt = db.batch();
+    if (a) bt.update(C("araclar").doc(a.id), { bataryaId:null, durum:"bosta" });
+    bt.delete(C("bataryalar").doc(b.id));
+    await bt.commit(); $("bataryaDuzenle").close();
+  } catch (e) { console.error(e); bHata(); }
+};
+
+/* ---------- Sürükleyerek sıralama (araç / batarya) ---------- */
+function bSiraBirak(tur, ids, degisti) {
+  const liste = tur === "arac" ? araclar : bataryalar;
+  if (!degisti) { if (bCizimBekliyor) bCiz(); return; }
+  const degisenler = [];
+  ids.forEach((id, i) => { const x = liste.find(y => y.id === id), yeni = (i + 1) * 1024; if (x && x.sira !== yeni) { x.sira = yeni; degisenler.push([id, yeni]); } });
+  bCiz();
+  const bt = db.batch();
+  degisenler.forEach(([id, sira]) => bt.update(C(tur === "arac" ? "araclar" : "bataryalar").doc(id), { sira }));
+  bt.commit().catch(e => { console.error(e); bHata(); });
+}
+
+/* =====================================================================
+   ANA SEÇİM VE AÇILIŞ
+   ===================================================================== */
+function anaSecimAc() {
+  $("biletUygulama").classList.add("gizli"); $("bataryaUygulama").classList.add("gizli"); $("giris").classList.add("gizli");
+  $("secimGorunum").classList.remove("gizli"); $("bGirisGorunum").classList.add("gizli");
+  $("anaSecim").classList.remove("gizli");
+}
+$("secBilet").onclick = () => {
+  if (rol) { uygulamayiBaslat(rol === "admin" ? "admin" : "pist"); return; }
+  $("anaSecim").classList.add("gizli"); girisAc("pist");
+};
+$("girisAnaMenu").onclick = anaSecimAc;
+$("secBatarya").onclick = () => {
+  let kayitli = false; try { kayitli = localStorage.getItem("bGiris") === "1"; } catch {}
+  if (kayitli) { bataryaBaslat(); return; }
+  $("secimGorunum").classList.add("gizli"); $("bGirisGorunum").classList.remove("gizli");
+  $("bSifre").value = ""; $("bSifreHata").textContent = ""; setTimeout(() => $("bSifre").focus(), 50);
+};
+$("bGirisGeri").onclick = anaSecimAc;
+function bGirisYap() {
+  if (ozet("gokart:" + $("bSifre").value) !== SIFRE_OZET.batarya) { $("bSifreHata").textContent = "Şifre yanlış. Tekrar deneyin."; return; }
+  try { localStorage.setItem("bGiris", "1"); } catch {}
+  bataryaBaslat();
+}
+$("bGirisBtn").onclick = bGirisYap;
+$("bSifre").onkeydown = e => { if (e.key === "Enter") bGirisYap(); };
+
+(function acilis() {
+  let mod = null, bg = false;
+  try { mod = localStorage.getItem("mod"); bg = localStorage.getItem("bGiris") === "1"; } catch {}
+  if (mod === "bilet" && rol) uygulamayiBaslat(rol === "admin" ? "admin" : "pist");
+  else if (mod === "batarya" && bg) bataryaBaslat();
+  else anaSecimAc();
+})();
 </script>
 </body>
 </html>
