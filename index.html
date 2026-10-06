@@ -62,7 +62,7 @@ header .alt{display:flex;justify-content:space-between;align-items:center;margin
 main{max-width:640px;margin:0 auto;padding:14px 12px 110px}
 
 /* Sayaç kutuları */
-.sayaclar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.sayaclar{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px;margin-bottom:14px}
 .sayac{background:var(--paper);border-radius:10px;padding:10px 10px 8px;border-top:4px solid var(--line)}
 .sayac.yesil{border-top-color:var(--ok)}
 .sayac.sari{border-top-color:var(--accent)}
@@ -120,6 +120,10 @@ main{max-width:640px;margin:0 auto;padding:14px 12px 110px}
 .surukleme-acik .bilet:not(.kalkik){transition:transform .18s ease}
 .surukleme-acik{user-select:none;-webkit-user-select:none}
 
+.not-satir{display:flex;flex-wrap:wrap;gap:6px 10px;margin-top:7px;align-items:center}
+.not-satir[data-is]{cursor:pointer}
+.arac-et{background:var(--ink);color:var(--bg);padding:3px 9px;border-radius:6px;font-weight:600;font-size:.95rem}
+.alt-not{font-size:.95rem;color:var(--muted);font-style:italic}
 .yeni{animation:gel .9s ease-out}
 @keyframes gel{from{box-shadow:0 0 0 4px var(--accent)}to{box-shadow:0 0 0 0 transparent}}
 @media (prefers-reduced-motion:reduce){.yeni{animation:none}.bilet{transition:none}}
@@ -283,7 +287,7 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
     <p class="aciklama" id="girisAciklama">Giriş türünü seçip şifrenizi girin.</p>
     <div class="secim" role="group" aria-label="Giriş türü">
       <button type="button" data-rol="pist" aria-pressed="true">Pist</button>
-      <button type="button" data-rol="admin" aria-pressed="false">Admin</button>
+      <button type="button" data-rol="admin" aria-pressed="false">Yönetici</button>
     </div>
     <label for="sifre">Şifre</label>
     <input id="sifre" type="password" inputmode="numeric" autocomplete="off">
@@ -331,7 +335,7 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
 
   <!-- PİST -->
   <section id="sayfa-pist" class="gizli">
-    <div class="sayaclar" data-sayac></div>
+    <div class="sayaclar" data-sayac="pist"></div>
     <p class="ipucu">Sırayı değiştirmek için biletin sağ üstündeki ⠿ tutamağına basılı tutup sürükleyin.</p>
     <div class="liste" id="listePist" data-tur="bilet"></div>
   </section>
@@ -366,7 +370,7 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
   <button data-sayfa="bugun"><span class="ik">🎟️</span>Bugün</button>
   <button data-sayfa="gecmis"><span class="ik">📅</span>Geçmiş</button>
   <button data-sayfa="pist"><span class="ik">🏁</span>Pist</button>
-  <button data-sayfa="admin"><span class="ik">🔑</span>Admin</button>
+  <button data-sayfa="admin"><span class="ik">🔑</span>Yönetici</button>
 </nav>
 
 <!-- Düzenleme penceresi -->
@@ -395,6 +399,23 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
     <div class="dugmeler">
       <button type="button" class="btn ince" id="dIptal">Vazgeç</button>
       <button type="button" class="btn sari" id="dKaydet">Kaydet</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Araç / not penceresi -->
+<dialog id="notPencere">
+  <form method="dialog">
+    <h2 style="margin:0 0 4px;font-size:1.2rem">Araç ve not</h2>
+    <p id="nBaslik" style="margin:0 0 14px;color:var(--muted)"></p>
+    <div class="alanlar">
+      <div class="tam"><label for="nArac">Araç numarası</label><input id="nArac" inputmode="numeric" autocomplete="off" placeholder="örn. 5"></div>
+      <div class="tam"><label for="nNot">Alt not (isteğe bağlı)</label><input id="nNot" autocomplete="off" placeholder="örn. çocuk aracı" maxlength="60"></div>
+    </div>
+    <p class="hata" id="nHata"></p>
+    <div class="dugmeler">
+      <button type="button" class="btn ince" id="nIptal">Vazgeç</button>
+      <button type="button" class="btn sari" id="nKaydet">Onayla</button>
     </div>
   </form>
 </dialog>
@@ -480,7 +501,7 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
 /* =========================================================
    AYARLAR
    Şifreler açık yazılmaz, özet (hash) olarak saklanır.
-   Admin: 4169   Pist: 0000
+   Yönetici: 4169   Pist: 0000
    ========================================================= */
 const SIFRE_OZET = { admin: "1cqs6431uj8", pist: "1qg2d0b5m92", batarya: "1qg2d0b5m92" };  // Batarya: 0000
 
@@ -590,9 +611,9 @@ function biletHTML(b, mod, yeni) {
         : `<button class="kucuk baslat" data-is="devam" data-id="${esc(b.id)}">▶ Devam</button>`;
       butonlar += `<button class="kucuk bitir" data-is="bitir" data-id="${esc(b.id)}">⏹ Bitir</button>`;
     }
-    butonlar += aktif
-      ? `<button class="kucuk pasifle" data-is="durum" data-id="${esc(b.id)}">Pasif yap</button>`
-      : `<button class="kucuk aktifle" data-is="durum" data-id="${esc(b.id)}">Aktif yap</button>`;
+    if (aktif) butonlar += `<button class="kucuk pasifle" data-is="durum" data-id="${esc(b.id)}">Pasif yap</button>`;
+    else if (mod === "admin") butonlar += `<button class="kucuk aktifle" data-is="durum" data-id="${esc(b.id)}">Aktif yap</button>`;
+    butonlar += `<button class="kucuk" data-is="not" data-id="${esc(b.id)}">🚗 ${b.arac || b.not ? "Araç / not" : "Araç ekle"}</button>`;
   }
   if (mod === "admin" || mod === "gecmis") {
     butonlar += `<button class="kucuk" data-is="duzenle" data-id="${esc(b.id)}">Düzenle</button>
@@ -609,6 +630,8 @@ function biletHTML(b, mod, yeni) {
         ${yonetim ? `<button class="tutamac" aria-label="Sürükleyerek sırayı değiştir">⠿</button>` : ""}
       </div>
       <div class="detay"><b>${esc(b.kisi)}</b> kişi, <b>${esc(b.sure)}</b> dakika</div>
+      ${(b.arac || b.not) ? `<div class="not-satir"${yonetim ? ` data-is="not" data-id="${esc(b.id)}"` : ""}>
+        ${b.arac ? `<span class="arac-et">🚗 Araç ${esc(b.arac)}</span>` : ""}${b.not ? `<span class="alt-not">${esc(b.not)}</span>` : ""}</div>` : ""}
       ${zb.basladi ? `<div class="zaman"><span class="krono num"></span><span class="bitis"></span></div>` : ""}
       ${butonlar ? `<div class="islemler">${butonlar}</div>` : ""}
     </div>
@@ -636,13 +659,13 @@ function kartGuncelle(k, simdi = Date.now()) {
 }
 setInterval(() => { const s = Date.now(); document.querySelectorAll('.bilet[data-basladi="1"]').forEach(k => kartGuncelle(k, s)); }, 1000);
 
-function sayacHTML(l) {
+function sayacHTML(l, toplamGoster = true) {
   const say = f => { const x = l.filter(f); return [x.length, x.reduce((t,b) => t + (parseInt(b.kisi)||0), 0)]; };
   const [tb, tk] = say(() => true);
   const [bb, bk] = say(b => aktifMi(b) && !b.baslama);
   const [pb, pk] = say(b => aktifMi(b) && b.baslama);
   const kutu = (et, sinif, bil, kis) => `<div class="sayac ${sinif}"><div class="et">${et}</div><div class="deger num">${bil}</div><div class="kisi"><b>${kis}</b> kişi</div></div>`;
-  return kutu("Bugün toplam", "", tb, tk) + kutu("Bekleyen", "yesil", bb, bk) + kutu("Pistte", "sari", pb, pk);
+  return (toplamGoster ? kutu("Bugün toplam", "", tb, tk) : "") + kutu("Bekleyen", "yesil", bb, bk) + kutu("Pistte", "sari", pb, pk);
 }
 
 function listeCiz(el, l, mod, yeniler) {
@@ -651,14 +674,17 @@ function listeCiz(el, l, mod, yeniler) {
   el.querySelectorAll(".bilet").forEach(k => kartGuncelle(k));
 }
 
+const PASIF_SAKLA = 30 * 60000;   // pasif bilet pistte 30 dk görünür
+const pisteGorunur = b => aktifMi(b) || (b.pasifZaman && Date.now() - b.pasifZaman < PASIF_SAKLA);
+setInterval(() => { if (rol && bugunListe.some(b => !aktifMi(b))) bugunuCiz(); }, 30000);
 function bugunuCiz() {
   if (surukleniyor) { cizimBekliyor = true; return; }
   const l = sirala(bugunListe);
   const yeniler = new Set(ilkYukleme ? [] : l.filter(b => !oncekiIdler.has(b.id)).map(b => b.id));
   listeCiz($("listeBugun"), l, "izle", yeniler);
-  listeCiz($("listePist"), l, "pist", yeniler);
+  listeCiz($("listePist"), l.filter(pisteGorunur), "pist", yeniler);
   listeCiz($("listeAdmin"), l, "admin", null);
-  document.querySelectorAll("[data-sayac]").forEach(e => e.innerHTML = sayacHTML(l));
+  document.querySelectorAll("[data-sayac]").forEach(e => e.innerHTML = sayacHTML(l, e.dataset.sayac !== "pist"));
   oncekiIdler = new Set(l.map(b => b.id)); ilkYukleme = false;
 }
 function gunDetayCiz() {
@@ -719,15 +745,11 @@ $("cikisBtn").onclick = () => {
 
 const adminSayfasi = s => s === "gecmis" || s === "admin";
 function menuGuncelle() {
-  $("rolYazi").textContent = rol === "admin" ? "Admin" : "Pist";
-  document.querySelectorAll("#biletNav button").forEach(b => {
-    const kilit = rol !== "admin" && adminSayfasi(b.dataset.sayfa);
-    b.classList.toggle("kilitli", kilit);
-    b.querySelector(".ik").textContent = kilit ? "🔒" : ({bugun:"🎟️",gecmis:"📅",pist:"🏁",admin:"🔑"})[b.dataset.sayfa];
-  });
+  $("rolYazi").textContent = rol === "admin" ? "Yönetici" : "Pist";
+  $("biletNav").classList.toggle("gizli", rol !== "admin");
 }
 function sayfaAc(ad) {
-  if (rol !== "admin" && adminSayfasi(ad)) { girisAc("admin", ad, "Bu bölüm için admin şifresi gerekiyor."); return; }
+  if (rol !== "admin") ad = "pist";   // Pist sadece kendi sayfasını görür
   aktifSayfa = ad;
   ["bugun","gecmis","pist","admin"].forEach(s => $("sayfa-"+s).classList.toggle("gizli", s !== ad));
   document.querySelectorAll("#biletNav button").forEach(b => b.setAttribute("aria-current", b.dataset.sayfa === ad));
@@ -802,6 +824,7 @@ document.addEventListener("click", async e => {
   const b = bul(t.dataset.id); if (!b) return;
   const is = t.dataset.is;
   if ((is === "duzenle" || is === "sil") && rol !== "admin") return;
+  if (is === "durum" && !aktifMi(b) && rol !== "admin") return;   // yalnızca yönetici tekrar aktif eder
   try {
     const z = zamanBilgi(b), simdi = Date.now();
     if (is === "baslat") {
@@ -820,12 +843,12 @@ document.addEventListener("click", async e => {
     if (is === "durum") {
       if (aktifMi(b)) {
         if (!confirm(`${b.bilet} numaralı bilet PASİF (kullanıldı) yapılsın mı?`)) return;
-        const a = {aktif:false};
+        const a = {aktif:false, pasifZaman:simdi};
         if (z.calisiyor) Object.assign(a, {calisiyor:null, birikim:z.birikim + (simdi - z.calisiyor), durma:null});
         await Veri.guncelle(b.id, a);
       } else {
         if (!confirm(`${b.bilet} numaralı bilet tekrar AKTİF yapılsın mı?`)) return;
-        await Veri.guncelle(b.id, {aktif:true});
+        await Veri.guncelle(b.id, {aktif:true, pasifZaman:null});
       }
     }
     if (is === "sil") {
@@ -833,6 +856,7 @@ document.addEventListener("click", async e => {
       await Veri.sil(b.id, b.gun);
     }
   } catch (err) { console.error(err); hataGoster(); }
+  if (is === "not") { notAc(b); return; }
   if (is === "duzenle") {
     duzenlenen = b;
     $("dBilet").value = b.bilet; $("dKisi").value = b.kisi; $("dSure").value = b.sure; $("dSaat").value = b.saat;
@@ -841,6 +865,21 @@ document.addEventListener("click", async e => {
   }
 });
 $("dIptal").onclick = () => $("duzenle").close();
+let notBilet = null;
+function notAc(b) {
+  notBilet = b;
+  $("nBaslik").textContent = `Bilet No ${b.bilet}`;
+  $("nArac").value = b.arac || ""; $("nNot").value = b.not || ""; $("nHata").textContent = "";
+  $("notPencere").showModal(); setTimeout(() => $("nArac").focus(), 50);
+}
+$("nIptal").onclick = () => $("notPencere").close();
+async function notKaydet() {
+  try { await Veri.guncelle(notBilet.id, { arac:$("nArac").value.trim(), not:$("nNot").value.trim() }); $("notPencere").close(); }
+  catch (e) { $("nHata").textContent = "Kaydedilemedi. İnternet bağlantısını kontrol edin."; }
+}
+$("nKaydet").onclick = notKaydet;
+$("nArac").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); $("nNot").focus(); } };
+$("nNot").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); notKaydet(); } };
 $("dKaydet").onclick = async () => {
   const bilet = $("dBilet").value.trim(), kisi = $("dKisi").value.trim(), sure = $("dSure").value.trim(), saat = $("dSaat").value;
   const h = kontrol(bilet, kisi, sure) || (!saat ? "Saati girin." : ""); $("dHata").textContent = h; if (h) return;
@@ -916,8 +955,9 @@ function birak(st) {
   const tur = st.liste.dataset.tur;
   if (tur === "arac" || tur === "batarya") { bSiraBirak(tur, ids, st.hedef !== st.idx); return; }
   if (st.hedef === st.idx) { if (cizimBekliyor) { cizimBekliyor = false; bugunuCiz(); } return; }
-  const degisenler = [];
-  ids.forEach((id, i) => {
+  const degisenler = [], gorunen = new Set(ids); let k = 0;
+  const tamSira = sirala(bugunListe).map(b => b.id).map(id => gorunen.has(id) ? ids[k++] : id);
+  tamSira.forEach((id, i) => {
     const b = bugunListe.find(x => x.id === id); const yeni = i * 1024;
     if (b && b.sira !== yeni) { b.sira = yeni; degisenler.push([id, yeni]); }
   });
