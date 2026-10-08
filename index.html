@@ -124,6 +124,22 @@ main{max-width:640px;margin:0 auto;padding:14px 12px 110px}
 .not-satir[data-is]{cursor:pointer}
 .arac-et{background:var(--ink);color:var(--bg);padding:3px 9px;border-radius:6px;font-weight:600;font-size:.95rem}
 .alt-not{font-size:.95rem;color:var(--muted);font-style:italic}
+.kb-alan{min-height:50px;display:flex;align-items:center;flex-wrap:wrap;padding:8px 12px;border-radius:8px;border:1.5px solid var(--line);
+  background:var(--bg);font-size:1.3rem;font-weight:600;margin-bottom:12px;cursor:text;word-break:break-word}
+.kb-alan.aktif{border-color:var(--accent);box-shadow:0 0 0 3px rgba(242,183,5,.28)}
+.kb-alan .yer{color:var(--muted);font-weight:400;font-size:1rem}
+.kb-alan .imlec{display:inline-block;width:2px;height:1.2em;background:var(--ink);margin-left:1px;animation:imlec 1s steps(1) infinite}
+@keyframes imlec{50%{opacity:0}}
+.klavye{margin-top:4px;user-select:none;-webkit-user-select:none}
+.kb-sira{display:grid;gap:6px;margin-bottom:6px}
+.kb-sira button{height:52px;font-size:1.4rem;font-weight:600;background:var(--bg);border:1.5px solid var(--line);color:var(--ink);padding:0;min-width:0;touch-action:manipulation}
+.kb-sira button:active{background:var(--line)}
+.klavye.harf .kb-sira button{height:46px;font-size:1.08rem}
+.kb-sira button.ik{background:var(--paper);font-size:1rem}
+.kb-sira button.ik.acik{background:var(--ink);color:var(--bg)}
+.kb-sira button.tire{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-size:1.8rem;line-height:1}
+.klavye.harf .kb-sira button.tire{font-size:1.5rem}
+.kb-sira button.ok{background:var(--ink);color:var(--bg);border-color:var(--ink);font-size:1.1rem}
 .yeni{animation:gel .9s ease-out}
 @keyframes gel{from{box-shadow:0 0 0 4px var(--accent)}to{box-shadow:0 0 0 0 transparent}}
 @media (prefers-reduced-motion:reduce){.yeni{animation:none}.bilet{transition:none}}
@@ -404,20 +420,17 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
 </dialog>
 
 <!-- Araç / not penceresi -->
-<dialog id="notPencere">
-  <form method="dialog">
-    <h2 style="margin:0 0 4px;font-size:1.2rem">Araç ve not</h2>
-    <p id="nBaslik" style="margin:0 0 14px;color:var(--muted)"></p>
-    <div class="alanlar">
-      <div class="tam"><label for="nArac">Araç numarası</label><input id="nArac" inputmode="numeric" autocomplete="off" placeholder="örn. 5"></div>
-      <div class="tam"><label for="nNot">Alt not (isteğe bağlı)</label><input id="nNot" autocomplete="off" placeholder="örn. çocuk aracı" maxlength="60"></div>
-    </div>
-    <p class="hata" id="nHata"></p>
-    <div class="dugmeler">
-      <button type="button" class="btn ince" id="nIptal">Vazgeç</button>
-      <button type="button" class="btn sari" id="nKaydet">Onayla</button>
-    </div>
-  </form>
+<dialog id="notPencere" class="alt-pencere">
+  <div class="ap-ic">
+    <div class="ap-bas"><div><h2 class="num" style="font-size:1.35rem">Araç ve not</h2><div id="nBaslik" style="color:var(--muted);font-size:.92rem"></div></div>
+      <button type="button" class="kapat" id="nIptal" aria-label="Kapat">✕</button></div>
+    <label>Araç numarası</label>
+    <div class="kb-alan" data-kbalan="arac" role="textbox" tabindex="0"></div>
+    <label>Alt not (isteğe bağlı)</label>
+    <div class="kb-alan" data-kbalan="not" role="textbox" tabindex="0"></div>
+    <p class="hata" id="nHata" style="margin-top:-6px"></p>
+    <div id="klavye" class="klavye"></div>
+  </div>
 </dialog>
 </div>
 
@@ -501,9 +514,9 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
 /* =========================================================
    AYARLAR
    Şifreler açık yazılmaz, özet (hash) olarak saklanır.
-   Yönetici: 4169   Pist: 0000
+   Yönetici: 4141   Pist: 0000
    ========================================================= */
-const SIFRE_OZET = { admin: "1cqs6431uj8", pist: "1qg2d0b5m92", batarya: "1qg2d0b5m92" };  // Batarya: 0000
+const SIFRE_OZET = { admin: "gvi5xj4k17", pist: "1qg2d0b5m92", batarya: "1qg2d0b5m92" };  // Batarya: 0000
 
 const firebaseConfig = {
   apiKey: "AIzaSyAhFKv9979KOfyg7nLM0PE-jJDhyjzEtPw",
@@ -866,20 +879,81 @@ document.addEventListener("click", async e => {
 });
 $("dIptal").onclick = () => $("duzenle").close();
 let notBilet = null;
+/* ---------- Uygulama içi klavye (her telefonda aynı) ---------- */
+const KB_SAYI = [["1","2","3","⌫"],["4","5","6","-"],["7","8","9","ABC"],["0","Temizle"]];
+const KB_HARF = [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L","Ş"],
+                 ["⇧","Z","X","C","V","B","N","M","Ö","Ç"],["123","-","İ","Ğ","Ü","boşluk","⌫"]];
+const KB_SINIR = { arac:12, not:60 };
+const kb = { alan:"arac", deger:{ arac:"", not:"" }, duzen:"sayi", buyuk:true };
+const kbHarf = t => kb.buyuk ? t : t.toLocaleLowerCase("tr-TR");
+function kbGoster() {
+  document.querySelectorAll("#notPencere [data-kbalan]").forEach(el => {
+    const a = el.dataset.kbalan, v = kb.deger[a], aktif = a === kb.alan;
+    el.classList.toggle("aktif", aktif);
+    el.innerHTML = (v ? esc(v).replace(/ /g, "&nbsp;") : `<span class="yer">${a === "arac" ? "örn. 5 veya 3-5" : "örn. çocuk aracı"}</span>`) + (aktif ? '<span class="imlec"></span>' : "");
+  });
+}
+function kbCiz() {
+  const harf = kb.duzen === "harf", rows = harf ? KB_HARF : KB_SAYI;
+  $("klavye").className = "klavye" + (harf ? " harf" : "");
+  let h = rows.map(r => {
+    const kol = harf
+      ? r.map(t => t === "boşluk" ? "3fr" : (t === "123" || t === "⌫" || t === "⇧") ? "1.4fr" : "1fr")
+      : (r.length === 2 ? ["3fr","1fr"] : r.map(() => "1fr"));
+    return `<div class="kb-sira" style="grid-template-columns:${kol.map(k => `minmax(0,${k})`).join(" ")}">` + r.map(t => {
+      let sinif = "", etiket = t;
+      if (["⌫","ABC","123","boşluk","Temizle","⇧"].includes(t)) sinif = "ik";
+      if (t === "⇧" && kb.buyuk) sinif += " acik";
+      if (t === "-") sinif = "tire";
+      if (harf && t.length === 1 && t !== "-" && t !== "⌫" && t !== "⇧") etiket = kbHarf(t);
+      const aria = {"⌫":"Sil","-":"Tire","⇧":"Büyük harf"}[t];
+      return `<button type="button" class="${sinif}" data-k="${esc(t)}"${aria ? ` aria-label="${aria}"` : ""}>${esc(etiket)}</button>`;
+    }).join("") + `</div>`;
+  }).join("");
+  h += `<div class="kb-sira" style="grid-template-columns:minmax(0,1fr) minmax(0,2fr)">
+          <button type="button" class="ik" data-k="vazgec">Vazgeç</button><button type="button" class="ok" data-k="onayla">Onayla</button></div>`;
+  $("klavye").innerHTML = h;
+}
+function kbAlanSec(a) {
+  kb.alan = a; kb.duzen = a === "not" ? "harf" : "sayi";
+  kb.buyuk = a === "arac" || !kb.deger.not;
+  kbCiz(); kbGoster();
+}
+document.querySelectorAll("#notPencere [data-kbalan]").forEach(el => el.onclick = () => kbAlanSec(el.dataset.kbalan));
+$("klavye").addEventListener("click", e => {
+  const b = e.target.closest("[data-k]"); if (!b) return;
+  const t = b.dataset.k, a = kb.alan;
+  if (t === "onayla") { notKaydet(); return; }
+  if (t === "vazgec") { $("notPencere").close(); return; }
+  if (t === "ABC") { kb.duzen = "harf"; kbCiz(); return; }
+  if (t === "123") { kb.duzen = "sayi"; kbCiz(); return; }
+  if (t === "⇧") { kb.buyuk = !kb.buyuk; kbCiz(); return; }
+  if (t === "⌫") kb.deger[a] = kb.deger[a].slice(0, -1);
+  else if (t === "Temizle") kb.deger[a] = "";
+  else if (kb.deger[a].length < KB_SINIR[a]) {
+    if (t === "boşluk") kb.deger[a] += " ";
+    else if (kb.duzen === "harf" && t !== "-") {
+      kb.deger[a] += kbHarf(t);
+      if (a === "not" && kb.buyuk) { kb.buyuk = false; kbCiz(); }   // notta tek seferlik büyük harf
+    }
+    else kb.deger[a] += t;
+  }
+  $("nHata").textContent = "";
+  kbGoster();
+});
 function notAc(b) {
   notBilet = b;
   $("nBaslik").textContent = `Bilet No ${b.bilet}`;
-  $("nArac").value = b.arac || ""; $("nNot").value = b.not || ""; $("nHata").textContent = "";
-  $("notPencere").showModal(); setTimeout(() => $("nArac").focus(), 50);
+  kb.deger = { arac:b.arac || "", not:b.not || "" };
+  $("nHata").textContent = "";
+  kbAlanSec("arac");
+  $("notPencere").showModal();
 }
 $("nIptal").onclick = () => $("notPencere").close();
 async function notKaydet() {
-  try { await Veri.guncelle(notBilet.id, { arac:$("nArac").value.trim(), not:$("nNot").value.trim() }); $("notPencere").close(); }
+  try { await Veri.guncelle(notBilet.id, { arac:kb.deger.arac.trim(), not:kb.deger.not.trim() }); $("notPencere").close(); }
   catch (e) { $("nHata").textContent = "Kaydedilemedi. İnternet bağlantısını kontrol edin."; }
 }
-$("nKaydet").onclick = notKaydet;
-$("nArac").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); $("nNot").focus(); } };
-$("nNot").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); notKaydet(); } };
 $("dKaydet").onclick = async () => {
   const bilet = $("dBilet").value.trim(), kisi = $("dKisi").value.trim(), sure = $("dSure").value.trim(), saat = $("dSaat").value;
   const h = kontrol(bilet, kisi, sure) || (!saat ? "Saati girin." : ""); $("dHata").textContent = h; if (h) return;
