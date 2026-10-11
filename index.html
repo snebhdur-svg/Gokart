@@ -171,6 +171,15 @@ main{max-width:640px;margin:0 auto;padding:14px 12px 110px}
 .g-bilet .gb-orta{flex:1;min-width:0}
 .g-bilet .gb-orta b{font-size:1.2rem}
 .g-bilet .gb-orta span{display:block;font-size:.88rem;color:var(--muted)}
+.gd-bilet{background:var(--bg);border-radius:10px;padding:10px 12px;border-left:4px solid var(--ok)}
+.gd-bilet.pasif{opacity:.6;border-left-color:var(--line)}
+.gd-bilet.iptal{border-left-color:var(--turuncu)}
+.gd-bilet.iptal .cip{background:var(--turuncu);color:#fff}
+.gd-bilet.aktif .cip{background:var(--ok);color:#fff}
+.gd-ust{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.gd-ust b{font-size:1.3rem}
+.gd-alt{font-size:.9rem;color:var(--muted);margin-top:2px}
+.gd-bilet .islemler{margin-top:8px}
 .yeni{animation:gel .9s ease-out}
 @keyframes gel{from{box-shadow:0 0 0 4px var(--accent)}to{box-shadow:0 0 0 0 transparent}}
 @media (prefers-reduced-motion:reduce){.yeni{animation:none}.bilet{transition:none}}
@@ -384,6 +393,7 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
   <section id="sayfa-pist" class="gizli">
     <div class="sayaclar" data-sayac="pist"></div>
     <button class="btn ince grup-btn" data-grup-olustur>＋ Grup oluştur</button>
+    <button class="btn ince grup-btn" data-grup-duzenle>✎ Grup düzenle</button>
     <div class="grup-tablo" data-grup-tablo></div>
     <p class="ipucu">Sırayı değiştirmek için biletin sağ üstündeki ⠿ tutamağına basılı tutup sürükleyin.</p>
     <div class="liste" id="listePist" data-tur="bilet"></div>
@@ -412,6 +422,7 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
     </div>
     <div class="sayaclar" data-sayac></div>
     <button class="btn ince grup-btn" data-grup-olustur>＋ Grup oluştur</button>
+    <button class="btn ince grup-btn" data-grup-duzenle>✎ Grup düzenle</button>
     <div class="grup-tablo" data-grup-tablo></div>
     <div class="liste" id="listeAdmin" data-tur="bilet"></div>
   </section>
@@ -469,6 +480,15 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
 </dialog>
 
 <!-- Grup oluşturma penceresi -->
+<!-- Grup düzenleme penceresi -->
+<dialog id="gdPencere" class="alt-pencere">
+  <div class="ap-ic">
+    <div class="ap-bas"><div><h2 class="num" style="font-size:1.35rem" id="gdBaslik">Grup düzenle</h2><div id="gdAltBaslik" style="color:var(--muted);font-size:.92rem"></div></div>
+      <button type="button" class="kapat" id="gdKapat" aria-label="Kapat">✕</button></div>
+    <div id="gdIcerik"></div>
+  </div>
+</dialog>
+
 <dialog id="grupPencere" class="alt-pencere">
   <div class="ap-ic">
     <div class="ap-bas"><div><h2 class="num" style="font-size:1.35rem" id="gBaslik">Grup oluştur</h2><div id="gAltBaslik" style="color:var(--muted);font-size:.92rem"></div></div>
@@ -877,6 +897,83 @@ document.addEventListener("click", e => {
   const g = e.target.closest("[data-grup]"); if (g) grupAc(g.dataset.grup);
 });
 
+/* ---------- Bilet iptali (yalnızca yönetici) ---------- */
+async function biletIptalDegistir(b) {
+  if (rol !== "admin") return;
+  try {
+    if (!b.iptal) {
+      if (!confirm(`${b.bilet} numaralı bilet İPTAL edilsin mi?`)) return;
+      const z = zamanBilgi(b), a = { iptal:true };
+      if (z.calisiyor) Object.assign(a, { calisiyor:null, birikim:z.birikim + (Date.now() - z.calisiyor), durma:null });
+      await Veri.guncelle(b.id, a);
+    } else {
+      if (!confirm(`${b.bilet} numaralı biletin iptali geri alınsın mı?`)) return;
+      await Veri.guncelle(b.id, { iptal:false });
+    }
+  } catch (err) { console.error(err); hataGoster(); }
+}
+
+/* ---------- Grup düzenle ---------- */
+let gdAd = null;
+function gdAc() { gdAd = null; gdCiz(); $("gdPencere").showModal(); }
+$("gdKapat").onclick = () => $("gdPencere").close();
+function gdCiz() {
+  const gruplar = grupHesap(bugunListe);
+  const g = gdAd && gruplar.find(x => x.ad === gdAd);
+  if (!g) {
+    gdAd = null;
+    $("gdBaslik").textContent = "Grup düzenle";
+    $("gdAltBaslik").textContent = "Düzenlemek istediğiniz grubu seçin";
+    $("gdIcerik").innerHTML = `<div class="ap-liste">` + (gruplar.map(x => {
+      const durum = x.durum === "pistte" ? "Pistte" : x.durum === "sirada" ? "Sırada" : "Bitti";
+      return `<button class="grup-satir ${x.durum}" style="grid-template-columns:auto 1fr auto" data-gd="sec" data-ad="${esc(x.ad)}">
+        <span class="grup-rozet" style="background:${grupRenk(x.ad)}">${esc(x.ad)}</span>
+        <div class="gs-orta"><b>${durum}</b><span>${x.biletler.length} bilet, ${x.kisi} kişi</span></div>
+        <span style="font-size:1.4rem;color:var(--muted)">›</span></button>`;
+    }).join("") || `<div class="bos">Bugün oluşturulmuş grup yok.</div>`) + `</div>`;
+    return;
+  }
+  $("gdBaslik").innerHTML = `<span class="grup-rozet" style="background:${grupRenk(g.ad)};font-size:1.2rem;vertical-align:middle">${esc(g.ad)}</span> grubu`;
+  $("gdAltBaslik").textContent = `${g.biletler.length} bilet, ${g.kisi} kişi`;
+  const satirlar = sirala(g.biletler).map(b => {
+    const z = zamanBilgi(b);
+    const [sinif, etiket] = !aktifMi(b) ? ["pasif","PASİF"] : b.iptal ? ["iptal","İPTAL"] : z.basladi ? ["aktif","PİSTTE"] : ["aktif","BEKLİYOR"];
+    let dug = `<button class="kucuk" data-gd="cikar" data-id="${esc(b.id)}">Gruptan çıkar</button>`;
+    if (rol === "admin" && aktifMi(b)) dug += `<button class="kucuk iptal-btn" data-gd="iptal" data-id="${esc(b.id)}">${b.iptal ? "İptali geri al" : "Bileti iptal et"}</button>`;
+    return `<div class="gd-bilet ${sinif}">
+      <div class="gd-ust"><b class="num">No ${esc(b.bilet)}</b><span class="cip">${etiket}</span></div>
+      <div class="gd-alt">${esc(b.kisi)} kişi, ${esc(b.sure)} dakika${b.arac ? ", araç " + esc(b.arac) : ""}${b.not ? ", " + esc(b.not) : ""}</div>
+      <div class="islemler">${dug}</div>
+    </div>`;
+  }).join("");
+  $("gdIcerik").innerHTML = `<div class="ap-liste">${satirlar}</div>
+    <button type="button" class="btn sari" data-gd="ekle">＋ Gruba bilet ekle</button>
+    <button type="button" class="btn ince sil-btn" data-gd="kaldir" style="margin-top:10px">Grubu iptal et (dağıt)</button>
+    <button type="button" class="btn ince" data-gd="geri" style="width:100%;margin-top:10px">‹ Tüm gruplar</button>`;
+}
+$("gdIcerik").addEventListener("click", async e => {
+  const t = e.target.closest("[data-gd]"); if (!t) return;
+  const is = t.dataset.gd, b = t.dataset.id && bugunListe.find(x => x.id === t.dataset.id);
+  try {
+    if (is === "sec") { gdAd = t.dataset.ad; gdCiz(); $("gdPencere").scrollTop = 0; return; }
+    if (is === "geri") { gdAd = null; gdCiz(); return; }
+    if (is === "ekle") { const ad = gdAd; $("gdPencere").close(); grupAc(ad); return; }
+    if (is === "cikar" && b) {
+      if (!confirm(`No ${b.bilet}, ${gdAd} grubundan çıkarılsın mı?`)) return;
+      await Veri.guncelle(b.id, { grup:null, grupSira:null });
+    }
+    if (is === "iptal" && b) await biletIptalDegistir(b);
+    if (is === "kaldir") {
+      if (!confirm(`${gdAd} grubu iptal edilsin mi?\n\nBiletler silinmez, sadece gruptan çıkarılır.`)) return;
+      const bt = db.batch();
+      bugunListe.filter(x => x.grup === gdAd).forEach(x => bt.update(db.collection("biletler").doc(x.id), { grup:null, grupSira:null }));
+      await bt.commit();
+      gdAd = null; gdCiz();
+    }
+  } catch (err) { console.error(err); hataGoster(); }
+});
+document.addEventListener("click", e => { if (rol && e.target.closest("[data-grup-duzenle]")) gdAc(); });
+
 const PASIF_SAKLA = 30 * 60000;   // pasif bilet pistte 30 dk görünür
 const pisteGorunur = b => aktifMi(b) || (b.pasifZaman && Date.now() - b.pasifZaman < PASIF_SAKLA);
 setInterval(() => { if (rol && bugunListe.some(b => !aktifMi(b))) bugunuCiz(); }, 30000);
@@ -889,6 +986,7 @@ function bugunuCiz() {
   listeCiz($("listeAdmin"), l, "admin", null);
   document.querySelectorAll("[data-sayac]").forEach(e => e.innerHTML = sayacHTML(l, e.dataset.sayac !== "pist"));
   grupTabloCiz();
+  if ($("gdPencere") && $("gdPencere").open) gdCiz();
   oncekiIdler = new Set(l.map(b => b.id)); ilkYukleme = false;
 }
 function gunDetayCiz() {
@@ -1029,21 +1127,7 @@ document.addEventListener("click", async e => {
   const is = t.dataset.is;
   if ((is === "duzenle" || is === "sil") && rol !== "admin") return;
   if (is === "durum" && !aktifMi(b) && rol !== "admin") return;
-  if (is === "iptal") {
-    if (rol !== "admin") return;
-    try {
-      if (!b.iptal) {
-        if (!confirm(`${b.bilet} numaralı bilet İPTAL edilsin mi?`)) return;
-        const z = zamanBilgi(b), a = { iptal:true };
-        if (z.calisiyor) Object.assign(a, { calisiyor:null, birikim:z.birikim + (Date.now() - z.calisiyor), durma:null });
-        await Veri.guncelle(b.id, a);
-      } else {
-        if (!confirm(`${b.bilet} numaralı biletin iptali geri alınsın mı?`)) return;
-        await Veri.guncelle(b.id, { iptal:false });
-      }
-    } catch (err) { console.error(err); hataGoster(); }
-    return;
-  }   // yalnızca yönetici tekrar aktif eder
+  if (is === "iptal") { await biletIptalDegistir(b); return; }   // yalnızca yönetici tekrar aktif eder
   try {
     const z = zamanBilgi(b), simdi = Date.now();
     if (is === "baslat") {
