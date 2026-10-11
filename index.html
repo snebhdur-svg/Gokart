@@ -21,6 +21,7 @@
   --accent:#F2B705; --accent-ink:#2A2000;
   --ok:#2E8B57; --ok-soft:#DCF1E4; --ok-ink:#0F3D24;
   --danger:#C0392B; --danger-soft:#FBE1DD; --danger-ink:#5A120A;
+  --turuncu:#E0761B; --turuncu-soft:#FDE8D4; --turuncu-ink:#5C2C05;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
@@ -30,12 +31,14 @@
     --bg:#0E1D22; --paper:#17292F; --ink:#E6EEF0; --muted:#8FA5AC; --line:#2B434A;
     --ok:#4CB97C; --ok-soft:#173A28; --ok-ink:#D4F5E2;
     --danger:#E5604B; --danger-soft:#43201B; --danger-ink:#FFDCD5;
+    --turuncu:#F0923F; --turuncu-soft:#45290F; --turuncu-ink:#FFE3CA;
   }
 }
 :root[data-theme="dark"]{
   --bg:#0E1D22; --paper:#17292F; --ink:#E6EEF0; --muted:#8FA5AC; --line:#2B434A;
   --ok:#4CB97C; --ok-soft:#173A28; --ok-ink:#D4F5E2;
   --danger:#E5604B; --danger-soft:#43201B; --danger-ink:#FFDCD5;
+  --turuncu:#F0923F; --turuncu-soft:#45290F; --turuncu-ink:#FFE3CA;
 }
 *,*::before,*::after{box-sizing:inherit}
 html{height:100%}
@@ -140,6 +143,34 @@ main{max-width:640px;margin:0 auto;padding:14px 12px 110px}
 .kb-sira button.tire{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-size:1.8rem;line-height:1}
 .klavye.harf .kb-sira button.tire{font-size:1.5rem}
 .kb-sira button.ok{background:var(--ink);color:var(--bg);border-color:var(--ink);font-size:1.1rem}
+/* İptal */
+.bilet.iptal{border-color:var(--turuncu)}
+.bilet.iptal .koc{background:var(--turuncu-soft);color:var(--turuncu-ink)}
+.bilet.iptal .cip{background:var(--turuncu);color:#fff}
+.kucuk.iptal-btn{color:var(--turuncu);border-color:var(--turuncu)}
+/* Gruplar */
+.grup-rozet{display:inline-block;color:#fff;font-family:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;font-weight:700;
+  font-size:1.05rem;line-height:1;padding:4px 8px;border-radius:6px;letter-spacing:.03em}
+.bilet .koc .grup-rozet{margin-bottom:6px}
+.grup-btn{width:100%!important;margin-bottom:10px;font-weight:600}
+.grup-tablo{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.grup-tablo:empty{display:none}
+.grup-satir{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:10px;width:100%;text-align:left;
+  background:var(--paper);color:var(--ink);padding:10px 12px;border-radius:10px;border-left:5px solid var(--line)}
+.grup-satir.pistte{border-left-color:var(--accent)}
+.grup-satir.sirada{border-left-color:var(--ok)}
+.grup-satir.bitti{opacity:.6}
+.gs-orta b{display:block;font-size:1rem}
+.gs-orta span,.gs-et{font-size:.8rem;color:var(--muted)}
+.gs-sag{text-align:right}
+.gs-sag b{font-size:1.15rem;white-space:nowrap}
+.g-bilet{display:flex;align-items:center;gap:12px;text-align:left;background:var(--bg);color:var(--ink);padding:10px 12px;border:2px solid transparent;width:100%}
+.g-bilet .kutu{flex:none;width:26px;height:26px;border-radius:6px;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:700;background:var(--paper)}
+.g-bilet.secili{border-color:var(--ok);background:var(--ok-soft)}
+.g-bilet.secili .kutu{background:var(--ok);border-color:var(--ok);color:#fff}
+.g-bilet .gb-orta{flex:1;min-width:0}
+.g-bilet .gb-orta b{font-size:1.2rem}
+.g-bilet .gb-orta span{display:block;font-size:.88rem;color:var(--muted)}
 .yeni{animation:gel .9s ease-out}
 @keyframes gel{from{box-shadow:0 0 0 4px var(--accent)}to{box-shadow:0 0 0 0 transparent}}
 @media (prefers-reduced-motion:reduce){.yeni{animation:none}.bilet{transition:none}}
@@ -352,6 +383,8 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
   <!-- PİST -->
   <section id="sayfa-pist" class="gizli">
     <div class="sayaclar" data-sayac="pist"></div>
+    <button class="btn ince grup-btn" data-grup-olustur>＋ Grup oluştur</button>
+    <div class="grup-tablo" data-grup-tablo></div>
     <p class="ipucu">Sırayı değiştirmek için biletin sağ üstündeki ⠿ tutamağına basılı tutup sürükleyin.</p>
     <div class="liste" id="listePist" data-tur="bilet"></div>
   </section>
@@ -378,6 +411,8 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
       <p class="hata" id="formHata"></p>
     </div>
     <div class="sayaclar" data-sayac></div>
+    <button class="btn ince grup-btn" data-grup-olustur>＋ Grup oluştur</button>
+    <div class="grup-tablo" data-grup-tablo></div>
     <div class="liste" id="listeAdmin" data-tur="bilet"></div>
   </section>
 </main>
@@ -430,6 +465,29 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
     <div class="kb-alan" data-kbalan="not" role="textbox" tabindex="0"></div>
     <p class="hata" id="nHata" style="margin-top:-6px"></p>
     <div id="klavye" class="klavye"></div>
+  </div>
+</dialog>
+
+<!-- Grup oluşturma penceresi -->
+<dialog id="grupPencere" class="alt-pencere">
+  <div class="ap-ic">
+    <div class="ap-bas"><div><h2 class="num" style="font-size:1.35rem" id="gBaslik">Grup oluştur</h2><div id="gAltBaslik" style="color:var(--muted);font-size:.92rem"></div></div>
+      <button type="button" class="kapat" id="gKapat" aria-label="Kapat">✕</button></div>
+    <div id="gAdim1">
+      <label>Grup adı</label>
+      <div class="kb-alan" data-kbalan="grup" role="textbox" tabindex="0"></div>
+      <p class="hata" id="gHata1" style="margin-top:-6px"></p>
+      <div id="gKlavye" class="klavye"></div>
+    </div>
+    <div id="gAdim2" class="gizli">
+      <div id="gSecim" class="ap-liste"></div>
+      <p class="hata" id="gHata2"></p>
+      <div class="dugmeler">
+        <button type="button" class="btn ince" id="gGeri">‹ Grup adı</button>
+        <button type="button" class="btn sari" id="gOnayla">Grubu oluştur</button>
+      </div>
+      <button type="button" class="btn ince sil-btn gizli" id="gKaldir" style="margin-top:12px">Grubu kaldır</button>
+    </div>
   </div>
 </dialog>
 </div>
@@ -617,14 +675,18 @@ function biletHTML(b, mod, yeni) {
   let butonlar = "";
   if (yonetim) {
     const z = zamanBilgi(b);
-    if (aktif && !z.basladi) butonlar += `<button class="kucuk baslat" data-is="baslat" data-id="${esc(b.id)}">▶ Başlat</button>`;
-    if (aktif && z.basladi) {
+    const ip = !!b.iptal;
+    if (aktif && !ip && !z.basladi) butonlar += `<button class="kucuk baslat" data-is="baslat" data-id="${esc(b.id)}">▶ Başlat</button>`;
+    if (aktif && !ip && z.basladi) {
       butonlar += z.calisiyor
         ? `<button class="kucuk durdur" data-is="durdur" data-id="${esc(b.id)}">⏸ Durdur</button>`
         : `<button class="kucuk baslat" data-is="devam" data-id="${esc(b.id)}">▶ Devam</button>`;
       butonlar += `<button class="kucuk bitir" data-is="bitir" data-id="${esc(b.id)}">⏹ Bitir</button>`;
     }
     if (aktif) butonlar += `<button class="kucuk pasifle" data-is="durum" data-id="${esc(b.id)}">Pasif yap</button>`;
+    if (aktif && mod === "admin") butonlar += ip
+      ? `<button class="kucuk iptal-btn" data-is="iptal" data-id="${esc(b.id)}">İptali geri al</button>`
+      : `<button class="kucuk iptal-btn" data-is="iptal" data-id="${esc(b.id)}">İptal</button>`;
     else if (mod === "admin") butonlar += `<button class="kucuk aktifle" data-is="durum" data-id="${esc(b.id)}">Aktif yap</button>`;
     butonlar += `<button class="kucuk" data-is="not" data-id="${esc(b.id)}">🚗 ${b.arac || b.not ? "Araç / not" : "Araç ekle"}</button>`;
   }
@@ -634,8 +696,8 @@ function biletHTML(b, mod, yeni) {
   }
   const zb = zamanBilgi(b);
   return `<div class="bilet surukle-oge${yeni ? " yeni" : ""}" data-id="${esc(b.id)}" data-aktif="${aktif ? 1 : 0}"
-      data-basladi="${zb.basladi ? 1 : 0}" data-birikim="${zb.birikim}" data-calisiyor="${zb.calisiyor || ""}" data-sure="${parseInt(b.sure) || 0}">
-    <div class="koc"><span class="saat num">${esc(b.saat)}</span><span class="saat-et">satış</span></div>
+      data-basladi="${zb.basladi ? 1 : 0}" data-birikim="${zb.birikim}" data-calisiyor="${zb.calisiyor || ""}" data-sure="${parseInt(b.sure) || 0}" data-iptal="${b.iptal ? 1 : 0}">
+    <div class="koc">${b.grup ? `<span class="grup-rozet" style="background:${grupRenk(b.grup)}">${esc(b.grup)}</span>` : ""}<span class="saat num">${esc(b.saat)}</span><span class="saat-et">satış</span></div>
     <div class="govde">
       <div class="ust">
         <div class="no num"><small>No</small>${esc(b.bilet)}</div>
@@ -658,13 +720,15 @@ function kartGuncelle(k, simdi = Date.now()) {
   const gecen = birikim + (cal ? simdi - cal : 0);
   let sinif, etiket, bitis = "";
   if (!aktif) { sinif = "pasif"; etiket = "PASİF"; }
+  else if (k.dataset.iptal === "1") { sinif = "iptal"; etiket = "İPTAL"; }
   else if (!basladi) { sinif = "aktif"; etiket = "BEKLİYOR"; }
   else if (gecen > sure) { sinif = "doldu"; etiket = "SÜRE DOLDU"; }
   else { sinif = "aktif"; etiket = cal ? "PİSTTE" : "DURDU"; }
-  if (basladi && aktif) bitis = cal ? "Bitiş " + saatYazi(new Date(cal + sure - birikim)) : "Durduruldu";
+  if (basladi && aktif && sinif !== "iptal") bitis = cal ? "Bitiş " + saatYazi(new Date(cal + sure - birikim)) : "Durduruldu";
   k.classList.toggle("aktif", sinif === "aktif");
   k.classList.toggle("doldu", sinif === "doldu");
   k.classList.toggle("pasif", sinif === "pasif");
+  k.classList.toggle("iptal", sinif === "iptal");
   k.classList.toggle("durdu", basladi && !cal);
   const c = k.querySelector(".cip"); if (c.textContent !== etiket) c.textContent = etiket;
   const kr = k.querySelector(".krono"); if (kr) kr.textContent = sureYazi(gecen);
@@ -675,8 +739,8 @@ setInterval(() => { const s = Date.now(); document.querySelectorAll('.bilet[data
 function sayacHTML(l, toplamGoster = true) {
   const say = f => { const x = l.filter(f); return [x.length, x.reduce((t,b) => t + (parseInt(b.kisi)||0), 0)]; };
   const [tb, tk] = say(() => true);
-  const [bb, bk] = say(b => aktifMi(b) && !b.baslama);
-  const [pb, pk] = say(b => aktifMi(b) && b.baslama);
+  const [bb, bk] = say(b => aktifMi(b) && !b.iptal && !b.baslama);
+  const [pb, pk] = say(b => aktifMi(b) && !b.iptal && b.baslama);
   const kutu = (et, sinif, bil, kis) => `<div class="sayac ${sinif}"><div class="et">${et}</div><div class="deger num">${bil}</div><div class="kisi"><b>${kis}</b> kişi</div></div>`;
   return (toplamGoster ? kutu("Bugün toplam", "", tb, tk) : "") + kutu("Bekleyen", "yesil", bb, bk) + kutu("Pistte", "sari", pb, pk);
 }
@@ -686,6 +750,132 @@ function listeCiz(el, l, mod, yeniler) {
     || `<div class="bos">Bugün henüz bilet yok.<br>Yeni biletler burada anında görünecek.</div>`;
   el.querySelectorAll(".bilet").forEach(k => kartGuncelle(k));
 }
+
+/* ---------- Gruplar ve zaman tablosu ---------- */
+const GRUP_RENK = ["#2F6FDE","#7B4BC4","#0E8A8A","#C2457A","#56702A","#3D4FB8","#8A5A2B","#B03FA8"];
+const grupRenk = ad => { let h = 0; for (const c of String(ad)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return GRUP_RENK[h % GRUP_RENK.length]; };
+const GRUP_SAKLA = 15 * 60000;   // tamamen pasif olan grup tabloda 15 dk görünür
+function grupHesap(l, simdi = Date.now()) {
+  const g = {};
+  l.forEach(b => { if (!b.grup) return; (g[b.grup] = g[b.grup] || { ad:b.grup, sira:b.grupSira || 0, biletler:[] }).biletler.push(b); });
+  let imlec = simdi;
+  return Object.values(g).sort((a, b) => a.sira - b.sira).map(gr => {
+    const gecerli = gr.biletler.filter(b => !b.iptal);
+    const kisi = gecerli.reduce((t, b) => t + (parseInt(b.kisi) || 0), 0);
+    const akt = gecerli.filter(aktifMi);
+    if (!akt.length) {
+      const son = Math.max(0, ...gr.biletler.map(b => b.pasifZaman || 0));
+      return { ...gr, durum:"bitti", bitis:son, kisi, gizli: simdi - son > GRUP_SAKLA };
+    }
+    const kalanlar = akt.map(b => {
+      const z = zamanBilgi(b), s = (parseInt(b.sure) || 0) * 60000;
+      if (!z.basladi) return { basladi:false, kalan:s };
+      return { basladi:true, kalan:Math.max(0, s - (z.birikim + (z.calisiyor ? simdi - z.calisiyor : 0))) };
+    });
+    const basladi = kalanlar.some(x => x.basladi), kalan = Math.max(...kalanlar.map(x => x.kalan));
+    let bekleme = 0, bitis;
+    if (basladi) bitis = simdi + kalan;
+    else { const bas = Math.max(simdi, imlec); bekleme = bas - simdi; bitis = bas + kalan; }
+    imlec = Math.max(imlec, bitis);
+    return { ...gr, durum: basladi ? "pistte" : "sirada", bekleme, bitis, kisi };
+  });
+}
+function grupTabloCiz() {
+  const satirlar = grupHesap(bugunListe).filter(g => !g.gizli);
+  const html = satirlar.map(g => {
+    const durum = g.durum === "pistte" ? "Pistte" : g.durum === "sirada" ? "Sırada" : "Bitti";
+    const bekleme = g.durum === "sirada" ? (g.bekleme < 60000 ? "Hemen" : "≈ " + dkYazi(Math.ceil(g.bekleme / 60000) * 60000))
+                  : "–";
+    return `<button class="grup-satir ${g.durum}" data-grup="${esc(g.ad)}">
+      <span class="grup-rozet" style="background:${grupRenk(g.ad)}">${esc(g.ad)}</span>
+      <div class="gs-orta"><b>${durum}</b><span>${g.biletler.length} bilet, ${g.kisi} kişi</span></div>
+      <div class="gs-sag"><div class="gs-et">Bekleme</div><b>${bekleme}</b></div>
+      <div class="gs-sag"><div class="gs-et">Bitiş</div><b>${g.bitis ? (g.durum === "bitti" ? "" : "≈ ") + saatYazi(new Date(g.bitis)) : "–"}</b></div>
+    </button>`;
+  }).join("");
+  document.querySelectorAll("[data-grup-tablo]").forEach(e => e.innerHTML = html);
+}
+setInterval(() => { if (rol && bugunListe.some(b => b.grup)) grupTabloCiz(); }, 15000);
+
+let gAd = "", gSecili = new Set(), gVar = null;
+const grupKb = klavyeKur({
+  pencere:$("grupPencere"), klavyeEl:$("gKlavye"), hataEl:$("gHata1"), onayYazi:"OK",
+  ayar:{ grup:{ sinir:6, duzen:"harf", buyuk:"hep", yer:"örn. A veya A1", rakamSirasi:true } },
+  onOnayla:() => grupAdim2((grupKb.d.deger.grup || "").trim().toLocaleUpperCase("tr-TR")),
+  onVazgec:() => $("grupPencere").close()
+});
+function grupAc(ad) {
+  $("gHata1").textContent = ""; $("gHata2").textContent = "";
+  if (ad) { grupAdim2(ad); }
+  else {
+    $("gBaslik").textContent = "Grup oluştur"; $("gAltBaslik").textContent = "1. adım: grup adını yazıp OK'e basın";
+    $("gAdim1").classList.remove("gizli"); $("gAdim2").classList.add("gizli");
+    grupKb.ayarla({ grup:"" }, "grup");
+  }
+  if (!$("grupPencere").open) $("grupPencere").showModal();
+}
+function grupAdim2(ad) {
+  if (!ad) { $("gHata1").textContent = "Grup adını yazın."; return; }
+  gAd = ad;
+  const uyeler = bugunListe.filter(b => b.grup === ad);
+  gVar = uyeler.length ? uyeler[0].grupSira || Date.now() : null;
+  gSecili = new Set(uyeler.map(b => b.id));
+  $("gBaslik").textContent = gVar ? `${ad} grubunu düzenle` : `${ad} grubu`;
+  $("gAltBaslik").textContent = "2. adım: gruba girecek biletleri seçin";
+  $("gOnayla").textContent = gVar ? "Grubu güncelle" : "Grubu oluştur";
+  $("gKaldir").classList.toggle("gizli", !gVar);
+  $("gAdim1").classList.add("gizli"); $("gAdim2").classList.remove("gizli");
+  grupSecimCiz();
+}
+function grupSecimCiz() {
+  const l = sirala(bugunListe).filter(b => gSecili.has(b.id) || (aktifMi(b) && !b.iptal));
+  $("gSecim").innerHTML = l.map(b => {
+    const sec = gSecili.has(b.id);
+    const baska = b.grup && b.grup !== gAd ? `<span>Şu an ${esc(b.grup)} grubunda</span>` : "";
+    return `<button type="button" class="g-bilet${sec ? " secili" : ""}" data-gsec="${esc(b.id)}">
+      <span class="kutu">${sec ? "✓" : ""}</span>
+      <div class="gb-orta"><b class="num">No ${esc(b.bilet)}</b><span>${esc(b.kisi)} kişi, ${esc(b.sure)} dakika${b.arac ? ", araç " + esc(b.arac) : ""}</span>${baska}</div>
+      ${b.grup ? `<span class="grup-rozet" style="background:${grupRenk(b.grup)}">${esc(b.grup)}</span>` : ""}
+    </button>`;
+  }).join("") || `<div class="bos">Gruplanabilecek aktif bilet yok.</div>`;
+}
+$("gSecim").addEventListener("click", e => {
+  const t = e.target.closest("[data-gsec]"); if (!t) return;
+  const id = t.dataset.gsec; gSecili.has(id) ? gSecili.delete(id) : gSecili.add(id);
+  $("gHata2").textContent = ""; grupSecimCiz();
+});
+$("gGeri").onclick = () => {
+  $("gBaslik").textContent = "Grup oluştur"; $("gAltBaslik").textContent = "1. adım: grup adını yazıp OK'e basın";
+  $("gAdim2").classList.add("gizli"); $("gAdim1").classList.remove("gizli");
+  grupKb.ayarla({ grup:gAd }, "grup");
+};
+$("gKapat").onclick = () => $("grupPencere").close();
+async function grupYaz(secilenler) {
+  const sira = gVar || Date.now(), b = db.batch();
+  bugunListe.forEach(x => {
+    if (secilenler.has(x.id)) b.update(db.collection("biletler").doc(x.id), { grup:gAd, grupSira:sira });
+    else if (x.grup === gAd) b.update(db.collection("biletler").doc(x.id), { grup:null, grupSira:null });
+  });
+  await b.commit();
+}
+$("gOnayla").onclick = async () => {
+  const sec = sirala(bugunListe).filter(b => gSecili.has(b.id));
+  if (!sec.length) { $("gHata2").textContent = gVar ? "Grubu kaldırmak için alttaki düğmeyi kullanın." : "En az bir bilet seçin."; return; }
+  const no = sec.map(b => b.bilet).join(", ");
+  if (!confirm(`${gAd} grubu ${gVar ? "güncellensin mi" : "oluşturulsun mu"}?\n\nBiletler: No ${no}`)) return;
+  try { await grupYaz(gSecili); $("grupPencere").close(); }
+  catch (e) { console.error(e); $("gHata2").textContent = "Kaydedilemedi. İnternet bağlantısını kontrol edin."; }
+};
+$("gKaldir").onclick = async () => {
+  if (!confirm(`${gAd} grubu kaldırılsın mı? Biletler silinmez, sadece gruptan çıkarılır.`)) return;
+  try { await grupYaz(new Set()); $("grupPencere").close(); }
+  catch (e) { console.error(e); $("gHata2").textContent = "Kaydedilemedi. İnternet bağlantısını kontrol edin."; }
+};
+document.addEventListener("click", e => {
+  if (!rol) return;
+  if (e.target.closest("[data-grup-olustur]")) grupAc(null);
+  const g = e.target.closest("[data-grup]"); if (g) grupAc(g.dataset.grup);
+});
 
 const PASIF_SAKLA = 30 * 60000;   // pasif bilet pistte 30 dk görünür
 const pisteGorunur = b => aktifMi(b) || (b.pasifZaman && Date.now() - b.pasifZaman < PASIF_SAKLA);
@@ -698,6 +888,7 @@ function bugunuCiz() {
   listeCiz($("listePist"), l.filter(pisteGorunur), "pist", yeniler);
   listeCiz($("listeAdmin"), l, "admin", null);
   document.querySelectorAll("[data-sayac]").forEach(e => e.innerHTML = sayacHTML(l, e.dataset.sayac !== "pist"));
+  grupTabloCiz();
   oncekiIdler = new Set(l.map(b => b.id)); ilkYukleme = false;
 }
 function gunDetayCiz() {
@@ -837,7 +1028,22 @@ document.addEventListener("click", async e => {
   const b = bul(t.dataset.id); if (!b) return;
   const is = t.dataset.is;
   if ((is === "duzenle" || is === "sil") && rol !== "admin") return;
-  if (is === "durum" && !aktifMi(b) && rol !== "admin") return;   // yalnızca yönetici tekrar aktif eder
+  if (is === "durum" && !aktifMi(b) && rol !== "admin") return;
+  if (is === "iptal") {
+    if (rol !== "admin") return;
+    try {
+      if (!b.iptal) {
+        if (!confirm(`${b.bilet} numaralı bilet İPTAL edilsin mi?`)) return;
+        const z = zamanBilgi(b), a = { iptal:true };
+        if (z.calisiyor) Object.assign(a, { calisiyor:null, birikim:z.birikim + (Date.now() - z.calisiyor), durma:null });
+        await Veri.guncelle(b.id, a);
+      } else {
+        if (!confirm(`${b.bilet} numaralı biletin iptali geri alınsın mı?`)) return;
+        await Veri.guncelle(b.id, { iptal:false });
+      }
+    } catch (err) { console.error(err); hataGoster(); }
+    return;
+  }   // yalnızca yönetici tekrar aktif eder
   try {
     const z = zamanBilgi(b), simdi = Date.now();
     if (is === "baslat") {
@@ -856,7 +1062,7 @@ document.addEventListener("click", async e => {
     if (is === "durum") {
       if (aktifMi(b)) {
         if (!confirm(`${b.bilet} numaralı bilet PASİF (kullanıldı) yapılsın mı?`)) return;
-        const a = {aktif:false, pasifZaman:simdi};
+        const a = {aktif:false, pasifZaman:simdi, iptal:false};
         if (z.calisiyor) Object.assign(a, {calisiyor:null, birikim:z.birikim + (simdi - z.calisiyor), durma:null});
         await Veri.guncelle(b.id, a);
       } else {
@@ -883,75 +1089,85 @@ let notBilet = null;
 const KB_SAYI = [["1","2","3","⌫"],["4","5","6","-"],["7","8","9","ABC"],["0","Temizle"]];
 const KB_HARF = [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L","Ş"],
                  ["⇧","Z","X","C","V","B","N","M","Ö","Ç"],["123","-","İ","Ğ","Ü","boşluk","⌫"]];
-const KB_SINIR = { arac:12, not:60 };
-const kb = { alan:"arac", deger:{ arac:"", not:"" }, duzen:"sayi", buyuk:true };
-const kbHarf = t => kb.buyuk ? t : t.toLocaleLowerCase("tr-TR");
-function kbGoster() {
-  document.querySelectorAll("#notPencere [data-kbalan]").forEach(el => {
-    const a = el.dataset.kbalan, v = kb.deger[a], aktif = a === kb.alan;
-    el.classList.toggle("aktif", aktif);
-    el.innerHTML = (v ? esc(v).replace(/ /g, "&nbsp;") : `<span class="yer">${a === "arac" ? "örn. 5 veya 3-5" : "örn. çocuk aracı"}</span>`) + (aktif ? '<span class="imlec"></span>' : "");
-  });
-}
-function kbCiz() {
-  const harf = kb.duzen === "harf", rows = harf ? KB_HARF : KB_SAYI;
-  $("klavye").className = "klavye" + (harf ? " harf" : "");
-  let h = rows.map(r => {
-    const kol = harf
-      ? r.map(t => t === "boşluk" ? "3fr" : (t === "123" || t === "⌫" || t === "⇧") ? "1.4fr" : "1fr")
-      : (r.length === 2 ? ["3fr","1fr"] : r.map(() => "1fr"));
-    return `<div class="kb-sira" style="grid-template-columns:${kol.map(k => `minmax(0,${k})`).join(" ")}">` + r.map(t => {
-      let sinif = "", etiket = t;
-      if (["⌫","ABC","123","boşluk","Temizle","⇧"].includes(t)) sinif = "ik";
-      if (t === "⇧" && kb.buyuk) sinif += " acik";
-      if (t === "-") sinif = "tire";
-      if (harf && t.length === 1 && t !== "-" && t !== "⌫" && t !== "⇧") etiket = kbHarf(t);
-      const aria = {"⌫":"Sil","-":"Tire","⇧":"Büyük harf"}[t];
-      return `<button type="button" class="${sinif}" data-k="${esc(t)}"${aria ? ` aria-label="${aria}"` : ""}>${esc(etiket)}</button>`;
-    }).join("") + `</div>`;
-  }).join("");
-  h += `<div class="kb-sira" style="grid-template-columns:minmax(0,1fr) minmax(0,2fr)">
-          <button type="button" class="ik" data-k="vazgec">Vazgeç</button><button type="button" class="ok" data-k="onayla">Onayla</button></div>`;
-  $("klavye").innerHTML = h;
-}
-function kbAlanSec(a) {
-  kb.alan = a; kb.duzen = a === "not" ? "harf" : "sayi";
-  kb.buyuk = a === "arac" || !kb.deger.not;
-  kbCiz(); kbGoster();
-}
-document.querySelectorAll("#notPencere [data-kbalan]").forEach(el => el.onclick = () => kbAlanSec(el.dataset.kbalan));
-$("klavye").addEventListener("click", e => {
-  const b = e.target.closest("[data-k]"); if (!b) return;
-  const t = b.dataset.k, a = kb.alan;
-  if (t === "onayla") { notKaydet(); return; }
-  if (t === "vazgec") { $("notPencere").close(); return; }
-  if (t === "ABC") { kb.duzen = "harf"; kbCiz(); return; }
-  if (t === "123") { kb.duzen = "sayi"; kbCiz(); return; }
-  if (t === "⇧") { kb.buyuk = !kb.buyuk; kbCiz(); return; }
-  if (t === "⌫") kb.deger[a] = kb.deger[a].slice(0, -1);
-  else if (t === "Temizle") kb.deger[a] = "";
-  else if (kb.deger[a].length < KB_SINIR[a]) {
-    if (t === "boşluk") kb.deger[a] += " ";
-    else if (kb.duzen === "harf" && t !== "-") {
-      kb.deger[a] += kbHarf(t);
-      if (a === "not" && kb.buyuk) { kb.buyuk = false; kbCiz(); }   // notta tek seferlik büyük harf
-    }
-    else kb.deger[a] += t;
+// ayar: { alanAdı: { sinir, duzen:"sayi"|"harf", buyuk:"hep"|"ilk", yer, rakamSirasi } }
+function klavyeKur({ pencere, klavyeEl, ayar, onOnayla, onVazgec, hataEl, onayYazi = "Onayla" }) {
+  const d = { alan:null, deger:{}, duzen:"sayi", buyuk:true };
+  const harfYaz = t => d.buyuk ? t : t.toLocaleLowerCase("tr-TR");
+  function goster() {
+    pencere.querySelectorAll("[data-kbalan]").forEach(el => {
+      const a = el.dataset.kbalan, v = d.deger[a] || "", aktif = a === d.alan;
+      el.classList.toggle("aktif", aktif);
+      el.innerHTML = (v ? esc(v).replace(/ /g, "&nbsp;") : `<span class="yer">${esc(ayar[a].yer)}</span>`) + (aktif ? '<span class="imlec"></span>' : "");
+    });
   }
-  $("nHata").textContent = "";
-  kbGoster();
+  function ciz() {
+    const harf = d.duzen === "harf";
+    let rows = harf ? KB_HARF : KB_SAYI;
+    if (harf && ayar[d.alan].rakamSirasi) rows = [["1","2","3","4","5","6","7","8","9","0"], ...rows];
+    klavyeEl.className = "klavye" + (harf ? " harf" : "");
+    let h = rows.map(r => {
+      const kol = harf
+        ? r.map(t => t === "boşluk" ? "3fr" : (t === "123" || t === "⌫" || t === "⇧") ? "1.4fr" : "1fr")
+        : (r.length === 2 ? ["3fr","1fr"] : r.map(() => "1fr"));
+      return `<div class="kb-sira" style="grid-template-columns:${kol.map(k => `minmax(0,${k})`).join(" ")}">` + r.map(t => {
+        let sinif = "", etiket = t;
+        if (["⌫","ABC","123","boşluk","Temizle","⇧"].includes(t)) sinif = "ik";
+        if (t === "⇧" && d.buyuk) sinif += " acik";
+        if (t === "-") sinif = "tire";
+        if (harf && t.length === 1 && !"-⌫⇧0123456789".includes(t)) etiket = harfYaz(t);
+        const aria = {"⌫":"Sil","-":"Tire","⇧":"Büyük harf"}[t];
+        return `<button type="button" class="${sinif}" data-k="${esc(t)}"${aria ? ` aria-label="${aria}"` : ""}>${esc(etiket)}</button>`;
+      }).join("") + `</div>`;
+    }).join("");
+    h += `<div class="kb-sira" style="grid-template-columns:minmax(0,1fr) minmax(0,2fr)">
+            <button type="button" class="ik" data-k="vazgec">Vazgeç</button><button type="button" class="ok" data-k="onayla">${esc(onayYazi)}</button></div>`;
+    klavyeEl.innerHTML = h;
+  }
+  function sec(a) {
+    d.alan = a; d.duzen = ayar[a].duzen;
+    d.buyuk = ayar[a].buyuk === "hep" || !d.deger[a];
+    ciz(); goster();
+  }
+  pencere.querySelectorAll("[data-kbalan]").forEach(el => el.onclick = () => sec(el.dataset.kbalan));
+  klavyeEl.addEventListener("click", e => {
+    const b = e.target.closest("[data-k]"); if (!b) return;
+    const t = b.dataset.k, a = d.alan, v = d.deger[a] || "";
+    if (t === "onayla") { onOnayla(); return; }
+    if (t === "vazgec") { onVazgec(); return; }
+    if (t === "ABC") { d.duzen = "harf"; ciz(); return; }
+    if (t === "123") { d.duzen = "sayi"; ciz(); return; }
+    if (t === "⇧") { d.buyuk = !d.buyuk; ciz(); return; }
+    if (t === "⌫") d.deger[a] = v.slice(0, -1);
+    else if (t === "Temizle") d.deger[a] = "";
+    else if (v.length < ayar[a].sinir) {
+      if (t === "boşluk") d.deger[a] = v + " ";
+      else if (d.duzen === "harf" && !"-0123456789".includes(t)) {
+        d.deger[a] = v + harfYaz(t);
+        if (ayar[a].buyuk === "ilk" && d.buyuk) { d.buyuk = false; ciz(); }   // tek seferlik büyük harf
+      }
+      else d.deger[a] = v + t;
+    }
+    if (hataEl) hataEl.textContent = "";
+    goster();
+  });
+  return { d, sec, ayarla(degerler, ilkAlan) { d.deger = { ...degerler }; sec(ilkAlan); } };
+}
+const notKb = klavyeKur({
+  pencere:$("notPencere"), klavyeEl:$("klavye"), hataEl:$("nHata"),
+  ayar:{ arac:{ sinir:12, duzen:"sayi", buyuk:"hep", yer:"örn. 5 veya 3-5" },
+         not:{ sinir:60, duzen:"harf", buyuk:"ilk", yer:"örn. çocuk aracı" } },
+  onOnayla:() => notKaydet(), onVazgec:() => $("notPencere").close()
 });
 function notAc(b) {
   notBilet = b;
   $("nBaslik").textContent = `Bilet No ${b.bilet}`;
-  kb.deger = { arac:b.arac || "", not:b.not || "" };
   $("nHata").textContent = "";
-  kbAlanSec("arac");
+  notKb.ayarla({ arac:b.arac || "", not:b.not || "" }, "arac");
   $("notPencere").showModal();
 }
 $("nIptal").onclick = () => $("notPencere").close();
 async function notKaydet() {
-  try { await Veri.guncelle(notBilet.id, { arac:kb.deger.arac.trim(), not:kb.deger.not.trim() }); $("notPencere").close(); }
+  try { await Veri.guncelle(notBilet.id, { arac:(notKb.d.deger.arac || "").trim(), not:(notKb.d.deger.not || "").trim() }); $("notPencere").close(); }
   catch (e) { $("nHata").textContent = "Kaydedilemedi. İnternet bağlantısını kontrol edin."; }
 }
 $("dKaydet").onclick = async () => {
