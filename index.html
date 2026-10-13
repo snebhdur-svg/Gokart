@@ -180,6 +180,16 @@ main{max-width:640px;margin:0 auto;padding:14px 12px 110px}
 .gd-ust b{font-size:1.3rem}
 .gd-alt{font-size:.9rem;color:var(--muted);margin-top:2px}
 .gd-bilet .islemler{margin-top:8px}
+/* Kategori sekmeleri */
+.kat-sekmeler{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;background:var(--bg);padding:4px;border-radius:10px;margin-bottom:14px}
+.kat-sekmeler button{background:transparent;color:var(--muted);padding:10px 2px;font-weight:600;font-size:.95rem}
+.kat-sekmeler button[aria-selected="true"]{background:var(--paper);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.15)}
+/* Ödeme filtresi */
+.filtre{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin-bottom:12px}
+.filtre button{padding:9px 2px;font-weight:600;font-size:.85rem;white-space:nowrap;background:var(--paper);color:var(--muted);border:1.5px solid var(--line)}
+.filtre button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.filtre button.tumu{background:transparent;border-style:dashed}
+.kat-rozet{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.05em;padding:3px 7px;border-radius:5px;color:#fff;margin-bottom:6px}
 /* Ücret girişi */
 .ucret-bas{display:flex;justify-content:space-between;align-items:center;margin:-2px 0 10px;font-weight:600}
 .ucret-bas small{color:var(--muted);font-weight:500}
@@ -189,8 +199,10 @@ main{max-width:640px;margin:0 auto;padding:14px 12px 110px}
 .anahtar[aria-checked="true"] i{background:var(--ok)}
 .anahtar[aria-checked="true"] i::after{left:23px}
 /* İptal damgası */
-.bilet .damga{position:absolute;right:62px;top:50%;transform:translateY(-50%) rotate(-12deg);border:3px solid var(--turuncu);color:var(--turuncu);
-  font-family:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;font-weight:700;font-size:1.7rem;letter-spacing:.08em;padding:0 10px;border-radius:6px;pointer-events:none}
+.bilet .damga{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-11deg);z-index:3;width:86%;text-align:center;
+  border:6px solid var(--turuncu);color:var(--turuncu);background:color-mix(in srgb, var(--paper) 40%, transparent);
+  font-family:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;font-weight:700;font-size:clamp(3rem,16vw,5rem);line-height:1.05;
+  letter-spacing:.14em;padding:4px 0;border-radius:10px;pointer-events:none;box-shadow:0 0 0 3px color-mix(in srgb, var(--turuncu) 25%, transparent)}
 .bilet.iptalli{opacity:.85;border-color:var(--turuncu)}
 .bilet.iptalli .koc{background:var(--turuncu-soft);color:var(--turuncu-ink)}
 .bilet.iptalli .cip{background:var(--turuncu);color:#fff}
@@ -447,6 +459,13 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
   <!-- ADMIN -->
   <!-- ÖDEMELER (yalnızca yönetici) -->
   <section id="sayfa-odemeler" class="gizli">
+    <div class="filtre" id="odemeFiltre" role="group" aria-label="Ödeme filtresi">
+      <button type="button" data-filtre="gokart" aria-pressed="true">Go Kart</button>
+      <button type="button" data-filtre="airsoft" aria-pressed="true">Airsoft</button>
+      <button type="button" data-filtre="rodeo" aria-pressed="true">Rodeo</button>
+      <button type="button" data-filtre="jeton" aria-pressed="true">Jeton</button>
+      <button type="button" data-filtre="tumu" class="tumu">Tümü</button>
+    </div>
     <div class="odeme-toplam" id="odemeToplam"></div>
     <p class="genel-toplam" id="genelToplam"></p>
     <div class="liste" id="listeOdeme"></div>
@@ -454,7 +473,22 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
 
   <section id="sayfa-admin" class="gizli">
     <div class="kart">
-      <h2>Yeni bilet</h2>
+      <div class="kat-sekmeler" role="tablist">
+        <button type="button" role="tab" data-kat="gokart" aria-selected="true">Go Kart</button>
+        <button type="button" role="tab" data-kat="airsoft" aria-selected="false">Airsoft</button>
+        <button type="button" role="tab" data-kat="rodeo" aria-selected="false">Rodeo</button>
+        <button type="button" role="tab" data-kat="jeton" aria-selected="false">Jeton</button>
+      </div>
+      <div id="katDiger" class="gizli">
+        <div class="alanlar">
+          <div><label for="eNakit">Nakit (₺)</label><input id="eNakit" inputmode="decimal" autocomplete="off" placeholder="0"></div>
+          <div><label for="eKart">Kart (₺)</label><input id="eKart" inputmode="decimal" autocomplete="off" placeholder="0"></div>
+        </div>
+        <button class="btn sari" id="eKaydet">Ödemeyi kaydet</button>
+        <p class="hata" id="eHata"></p>
+        <p class="ipucu" id="eSon" style="margin:4px 0 0"></p>
+      </div>
+      <div id="katGokart">
       <div class="alanlar">
         <div class="tam">
           <label for="fBilet">Bilet numarası</label>
@@ -477,6 +511,7 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
       </div>
       <button class="btn sari" id="kaydetBtn">Bileti kaydet</button>
       <p class="hata" id="formHata"></p>
+      </div>
     </div>
     <div class="sayaclar" data-sayac></div>
     <button class="btn ince grup-btn" data-grup-olustur>＋ Grup oluştur</button>
@@ -571,10 +606,13 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
     <div class="ap-bas"><div><h2 class="num" style="font-size:1.35rem" id="gBaslik">Grup oluştur</h2><div id="gAltBaslik" style="color:var(--muted);font-size:.92rem"></div></div>
       <button type="button" class="kapat" id="gKapat" aria-label="Kapat">✕</button></div>
     <div id="gAdim1">
-      <label>Grup adı</label>
-      <div class="kb-alan" data-kbalan="grup" role="textbox" tabindex="0"></div>
-      <p class="hata" id="gHata1" style="margin-top:-6px"></p>
-      <div id="gKlavye" class="klavye"></div>
+      <label for="gAdInput">Grup adı</label>
+      <input id="gAdInput" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="6" placeholder="örn. A veya A1" enterkeyhint="go">
+      <p class="hata" id="gHata1"></p>
+      <div class="dugmeler">
+        <button type="button" class="btn ince" id="gVazgec">Vazgeç</button>
+        <button type="button" class="btn sari" id="gOk">OK</button>
+      </div>
     </div>
     <div id="gAdim2" class="gizli">
       <div id="gSecim" class="ap-liste"></div>
@@ -894,21 +932,21 @@ function grupTabloCiz() {
 setInterval(() => { if (rol && bugunListe.some(b => b.grup)) grupTabloCiz(); }, 15000);
 
 let gAd = "", gSecili = new Set(), gVar = null;
-const grupKb = klavyeKur({
-  pencere:$("grupPencere"), klavyeEl:$("gKlavye"), hataEl:$("gHata1"), onayYazi:"OK",
-  ayar:{ grup:{ sinir:6, duzen:"harf", buyuk:"hep", yer:"örn. A veya A1", rakamSirasi:true } },
-  onOnayla:() => grupAdim2((grupKb.d.deger.grup || "").trim().toLocaleUpperCase("tr-TR")),
-  onVazgec:() => $("grupPencere").close()
-});
+const grupAdOku = () => $("gAdInput").value.trim().toLocaleUpperCase("tr-TR");
+$("gOk").onclick = () => grupAdim2(grupAdOku());
+$("gVazgec").onclick = () => $("grupPencere").close();
+$("gAdInput").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); grupAdim2(grupAdOku()); } };
+$("gAdInput").oninput = () => { $("gHata1").textContent = ""; };
 function grupAc(ad) {
   $("gHata1").textContent = ""; $("gHata2").textContent = "";
   if (ad) { grupAdim2(ad); }
   else {
     $("gBaslik").textContent = "Grup oluştur"; $("gAltBaslik").textContent = "1. adım: grup adını yazıp OK'e basın";
     $("gAdim1").classList.remove("gizli"); $("gAdim2").classList.add("gizli");
-    grupKb.ayarla({ grup:"" }, "grup");
+    $("gAdInput").value = "";
   }
   if (!$("grupPencere").open) $("grupPencere").showModal();
+  if (!ad) setTimeout(() => $("gAdInput").focus(), 60);
 }
 function grupAdim2(ad) {
   if (!ad) { $("gHata1").textContent = "Grup adını yazın."; return; }
@@ -943,7 +981,7 @@ $("gSecim").addEventListener("click", e => {
 $("gGeri").onclick = () => {
   $("gBaslik").textContent = "Grup oluştur"; $("gAltBaslik").textContent = "1. adım: grup adını yazıp OK'e basın";
   $("gAdim2").classList.add("gizli"); $("gAdim1").classList.remove("gizli");
-  grupKb.ayarla({ grup:gAd }, "grup");
+  $("gAdInput").value = gAd; setTimeout(() => $("gAdInput").focus(), 60);
 };
 $("gKapat").onclick = () => $("grupPencere").close();
 async function grupYaz(secilenler) {
@@ -1078,7 +1116,12 @@ function bugunuDinle() {
   ilkYukleme = true; oncekiIdler = new Set();
   $("bugunYazi").textContent = gunYazi(bugun);
   gunAbonelik = Veri.gunuDinle(bugun, l => { bugunListe = l; bugunuCiz(); });
+  if (ekAbonelik) ekAbonelik();
+  ekAbonelik = db.collection("odemeler").where("gun","==",bugun).onSnapshot(
+    sn => { ekOdemeler = sn.docs.map(d => ({ id:d.id, ...d.data() })); odemeCiz(bugunListe); },
+    e => console.error(e));
 }
+let ekOdemeler = [], ekAbonelik = null;
 function gunleriDinle() {
   if (gunlerAbonelik) return;
   gunlerAbonelik = Veri.gunleriDinle(gunler => {
@@ -1201,6 +1244,36 @@ $("kaydetBtn").onclick = kaydet;
   i < son ? $(a[i+1]).focus() : kaydet();
 });
 
+/* ---------- Kategoriler: Go Kart / Airsoft / Rodeo / Jeton ---------- */
+const KATEGORI = { gokart:"Go Kart", airsoft:"Airsoft", rodeo:"Rodeo", jeton:"Jeton" };
+const KAT_RENK = { gokart:"#123540", airsoft:"#56702A", rodeo:"#8A5A2B", jeton:"#7B4BC4" };
+let aktifKat = "gokart";
+document.querySelectorAll(".kat-sekmeler [data-kat]").forEach(b => b.onclick = () => {
+  aktifKat = b.dataset.kat;
+  document.querySelectorAll(".kat-sekmeler [data-kat]").forEach(x => x.setAttribute("aria-selected", x === b));
+  $("katGokart").classList.toggle("gizli", aktifKat !== "gokart");
+  $("katDiger").classList.toggle("gizli", aktifKat === "gokart");
+  $("eKaydet").textContent = `${KATEGORI[aktifKat]} ödemesini kaydet`;
+  $("eHata").textContent = ""; $("eSon").textContent = "";
+});
+async function ekOdemeKaydet() {
+  if (rol !== "admin" || aktifKat === "gokart") return;
+  const n = tutarOku($("eNakit").value), k = tutarOku($("eKart").value);
+  if (n === undefined || k === undefined) { $("eHata").textContent = "Ücreti rakamla girin (örn. 500 veya 250,50)."; return; }
+  if (!n && !k) { $("eHata").textContent = "Nakit veya kart tutarı girin."; return; }
+  const simdi = new Date(), kat = aktifKat;
+  $("eKaydet").disabled = true;
+  try {
+    await db.collection("odemeler").add({ tur:kat, gun:gunAnahtari(simdi), saat:saatYazi(simdi), zaman:simdi.getTime(), nakit:n, kart:k });
+    $("eNakit").value = ""; $("eKart").value = ""; $("eHata").textContent = "";
+    $("eSon").textContent = `✓ ${KATEGORI[kat]}: ${[n ? tl(n) + " nakit" : "", k ? tl(k) + " kart" : ""].filter(Boolean).join(", ")} kaydedildi (${saatYazi(simdi)})`;
+  } catch (e) { console.error(e); $("eHata").textContent = "Kaydedilemedi. İnternet bağlantısını kontrol edin."; }
+  $("eKaydet").disabled = false;
+}
+$("eKaydet").onclick = ekOdemeKaydet;
+$("eNakit").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); $("eKart").focus(); } };
+$("eKart").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); ekOdemeKaydet(); } };
+
 /* ---------- Ücret (demo) ---------- */
 const tl = n => { const v = Math.round((n || 0) * 100) / 100, k = Number.isInteger(v) ? 0 : 2;
   return v.toLocaleString("tr-TR", { minimumFractionDigits:k, maximumFractionDigits:k }) + "\u00A0₺"; };
@@ -1223,18 +1296,47 @@ function ucretAnahtarGoster() {
 $("ucretAnahtar").onclick = () => { try { localStorage.setItem("ucretGirisi", ucretAcik() ? "0" : "1"); } catch {} ucretAnahtarGoster(); };
 ucretAnahtarGoster();
 
+const odemeFiltre = new Set(["gokart","airsoft","rodeo","jeton"]);
+function filtreGoster() {
+  document.querySelectorAll("#odemeFiltre [data-filtre]").forEach(b => {
+    if (b.dataset.filtre !== "tumu") b.setAttribute("aria-pressed", odemeFiltre.has(b.dataset.filtre));
+  });
+}
+$("odemeFiltre").addEventListener("click", e => {
+  const b = e.target.closest("[data-filtre]"); if (!b) return;
+  const f = b.dataset.filtre;
+  if (f === "tumu") Object.keys(KATEGORI).forEach(k => odemeFiltre.add(k));
+  else odemeFiltre.has(f) ? odemeFiltre.delete(f) : odemeFiltre.add(f);
+  filtreGoster(); odemeCiz(bugunListe);
+});
 function odemeCiz(l) {
+  const kayitlar = [
+    ...l.map(b => ({ ...b, tip:"gokart" })),
+    ...ekOdemeler.map(o => ({ ...o, tip:o.tur, ek:true }))
+  ].filter(x => odemeFiltre.has(x.tip));
   let tn = 0, tk = 0, in_ = 0, ik = 0;
-  l.forEach(b => { if (b.iade) { in_ += b.nakit || 0; ik += b.kart || 0; } else { tn += b.nakit || 0; tk += b.kart || 0; } });
+  kayitlar.forEach(b => { if (b.iade) { in_ += b.nakit || 0; ik += b.kart || 0; } else { tn += b.nakit || 0; tk += b.kart || 0; } });
   $("odemeToplam").innerHTML = `
     <div class="ot-kutu"><div class="et">Toplam nakit</div><div class="deger num">${tl(tn)}</div>${in_ ? `<div class="iade">İade nakit: ${tl(in_)}</div>` : ""}</div>
     <div class="ot-kutu kart-k"><div class="et">Toplam kart</div><div class="deger num">${tl(tk)}</div>${ik ? `<div class="iade">İade kart: ${tl(ik)}</div>` : ""}</div>`;
-  $("genelToplam").innerHTML = `Genel toplam: <b>${tl(tn + tk)}</b>${in_ + ik ? `, iade: <b style="color:var(--danger)">${tl(in_ + ik)}</b>` : ""}`;
-  const sirali = [...l].sort((a, b) => (b.zaman || 0) - (a.zaman || 0));
+  const secilen = Object.keys(KATEGORI).filter(k => odemeFiltre.has(k)).map(k => KATEGORI[k]);
+  $("genelToplam").innerHTML = `${secilen.length === 4 ? "Genel toplam" : esc(secilen.join(" + ") || "Seçim yok") + " toplamı"}: <b>${tl(tn + tk)}</b>`
+    + (in_ + ik ? `, iade: <b style="color:var(--danger)">${tl(in_ + ik)}</b>` : "");
+  const sirali = kayitlar.sort((a, b) => (b.zaman || 0) - (a.zaman || 0));
   $("listeOdeme").innerHTML = sirali.map(b => {
     const tutar = (b.nakit ? `<div><b class="num">${tl(b.nakit)}</b><span>nakit</span></div>` : "")
                 + (b.kart ? `<div><b class="num">${tl(b.kart)}</b><span>kart</span></div>` : "")
                 || `<div class="yok">Ücret girilmedi</div>`;
+    const rozet = `<span class="kat-rozet" style="background:${KAT_RENK[b.tip] || "#123540"}">${esc((KATEGORI[b.tip] || b.tip).toUpperCase())}</span>`;
+    if (b.ek) {
+      return `<div class="odeme ${b.nakit ? "nakitli" : "kartli"}">
+        ${rozet}
+        <div class="od-ust"><div class="od-tutar">${tutar}</div></div>
+        <div class="od-alt">${esc(KATEGORI[b.tip] || b.tip)} ödemesi, satış ${esc(b.saat)}</div>
+        <div class="islemler"><button class="kucuk" data-od="ekFiyat" data-id="${esc(b.id)}">Düzenle</button>
+          <button class="kucuk sil" data-od="ekSil" data-id="${esc(b.id)}">Sil</button></div>
+      </div>`;
+    }
     const sinif = [b.iade ? "iade" : b.iptal ? "iptal" : "", b.fiyatKontrol ? "kontrol" : "", b.nakit ? "nakitli" : b.kart ? "kartli" : ""].join(" ");
     const cip = (b.iade ? `<span class="od-cip iade">İADE</span>` : b.iptal ? `<span class="od-cip iptal">İPTAL</span>` : "")
               + (b.fiyatKontrol ? `<span class="od-cip kontrol">SÜRE DEĞİŞTİ</span>` : "");
@@ -1242,15 +1344,32 @@ function odemeCiz(l) {
     if (b.iptal && !b.iade) dug += `<button class="kucuk iade-btn" data-od="iade" data-id="${esc(b.id)}">İade yapıldı</button>`;
     if (b.iade) dug += `<button class="kucuk" data-od="iadeGeri" data-id="${esc(b.id)}">İadeyi geri al</button>`;
     return `<div class="odeme ${sinif}">
+      ${rozet}
       <div class="od-ust"><div class="od-tutar">${tutar}</div><div class="od-cipler">${cip}</div></div>
       <div class="od-alt">No ${esc(b.bilet)}, ${esc(b.kisi)} kişi, ${esc(b.sure)} dakika, satış ${esc(b.saat)}</div>
       <div class="islemler">${dug}</div>
     </div>`;
-  }).join("") || `<div class="bos">Bugün henüz bilet yok.</div>`;
+  }).join("") || `<div class="bos">${odemeFiltre.size ? "Bu seçim için bugün ödeme yok." : "Filtreden en az bir bölüm seçin."}</div>`;
 }
 let fiyatBilet = null;
 $("listeOdeme").addEventListener("click", async e => {
   const t = e.target.closest("[data-od]"); if (!t || rol !== "admin") return;
+  if (t.dataset.od === "ekFiyat" || t.dataset.od === "ekSil") {
+    const o = ekOdemeler.find(x => x.id === t.dataset.id); if (!o) return;
+    if (t.dataset.od === "ekSil") {
+      if (!confirm(`${KATEGORI[o.tur]} ödemesi (${o.saat}) silinsin mi?`)) return;
+      try { await db.collection("odemeler").doc(o.id).delete(); } catch (err) { console.error(err); hataGoster(); }
+      return;
+    }
+    fiyatBilet = { ...o, ek:true };
+    $("fBaslik").textContent = `${KATEGORI[o.tur]} ödemesi`;
+    $("fAlt").textContent = `Satış ${o.saat}`;
+    $("fdNakit").value = o.nakit ? String(o.nakit).replace(".", ",") : "";
+    $("fdKart").value = o.kart ? String(o.kart).replace(".", ",") : "";
+    $("fdHata").textContent = "";
+    $("fiyatPencere").showModal();
+    return;
+  }
   const b = bugunListe.find(x => x.id === t.dataset.id); if (!b) return;
   try {
     if (t.dataset.od === "fiyat") {
@@ -1276,7 +1395,11 @@ $("fdIptal").onclick = () => $("fiyatPencere").close();
 async function fiyatKaydet() {
   const n = tutarOku($("fdNakit").value), k = tutarOku($("fdKart").value);
   if (n === undefined || k === undefined) { $("fdHata").textContent = "Ücreti rakamla girin (örn. 500 veya 250,50)."; return; }
-  try { await Veri.guncelle(fiyatBilet.id, { nakit:n, kart:k, fiyatKontrol:false }); $("fiyatPencere").close(); }
+  try {
+    if (fiyatBilet.ek) await db.collection("odemeler").doc(fiyatBilet.id).update({ nakit:n, kart:k });
+    else await Veri.guncelle(fiyatBilet.id, { nakit:n, kart:k, fiyatKontrol:false });
+    $("fiyatPencere").close();
+  }
   catch (e) { $("fdHata").textContent = "Kaydedilemedi. İnternet bağlantısını kontrol edin."; }
 }
 $("fdKaydet").onclick = fiyatKaydet;
