@@ -21,7 +21,7 @@
   --accent:#F2B705; --accent-ink:#2A2000;
   --ok:#2E8B57; --ok-soft:#DCF1E4; --ok-ink:#0F3D24;
   --danger:#C0392B; --danger-soft:#FBE1DD; --danger-ink:#5A120A;
-  --turuncu:#E0761B; --turuncu-soft:#FDE8D4; --turuncu-ink:#5C2C05;
+  --turuncu:#E0761B; --turuncu-soft:#FDE8D4; --turuncu-ink:#5C2C05; --sari-yanip:#FFE58A;
   box-sizing:border-box;
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
@@ -31,14 +31,14 @@
     --bg:#0E1D22; --paper:#17292F; --ink:#E6EEF0; --muted:#8FA5AC; --line:#2B434A;
     --ok:#4CB97C; --ok-soft:#173A28; --ok-ink:#D4F5E2;
     --danger:#E5604B; --danger-soft:#43201B; --danger-ink:#FFDCD5;
-    --turuncu:#F0923F; --turuncu-soft:#45290F; --turuncu-ink:#FFE3CA;
+    --turuncu:#F0923F; --turuncu-soft:#45290F; --turuncu-ink:#FFE3CA; --sari-yanip:#5C4A00;
   }
 }
 :root[data-theme="dark"]{
   --bg:#0E1D22; --paper:#17292F; --ink:#E6EEF0; --muted:#8FA5AC; --line:#2B434A;
   --ok:#4CB97C; --ok-soft:#173A28; --ok-ink:#D4F5E2;
   --danger:#E5604B; --danger-soft:#43201B; --danger-ink:#FFDCD5;
-  --turuncu:#F0923F; --turuncu-soft:#45290F; --turuncu-ink:#FFE3CA;
+  --turuncu:#F0923F; --turuncu-soft:#45290F; --turuncu-ink:#FFE3CA; --sari-yanip:#5C4A00;
 }
 *,*::before,*::after{box-sizing:inherit}
 html{height:100%}
@@ -180,6 +180,51 @@ main{max-width:640px;margin:0 auto;padding:14px 12px 110px}
 .gd-ust b{font-size:1.3rem}
 .gd-alt{font-size:.9rem;color:var(--muted);margin-top:2px}
 .gd-bilet .islemler{margin-top:8px}
+/* Ücret girişi */
+.ucret-bas{display:flex;justify-content:space-between;align-items:center;margin:-2px 0 10px;font-weight:600}
+.ucret-bas small{color:var(--muted);font-weight:500}
+.anahtar{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--ink);padding:4px;font-weight:600;font-size:.95rem}
+.anahtar i{width:46px;height:26px;border-radius:13px;background:var(--line);position:relative;transition:background .2s}
+.anahtar i::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s}
+.anahtar[aria-checked="true"] i{background:var(--ok)}
+.anahtar[aria-checked="true"] i::after{left:23px}
+/* İptal damgası */
+.bilet .damga{position:absolute;right:62px;top:50%;transform:translateY(-50%) rotate(-12deg);border:3px solid var(--turuncu);color:var(--turuncu);
+  font-family:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;font-weight:700;font-size:1.7rem;letter-spacing:.08em;padding:0 10px;border-radius:6px;pointer-events:none}
+.bilet.iptalli{opacity:.85;border-color:var(--turuncu)}
+.bilet.iptalli .koc{background:var(--turuncu-soft);color:var(--turuncu-ink)}
+.bilet.iptalli .cip{background:var(--turuncu);color:#fff}
+.bilet.iptalli .no{text-decoration:line-through;text-decoration-color:var(--turuncu)}
+.sag-kolon{display:flex;flex-direction:column;align-items:center;gap:2px;margin:-6px -4px 0 0;flex:none}
+.sag-kolon .tutamac{margin:0}
+.iptal-kucuk{background:transparent;color:var(--turuncu);font-size:.72rem;font-weight:700;padding:3px 4px;border:1px solid var(--turuncu);border-radius:5px;line-height:1.1}
+/* Ödemeler */
+.odeme-toplam{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.ot-kutu{background:var(--paper);border-radius:10px;padding:12px;border-top:4px solid var(--ok)}
+.ot-kutu.kart-k{border-top-color:#2F6FDE}
+.ot-kutu .et{font-size:.78rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.ot-kutu .deger{font-size:1.6rem;line-height:1.15;white-space:nowrap;overflow-wrap:normal}
+.ot-kutu .iade{font-size:.88rem;color:var(--danger);margin-top:2px}
+.genel-toplam{text-align:center;color:var(--muted);margin:0 0 14px;font-size:.95rem}
+.genel-toplam b{color:var(--ink)}
+.odeme{background:var(--paper);border-radius:10px;padding:12px;border-left:5px solid var(--line)}
+.od-ust{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.od-tutar div{line-height:1.15}
+.od-tutar b{font-size:1.75rem}
+.od-tutar span{font-size:.95rem;color:var(--muted);margin-left:4px}
+.od-tutar .yok{color:var(--muted);font-size:1.05rem;font-style:italic}
+.od-cipler{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.od-alt{font-size:.88rem;color:var(--muted);margin-top:4px}
+.od-cip{font-size:.72rem;font-weight:700;letter-spacing:.05em;padding:3px 7px;border-radius:5px;color:#fff;white-space:nowrap}
+.od-cip.iptal{background:var(--turuncu)} .od-cip.iade{background:var(--danger)} .od-cip.kontrol{background:var(--accent);color:var(--accent-ink)}
+.odeme.nakitli{border-left-color:var(--ok)} .odeme.kartli{border-left-color:#2F6FDE}
+.odeme.iptal{border-left-color:var(--turuncu)}
+.odeme.iade{border-left-color:var(--danger)} .odeme.iade .od-tutar b{text-decoration:line-through;color:var(--muted)}
+.odeme.kontrol{border-left-color:var(--accent);animation:yanip 1.2s ease-in-out infinite}
+@keyframes yanip{0%,100%{background:var(--paper)}50%{background:var(--sari-yanip)}}
+@media (prefers-reduced-motion:reduce){.odeme.kontrol{animation:none;background:var(--sari-yanip)}}
+.kucuk.kontrol-btn{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.kucuk.iade-btn{color:var(--danger);border-color:var(--danger)}
 .yeni{animation:gel .9s ease-out}
 @keyframes gel{from{box-shadow:0 0 0 4px var(--accent)}to{box-shadow:0 0 0 0 transparent}}
 @media (prefers-reduced-motion:reduce){.yeni{animation:none}.bilet{transition:none}}
@@ -400,6 +445,13 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
   </section>
 
   <!-- ADMIN -->
+  <!-- ÖDEMELER (yalnızca yönetici) -->
+  <section id="sayfa-odemeler" class="gizli">
+    <div class="odeme-toplam" id="odemeToplam"></div>
+    <p class="genel-toplam" id="genelToplam"></p>
+    <div class="liste" id="listeOdeme"></div>
+  </section>
+
   <section id="sayfa-admin" class="gizli">
     <div class="kart">
       <h2>Yeni bilet</h2>
@@ -417,6 +469,12 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
           <input id="fSure" inputmode="numeric" autocomplete="off" placeholder="örn. 20">
         </div>
       </div>
+      <div class="ucret-bas"><span>Ücret girişi <small>(demo)</small></span>
+        <button type="button" class="anahtar" id="ucretAnahtar" role="switch" aria-checked="true"><i></i><b>Açık</b></button></div>
+      <div class="alanlar" id="ucretAlanlar">
+        <div><label for="fNakit">Nakit (₺)</label><input id="fNakit" inputmode="decimal" autocomplete="off" placeholder="0"></div>
+        <div><label for="fKart">Kart (₺)</label><input id="fKart" inputmode="decimal" autocomplete="off" placeholder="0"></div>
+      </div>
       <button class="btn sari" id="kaydetBtn">Bileti kaydet</button>
       <p class="hata" id="formHata"></p>
     </div>
@@ -433,9 +491,28 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
   <button data-sayfa="gecmis"><span class="ik">📅</span>Geçmiş</button>
   <button data-sayfa="pist"><span class="ik">🏁</span>Pist</button>
   <button data-sayfa="admin"><span class="ik">🔑</span>Yönetici</button>
+  <button data-sayfa="odemeler"><span class="ik">💳</span>Ödemeler</button>
 </nav>
 
 <!-- Düzenleme penceresi -->
+<!-- Fiyat düzenleme penceresi -->
+<dialog id="fiyatPencere">
+  <form method="dialog">
+    <h2 style="margin:0 0 4px;font-size:1.2rem" id="fBaslik">Fiyatı düzenle</h2>
+    <p id="fAlt" style="margin:0 0 14px;color:var(--muted)"></p>
+    <div class="alanlar">
+      <div><label for="fdNakit">Nakit (₺)</label><input id="fdNakit" inputmode="decimal" autocomplete="off" placeholder="0"></div>
+      <div><label for="fdKart">Kart (₺)</label><input id="fdKart" inputmode="decimal" autocomplete="off" placeholder="0"></div>
+    </div>
+    <p class="ipucu" style="margin:0 0 8px">Fiyat değişikliği biletin süresini etkilemez.</p>
+    <p class="hata" id="fdHata"></p>
+    <div class="dugmeler">
+      <button type="button" class="btn ince" id="fdIptal">Vazgeç</button>
+      <button type="button" class="btn sari" id="fdKaydet">Tamam</button>
+    </div>
+  </form>
+</dialog>
+
 <dialog id="duzenle">
   <form method="dialog">
     <h2 style="margin:0 0 14px;font-size:1.2rem">Bileti düzenle</h2>
@@ -704,9 +781,7 @@ function biletHTML(b, mod, yeni) {
       butonlar += `<button class="kucuk bitir" data-is="bitir" data-id="${esc(b.id)}">⏹ Bitir</button>`;
     }
     if (aktif) butonlar += `<button class="kucuk pasifle" data-is="durum" data-id="${esc(b.id)}">Pasif yap</button>`;
-    if (aktif && mod === "admin") butonlar += ip
-      ? `<button class="kucuk iptal-btn" data-is="iptal" data-id="${esc(b.id)}">İptali geri al</button>`
-      : `<button class="kucuk iptal-btn" data-is="iptal" data-id="${esc(b.id)}">İptal</button>`;
+    else if (mod === "admin" && ip) butonlar += `<button class="kucuk iptal-btn" data-is="iptal" data-id="${esc(b.id)}">İptali geri al</button>`;
     else if (mod === "admin") butonlar += `<button class="kucuk aktifle" data-is="durum" data-id="${esc(b.id)}">Aktif yap</button>`;
     butonlar += `<button class="kucuk" data-is="not" data-id="${esc(b.id)}">🚗 ${b.arac || b.not ? "Araç / not" : "Araç ekle"}</button>`;
   }
@@ -718,11 +793,12 @@ function biletHTML(b, mod, yeni) {
   return `<div class="bilet surukle-oge${yeni ? " yeni" : ""}" data-id="${esc(b.id)}" data-aktif="${aktif ? 1 : 0}"
       data-basladi="${zb.basladi ? 1 : 0}" data-birikim="${zb.birikim}" data-calisiyor="${zb.calisiyor || ""}" data-sure="${parseInt(b.sure) || 0}" data-iptal="${b.iptal ? 1 : 0}">
     <div class="koc">${b.grup ? `<span class="grup-rozet" style="background:${grupRenk(b.grup)}">${esc(b.grup)}</span>` : ""}<span class="saat num">${esc(b.saat)}</span><span class="saat-et">satış</span></div>
+    ${b.iptal ? `<span class="damga">İPTAL</span>` : ""}
     <div class="govde">
       <div class="ust">
         <div class="no num"><small>No</small>${esc(b.bilet)}</div>
         <span class="cip"></span>
-        ${yonetim ? `<button class="tutamac" aria-label="Sürükleyerek sırayı değiştir">⠿</button>` : ""}
+        ${yonetim ? `<div class="sag-kolon"><button class="tutamac" aria-label="Sürükleyerek sırayı değiştir">⠿</button>${mod === "admin" && aktif && !b.iptal ? `<button class="iptal-kucuk" data-is="iptal" data-id="${esc(b.id)}">Bilet iptal</button>` : ""}</div>` : ""}
       </div>
       <div class="detay"><b>${esc(b.kisi)}</b> kişi, <b>${esc(b.sure)}</b> dakika</div>
       ${(b.arac || b.not) ? `<div class="not-satir"${yonetim ? ` data-is="not" data-id="${esc(b.id)}"` : ""}>
@@ -739,16 +815,16 @@ function kartGuncelle(k, simdi = Date.now()) {
   const birikim = +k.dataset.birikim || 0, cal = +k.dataset.calisiyor || 0, sure = +k.dataset.sure * 60000;
   const gecen = birikim + (cal ? simdi - cal : 0);
   let sinif, etiket, bitis = "";
-  if (!aktif) { sinif = "pasif"; etiket = "PASİF"; }
-  else if (k.dataset.iptal === "1") { sinif = "iptal"; etiket = "İPTAL"; }
+  const iptal = k.dataset.iptal === "1";
+  if (!aktif || iptal) { sinif = "pasif"; etiket = iptal ? "İPTAL" : "PASİF"; }
   else if (!basladi) { sinif = "aktif"; etiket = "BEKLİYOR"; }
   else if (gecen > sure) { sinif = "doldu"; etiket = "SÜRE DOLDU"; }
   else { sinif = "aktif"; etiket = cal ? "PİSTTE" : "DURDU"; }
-  if (basladi && aktif && sinif !== "iptal") bitis = cal ? "Bitiş " + saatYazi(new Date(cal + sure - birikim)) : "Durduruldu";
+  if (basladi && aktif && !iptal) bitis = cal ? "Bitiş " + saatYazi(new Date(cal + sure - birikim)) : "Durduruldu";
   k.classList.toggle("aktif", sinif === "aktif");
   k.classList.toggle("doldu", sinif === "doldu");
   k.classList.toggle("pasif", sinif === "pasif");
-  k.classList.toggle("iptal", sinif === "iptal");
+  k.classList.toggle("iptalli", iptal);
   k.classList.toggle("durdu", basladi && !cal);
   const c = k.querySelector(".cip"); if (c.textContent !== etiket) c.textContent = etiket;
   const kr = k.querySelector(".krono"); if (kr) kr.textContent = sureYazi(gecen);
@@ -902,13 +978,13 @@ async function biletIptalDegistir(b) {
   if (rol !== "admin") return;
   try {
     if (!b.iptal) {
-      if (!confirm(`${b.bilet} numaralı bilet İPTAL edilsin mi?`)) return;
-      const z = zamanBilgi(b), a = { iptal:true };
+      if (!confirm(`${b.bilet} numaralı bilet İPTAL edilsin mi?\n\nBilet pasif olur, pistte 30 dk "İPTAL" olarak görünür.`)) return;
+      const z = zamanBilgi(b), a = { iptal:true, aktif:false, pasifZaman:Date.now() };
       if (z.calisiyor) Object.assign(a, { calisiyor:null, birikim:z.birikim + (Date.now() - z.calisiyor), durma:null });
       await Veri.guncelle(b.id, a);
     } else {
-      if (!confirm(`${b.bilet} numaralı biletin iptali geri alınsın mı?`)) return;
-      await Veri.guncelle(b.id, { iptal:false });
+      if (!confirm(`${b.bilet} numaralı biletin iptali geri alınsın mı? Bilet tekrar aktif olur.`)) return;
+      await Veri.guncelle(b.id, { iptal:false, aktif:true, pasifZaman:null, iade:false });
     }
   } catch (err) { console.error(err); hataGoster(); }
 }
@@ -937,9 +1013,9 @@ function gdCiz() {
   $("gdAltBaslik").textContent = `${g.biletler.length} bilet, ${g.kisi} kişi`;
   const satirlar = sirala(g.biletler).map(b => {
     const z = zamanBilgi(b);
-    const [sinif, etiket] = !aktifMi(b) ? ["pasif","PASİF"] : b.iptal ? ["iptal","İPTAL"] : z.basladi ? ["aktif","PİSTTE"] : ["aktif","BEKLİYOR"];
+    const [sinif, etiket] = b.iptal ? ["iptal","İPTAL"] : !aktifMi(b) ? ["pasif","PASİF"] : z.basladi ? ["aktif","PİSTTE"] : ["aktif","BEKLİYOR"];
     let dug = `<button class="kucuk" data-gd="cikar" data-id="${esc(b.id)}">Gruptan çıkar</button>`;
-    if (rol === "admin" && aktifMi(b)) dug += `<button class="kucuk iptal-btn" data-gd="iptal" data-id="${esc(b.id)}">${b.iptal ? "İptali geri al" : "Bileti iptal et"}</button>`;
+    if (rol === "admin" && (aktifMi(b) || b.iptal)) dug += `<button class="kucuk iptal-btn" data-gd="iptal" data-id="${esc(b.id)}">${b.iptal ? "İptali geri al" : "Bileti iptal et"}</button>`;
     return `<div class="gd-bilet ${sinif}">
       <div class="gd-ust"><b class="num">No ${esc(b.bilet)}</b><span class="cip">${etiket}</span></div>
       <div class="gd-alt">${esc(b.kisi)} kişi, ${esc(b.sure)} dakika${b.arac ? ", araç " + esc(b.arac) : ""}${b.not ? ", " + esc(b.not) : ""}</div>
@@ -986,6 +1062,7 @@ function bugunuCiz() {
   listeCiz($("listeAdmin"), l, "admin", null);
   document.querySelectorAll("[data-sayac]").forEach(e => e.innerHTML = sayacHTML(l, e.dataset.sayac !== "pist"));
   grupTabloCiz();
+  odemeCiz(l);
   if ($("gdPencere") && $("gdPencere").open) gdCiz();
   oncekiIdler = new Set(l.map(b => b.id)); ilkYukleme = false;
 }
@@ -1053,7 +1130,7 @@ function menuGuncelle() {
 function sayfaAc(ad) {
   if (rol !== "admin") ad = "pist";   // Pist sadece kendi sayfasını görür
   aktifSayfa = ad;
-  ["bugun","gecmis","pist","admin"].forEach(s => $("sayfa-"+s).classList.toggle("gizli", s !== ad));
+  ["bugun","gecmis","pist","admin","odemeler"].forEach(s => $("sayfa-"+s).classList.toggle("gizli", s !== ad));
   document.querySelectorAll("#biletNav button").forEach(b => b.setAttribute("aria-current", b.dataset.sayfa === ad));
   if (ad === "gecmis") gunleriDinle();
   window.scrollTo(0, 0);
@@ -1098,23 +1175,112 @@ async function kaydet() {
   if (kaydediliyor || rol !== "admin") return;
   const bilet = $("fBilet").value.trim(), kisi = $("fKisi").value.trim(), sure = $("fSure").value.trim();
   const h = kontrol(bilet, kisi, sure); $("formHata").textContent = h; if (h) return;
+  let nakit = null, kart = null;
+  if (ucretAcik()) {
+    nakit = tutarOku($("fNakit").value); kart = tutarOku($("fKart").value);
+    if (nakit === undefined || kart === undefined) { $("formHata").textContent = "Ücreti rakamla girin (örn. 500 veya 250,50)."; return; }
+  }
   if (bugunListe.some(b => b.bilet === bilet) && !confirm(`${bilet} numaralı bilet bugün zaten girilmiş. Yine de kaydedilsin mi?`)) return;
   const simdi = new Date();
   const enUst = bugunListe.length ? Math.min(...bugunListe.map(siraDegeri)) : 0;
   kaydediliyor = true; $("kaydetBtn").textContent = "Kaydediliyor...";
   try {
     await Veri.ekle({ bilet, kisi, sure, gun:gunAnahtari(simdi), saat:saatYazi(simdi), zaman:simdi.getTime(),
-                      sira: enUst - 1024, aktif:true, baslama:null, calisiyor:null, birikim:0 });
+                      sira: enUst - 1024, aktif:true, baslama:null, calisiyor:null, birikim:0, nakit, kart });
     $("fBilet").value = sonrakiNumara(bilet);
-    $("fKisi").value = ""; $("fSure").value = "";
+    $("fKisi").value = ""; $("fSure").value = ""; $("fNakit").value = ""; $("fKart").value = "";
     $("fKisi").focus();
   } catch (e) { $("formHata").textContent = "Kayıt yapılamadı. İnternet bağlantısını kontrol edin."; console.error(e); }
   kaydediliyor = false; $("kaydetBtn").textContent = "Bileti kaydet";
 }
 $("kaydetBtn").onclick = kaydet;
-["fBilet","fKisi","fSure"].forEach((id, i, a) => $(id).onkeydown = e => {
-  if (e.key === "Enter") { e.preventDefault(); i < a.length - 1 ? $(a[i+1]).focus() : kaydet(); }
+["fBilet","fKisi","fSure","fNakit","fKart"].forEach((id, i, a) => $(id).onkeydown = e => {
+  if (e.key !== "Enter") return;
+  e.preventDefault();
+  const son = ucretAcik() ? a.length - 1 : 2;
+  i < son ? $(a[i+1]).focus() : kaydet();
 });
+
+/* ---------- Ücret (demo) ---------- */
+const tl = n => { const v = Math.round((n || 0) * 100) / 100, k = Number.isInteger(v) ? 0 : 2;
+  return v.toLocaleString("tr-TR", { minimumFractionDigits:k, maximumFractionDigits:k }) + "\u00A0₺"; };
+// "500", "1.500", "250,50", "12.5" -> sayı; boş -> null; geçersiz -> undefined
+function tutarOku(s) {
+  s = String(s || "").trim().replace(/\s|₺|tl/gi, "");
+  if (!s) return null;
+  if (s.includes(",")) s = s.replace(/\./g, "").replace(",", ".");
+  else if (/^\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, "");
+  const n = Number(s);
+  return isFinite(n) && n >= 0 ? Math.round(n * 100) / 100 : undefined;
+}
+const ucretAcik = () => { try { return localStorage.getItem("ucretGirisi") !== "0"; } catch { return true; } };
+function ucretAnahtarGoster() {
+  const acik = ucretAcik();
+  $("ucretAnahtar").setAttribute("aria-checked", acik);
+  $("ucretAnahtar").querySelector("b").textContent = acik ? "Açık" : "Kapalı";
+  $("ucretAlanlar").classList.toggle("gizli", !acik);
+}
+$("ucretAnahtar").onclick = () => { try { localStorage.setItem("ucretGirisi", ucretAcik() ? "0" : "1"); } catch {} ucretAnahtarGoster(); };
+ucretAnahtarGoster();
+
+function odemeCiz(l) {
+  let tn = 0, tk = 0, in_ = 0, ik = 0;
+  l.forEach(b => { if (b.iade) { in_ += b.nakit || 0; ik += b.kart || 0; } else { tn += b.nakit || 0; tk += b.kart || 0; } });
+  $("odemeToplam").innerHTML = `
+    <div class="ot-kutu"><div class="et">Toplam nakit</div><div class="deger num">${tl(tn)}</div>${in_ ? `<div class="iade">İade nakit: ${tl(in_)}</div>` : ""}</div>
+    <div class="ot-kutu kart-k"><div class="et">Toplam kart</div><div class="deger num">${tl(tk)}</div>${ik ? `<div class="iade">İade kart: ${tl(ik)}</div>` : ""}</div>`;
+  $("genelToplam").innerHTML = `Genel toplam: <b>${tl(tn + tk)}</b>${in_ + ik ? `, iade: <b style="color:var(--danger)">${tl(in_ + ik)}</b>` : ""}`;
+  const sirali = [...l].sort((a, b) => (b.zaman || 0) - (a.zaman || 0));
+  $("listeOdeme").innerHTML = sirali.map(b => {
+    const tutar = (b.nakit ? `<div><b class="num">${tl(b.nakit)}</b><span>nakit</span></div>` : "")
+                + (b.kart ? `<div><b class="num">${tl(b.kart)}</b><span>kart</span></div>` : "")
+                || `<div class="yok">Ücret girilmedi</div>`;
+    const sinif = [b.iade ? "iade" : b.iptal ? "iptal" : "", b.fiyatKontrol ? "kontrol" : "", b.nakit ? "nakitli" : b.kart ? "kartli" : ""].join(" ");
+    const cip = (b.iade ? `<span class="od-cip iade">İADE</span>` : b.iptal ? `<span class="od-cip iptal">İPTAL</span>` : "")
+              + (b.fiyatKontrol ? `<span class="od-cip kontrol">SÜRE DEĞİŞTİ</span>` : "");
+    let dug = `<button class="kucuk${b.fiyatKontrol ? " kontrol-btn" : ""}" data-od="fiyat" data-id="${esc(b.id)}">${b.fiyatKontrol ? "Fiyatı kontrol et" : "Fiyatı düzenle"}</button>`;
+    if (b.iptal && !b.iade) dug += `<button class="kucuk iade-btn" data-od="iade" data-id="${esc(b.id)}">İade yapıldı</button>`;
+    if (b.iade) dug += `<button class="kucuk" data-od="iadeGeri" data-id="${esc(b.id)}">İadeyi geri al</button>`;
+    return `<div class="odeme ${sinif}">
+      <div class="od-ust"><div class="od-tutar">${tutar}</div><div class="od-cipler">${cip}</div></div>
+      <div class="od-alt">No ${esc(b.bilet)}, ${esc(b.kisi)} kişi, ${esc(b.sure)} dakika, satış ${esc(b.saat)}</div>
+      <div class="islemler">${dug}</div>
+    </div>`;
+  }).join("") || `<div class="bos">Bugün henüz bilet yok.</div>`;
+}
+let fiyatBilet = null;
+$("listeOdeme").addEventListener("click", async e => {
+  const t = e.target.closest("[data-od]"); if (!t || rol !== "admin") return;
+  const b = bugunListe.find(x => x.id === t.dataset.id); if (!b) return;
+  try {
+    if (t.dataset.od === "fiyat") {
+      fiyatBilet = b;
+      $("fBaslik").textContent = `No ${b.bilet} fiyatı`;
+      $("fAlt").textContent = `${b.kisi} kişi, ${b.sure} dakika` + (b.fiyatKontrol ? ". Süre değiştirildi, fiyatı kontrol edin." : "");
+      $("fdNakit").value = b.nakit ? String(b.nakit).replace(".", ",") : "";
+      $("fdKart").value = b.kart ? String(b.kart).replace(".", ",") : "";
+      $("fdHata").textContent = "";
+      $("fiyatPencere").showModal();
+    }
+    if (t.dataset.od === "iade") {
+      if (!confirm(`No ${b.bilet} için İADE yapıldı olarak işaretlensin mi?\n\nTutar toplamlardan düşülür.`)) return;
+      await Veri.guncelle(b.id, { iade:true });
+    }
+    if (t.dataset.od === "iadeGeri") {
+      if (!confirm(`No ${b.bilet} için iade işareti kaldırılsın mı?`)) return;
+      await Veri.guncelle(b.id, { iade:false });
+    }
+  } catch (err) { console.error(err); hataGoster(); }
+});
+$("fdIptal").onclick = () => $("fiyatPencere").close();
+async function fiyatKaydet() {
+  const n = tutarOku($("fdNakit").value), k = tutarOku($("fdKart").value);
+  if (n === undefined || k === undefined) { $("fdHata").textContent = "Ücreti rakamla girin (örn. 500 veya 250,50)."; return; }
+  try { await Veri.guncelle(fiyatBilet.id, { nakit:n, kart:k, fiyatKontrol:false }); $("fiyatPencere").close(); }
+  catch (e) { $("fdHata").textContent = "Kaydedilemedi. İnternet bağlantısını kontrol edin."; }
+}
+$("fdKaydet").onclick = fiyatKaydet;
+["fdNakit","fdKart"].forEach((id, i) => $(id).onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); i === 0 ? $("fdKart").focus() : fiyatKaydet(); } });
 
 /* ---------- Bilet işlemleri ---------- */
 const bul = id => bugunListe.find(b => b.id === id) || gunDetayListe.find(b => b.id === id);
@@ -1151,7 +1317,7 @@ document.addEventListener("click", async e => {
         await Veri.guncelle(b.id, a);
       } else {
         if (!confirm(`${b.bilet} numaralı bilet tekrar AKTİF yapılsın mı?`)) return;
-        await Veri.guncelle(b.id, {aktif:true, pasifZaman:null});
+        await Veri.guncelle(b.id, {aktif:true, pasifZaman:null, iptal:false});
       }
     }
     if (is === "sil") {
@@ -1257,7 +1423,9 @@ async function notKaydet() {
 $("dKaydet").onclick = async () => {
   const bilet = $("dBilet").value.trim(), kisi = $("dKisi").value.trim(), sure = $("dSure").value.trim(), saat = $("dSaat").value;
   const h = kontrol(bilet, kisi, sure) || (!saat ? "Saati girin." : ""); $("dHata").textContent = h; if (h) return;
-  try { await Veri.guncelle(duzenlenen.id, {bilet, kisi, sure, saat, zaman:zamanHesapla(duzenlenen.gun, saat)}); $("duzenle").close(); }
+  const a = {bilet, kisi, sure, saat, zaman:zamanHesapla(duzenlenen.gun, saat)};
+  if (String(sure) !== String(duzenlenen.sure)) a.fiyatKontrol = true;   // ödemeler sekmesinde sarı yanıp söner
+  try { await Veri.guncelle(duzenlenen.id, a); $("duzenle").close(); }
   catch (e) { $("dHata").textContent = "Kaydedilemedi. İnternet bağlantısını kontrol edin."; }
 };
 
