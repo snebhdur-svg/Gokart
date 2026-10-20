@@ -2431,8 +2431,63 @@ function bSiraBirak(tur, ids, degisti) {
 /* =====================================================================
    KAFE TAKİBİ
    ===================================================================== */
-// Menü fotoğrafındaki ürünler buraya eklenecek: { ad, fiyat, kategori }
-const MENU_TOHUM = [];
+// Menü fotoğraflarındaki ürünler (sırasıyla). İlk açılışta bir kez menüye yüklenir.
+const MENU_SURUM = 1;
+const MENU_TOHUM = [
+  { ad:"Hamburger", fiyat:580, kategori:"Hamburger & Ana Yemekler" },
+  { ad:"Köfte Porsiyon", fiyat:580, kategori:"Hamburger & Ana Yemekler" },
+  { ad:"Köri Soslu Tavuk", fiyat:550, kategori:"Hamburger & Ana Yemekler" },
+  { ad:"Soya Soslu Tavuk", fiyat:550, kategori:"Hamburger & Ana Yemekler" },
+  { ad:"Barbekü Soslu Tavuk", fiyat:550, kategori:"Hamburger & Ana Yemekler" },
+  { ad:"Fettuccine", fiyat:550, kategori:"Makarnalar" },
+  { ad:"Köri Soslu Penne", fiyat:550, kategori:"Makarnalar" },
+  { ad:"Penne Bolognez", fiyat:550, kategori:"Makarnalar" },
+  { ad:"Kaşarlı Tost", fiyat:350, kategori:"Tostlar" },
+  { ad:"Sucuklu Tost", fiyat:350, kategori:"Tostlar" },
+  { ad:"Karışık Tost", fiyat:400, kategori:"Tostlar" },
+  { ad:"Kavurmalı Kaşarlı Tost", fiyat:450, kategori:"Tostlar" },
+  { ad:"Patates Tabağı", fiyat:300, kategori:"Atıştırmalıklar" },
+  { ad:"Combo Tabağı", fiyat:420, kategori:"Atıştırmalıklar" },
+  { ad:"Çikolatalar", fiyat:100, kategori:"Atıştırmalıklar" },
+  { ad:"Kuruyemiş Tabağı", fiyat:150, kategori:"Atıştırmalıklar" },
+  { ad:"Magnolia (Muzlu)", fiyat:300, kategori:"Tatlılar" },
+  { ad:"Magnolia (Oreolu)", fiyat:300, kategori:"Tatlılar" },
+  { ad:"Magnolia (Çilekli)", fiyat:300, kategori:"Tatlılar" },
+  { ad:"Profiterol", fiyat:300, kategori:"Tatlılar" },
+  { ad:"Supangle", fiyat:300, kategori:"Tatlılar" },
+  { ad:"Türk Kahvesi", fiyat:180, kategori:"Kahveler" },
+  { ad:"Espresso", fiyat:180, kategori:"Kahveler" },
+  { ad:"Americano", fiyat:220, kategori:"Kahveler" },
+  { ad:"Latte", fiyat:250, kategori:"Kahveler" },
+  { ad:"Cappuccino", fiyat:250, kategori:"Kahveler" },
+  { ad:"Mocha", fiyat:250, kategori:"Kahveler" },
+  { ad:"Çay", fiyat:50, kategori:"Sıcak İçecekler" },
+  { ad:"Portakal", fiyat:50, kategori:"Sıcak İçecekler" },
+  { ad:"Limon", fiyat:50, kategori:"Sıcak İçecekler" },
+  { ad:"Karadut", fiyat:50, kategori:"Sıcak İçecekler" },
+  { ad:"Kuşburnu", fiyat:50, kategori:"Sıcak İçecekler" },
+  { ad:"Kivi", fiyat:50, kategori:"Sıcak İçecekler" },
+  { ad:"Çikolata", fiyat:50, kategori:"Sıcak İçecekler" },
+  { ad:"Iced Latte", fiyat:250, kategori:"Soğuk İçecekler" },
+  { ad:"Ice Americano", fiyat:220, kategori:"Soğuk İçecekler" },
+  { ad:"Cold Mocha", fiyat:250, kategori:"Soğuk İçecekler" },
+  { ad:"Caramel Iced Latte", fiyat:250, kategori:"Soğuk İçecekler" },
+  { ad:"Vanilla Iced Latte", fiyat:250, kategori:"Soğuk İçecekler" },
+  { ad:"Churchill", fiyat:100, kategori:"Soğuk İçecekler" },
+  { ad:"Starbucks Kutu Kahve", fiyat:250, kategori:"Kutu İçecekler" },
+  { ad:"Nescafé Kutu Kahve", fiyat:160, kategori:"Kutu İçecekler" },
+  { ad:"Red Bull", fiyat:180, kategori:"Kutu İçecekler" },
+  { ad:"Powerade", fiyat:180, kategori:"Kutu İçecekler" },
+  { ad:"Coca-Cola", fiyat:130, kategori:"Kutu İçecekler" },
+  { ad:"Sprite", fiyat:130, kategori:"Kutu İçecekler" },
+  { ad:"Fanta", fiyat:130, kategori:"Kutu İçecekler" },
+  { ad:"Fuse Tea", fiyat:130, kategori:"Kutu İçecekler" },
+  { ad:"Cappy", fiyat:130, kategori:"Kutu İçecekler" },
+  { ad:"Capri-Sun", fiyat:100, kategori:"Kutu İçecekler" },
+  { ad:"Soda", fiyat:80, kategori:"Kutu İçecekler" },
+  { ad:"Meyveli Soda", fiyat:90, kategori:"Kutu İçecekler" },
+  { ad:"Su", fiyat:30, kategori:"Kutu İçecekler" },
+];
 let menu = [], masalar = [], kBasladi = false, kCizimBekliyor = false, kBugun = gunAnahtari();
 let acikMasa = null, mSecUrun = null, mSecAdet = 1, odemeMasa = null, duzenlenenUrun = null;
 const MC = () => db.collection("menu"), MS = () => db.collection("masalar");
@@ -2458,18 +2513,25 @@ function kafeBaslat() {
   MC().onSnapshot(sn => {
     kDurumGoster(true);
     menu = sn.docs.map(d => ({ id:d.id, ...d.data() }));
-    if (!tohumKontrol && !sn.metadata.fromCache) {
-      tohumKontrol = true;
-      if (!menu.length && MENU_TOHUM.length) {
-        const bt = db.batch();
-        MENU_TOHUM.forEach((u, i) => bt.set(MC().doc(), { ad:u.ad, fiyat:u.fiyat, kategori:u.kategori || "", sira:(i + 1) * 1024 }));
-        bt.commit().catch(console.error);
-      }
-    }
+    if (!tohumKontrol && !sn.metadata.fromCache) { tohumKontrol = true; menuTohumla(); }
     kafeCiz();
   }, e => { kDurumGoster(false); console.error(e); });
   masaDinle();
   setInterval(() => { const g = gunAnahtari(); if (g !== kBugun) { kBugun = g; masaDinle(); } }, 30000);
+}
+// Hazır menüyü bir kez yükle; aynı isimde ürün zaten varsa tekrar eklemez
+async function menuTohumla() {
+  try {
+    const ayar = db.collection("ayarlar").doc("kafeMenu");
+    const d = await ayar.get();
+    if (d.exists && (d.data().surum || 0) >= MENU_SURUM) return;
+    const var_ = new Set(menu.map(u => trNorm(u.ad)));
+    let sira = menu.length ? Math.max(...menu.map(u => u.sira || 0)) : 0;
+    const bt = db.batch();
+    MENU_TOHUM.forEach(u => { if (!var_.has(trNorm(u.ad))) bt.set(MC().doc(), { ad:u.ad, fiyat:u.fiyat, kategori:u.kategori, sira:(sira += 1024) }); });
+    bt.set(ayar, { surum:MENU_SURUM }, { merge:true });
+    await bt.commit();
+  } catch (e) { console.error(e); }
 }
 // Bugünün masaları + önceki günden açık kalan masalar
 let mAbone = [];
