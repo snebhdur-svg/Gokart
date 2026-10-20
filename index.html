@@ -180,6 +180,45 @@ main{max-width:640px;margin:0 auto;padding:14px 12px 110px}
 .gd-ust b{font-size:1.3rem}
 .gd-alt{font-size:.9rem;color:var(--muted);margin-top:2px}
 .gd-bilet .islemler{margin-top:8px}
+/* ===== Kafe ===== */
+.masa{display:block;width:100%;text-align:left;background:var(--paper);color:var(--ink);border-radius:12px;padding:12px 14px;border:2px solid var(--ok)}
+.masa.odendi{border-color:transparent;opacity:.6}
+.masa-ust{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.masa-ust b{font-size:1.6rem;line-height:1}
+.masa .cip{background:var(--ok);color:#fff}
+.masa.odendi .cip{background:var(--line);color:var(--muted)}
+.masa-ack{color:var(--muted);font-size:.95rem;margin-top:3px;font-style:italic}
+.masa-alt{display:flex;justify-content:space-between;align-items:baseline;margin-top:6px;gap:8px}
+.masa-alt span{color:var(--muted);font-size:.92rem}
+.masa-alt b{font-size:1.5rem}
+.menu-bolum{margin:4px 4px 8px;font-size:.82rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.menu-liste{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.menu-urun{display:flex;align-items:center;gap:8px;background:var(--paper);border-radius:10px;padding:6px 6px 6px 14px;transition:transform .18s ease, box-shadow .18s ease}
+.menu-urun .mu-ad{flex:1;min-width:0;font-weight:600;font-size:1.05rem;text-align:left;background:transparent;color:var(--ink);padding:8px 0}
+.menu-urun .mu-fiyat{font-weight:700;white-space:nowrap}
+.menu-urun .tutamac{margin:0}
+.menu-urun.kalkik{z-index:10;box-shadow:0 14px 30px rgba(0,0,0,.28)}
+.surukleme-acik .menu-urun:not(.kalkik){transition:transform .18s ease}
+.kalem{display:flex;align-items:center;gap:8px;background:var(--bg);border-radius:10px;padding:8px 10px}
+.kalem .k-ad{flex:1;min-width:0}
+.kalem .k-ad b{display:block;font-size:1.02rem}
+.kalem .k-ad span{font-size:.85rem;color:var(--muted)}
+.kalem .k-tutar{font-weight:700;white-space:nowrap}
+.adet{display:flex;align-items:center;gap:4px}
+.adet button{width:34px;height:34px;background:var(--paper);border:1.5px solid var(--line);color:var(--ink);font-size:1.1rem;font-weight:700;padding:0}
+.adet b{min-width:26px;text-align:center;font-size:1.05rem}
+.k-sil{background:transparent;color:var(--danger);font-size:1.1rem;width:30px;height:34px;padding:0}
+.sonuc{display:block;width:100%;text-align:left;background:var(--bg);color:var(--ink);padding:10px 12px;border:2px solid transparent}
+.sonuc.acik{border-color:var(--accent);background:var(--paper)}
+.sonuc-ust{display:flex;justify-content:space-between;gap:8px;font-weight:600}
+.sonuc-ekle{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px}
+.sonuc-ekle .btn{width:auto;padding:10px 18px}
+.m-alt{position:sticky;bottom:0;background:var(--paper);padding:12px 0 calc(16px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);margin-top:10px}
+.m-toplam{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.m-toplam span{font-weight:600;color:var(--muted)}
+.m-toplam b{font-size:2rem}
+.oa-toplam{display:flex;justify-content:space-between;align-items:baseline;background:var(--bg);border-radius:10px;padding:10px 14px;margin:8px 0 14px}
+.oa-toplam b{font-size:2rem}
 /* Kategori sekmeleri */
 .kat-sekmeler{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;background:var(--bg);padding:4px;border-radius:10px;margin-bottom:14px}
 .kat-sekmeler button{background:transparent;color:var(--muted);padding:10px 1px;font-weight:600;font-size:.88rem;white-space:nowrap}
@@ -396,6 +435,7 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
       <p class="aciklama">Hangi bölüme girmek istiyorsunuz?</p>
       <button class="secim-buyuk" id="secBilet"><span>🎟️</span><b>Bilet takibi</b></button>
       <button class="secim-buyuk" id="secBatarya"><span>🔋</span><b>Batarya takibi</b></button>
+      <button class="secim-buyuk" id="secKafe"><span>☕</span><b>Kafe takibi</b></button>
     </div>
     <div id="bGirisGorunum" class="gizli">
       <p class="aciklama">Batarya takibi şifresini girin.</p>
@@ -404,6 +444,14 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
       <p class="hata" id="bSifreHata"></p>
       <button class="btn sari" id="bGirisBtn">Giriş yap</button>
       <button class="btn ince" id="bGirisGeri">‹ Geri</button>
+    </div>
+    <div id="kGirisGorunum" class="gizli">
+      <p class="aciklama">Kafe takibi şifresini girin.</p>
+      <label for="kSifre">Şifre</label>
+      <input id="kSifre" type="password" inputmode="numeric" autocomplete="off">
+      <p class="hata" id="kSifreHata"></p>
+      <button class="btn sari" id="kGirisBtn">Giriş yap</button>
+      <button class="btn ince" id="kGirisGeri">‹ Geri</button>
     </div>
   </div>
 </section>
@@ -674,6 +722,96 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
 </dialog>
 </div>
 
+<!-- ================= KAFE TAKİBİ ================= -->
+<div id="kafeUygulama" class="gizli">
+<header>
+  <div class="bas-ust">
+    <h1 class="num">Kafe Takip</h1>
+    <div class="rol"><button id="kCikisBtn">Çıkış</button></div>
+  </div>
+  <div class="alt">
+    <span id="kOzet"></span>
+    <span id="kDurum" class="durum"><i></i><span>Bağlanıyor</span></span>
+  </div>
+</header>
+<main>
+  <section id="kSayfa-satislar">
+    <button class="btn sari" id="masaEkleBtn" style="margin-bottom:12px">＋ Masa ekle</button>
+    <div class="sayaclar" id="kSayac"></div>
+    <div class="liste" id="masaListe"></div>
+  </section>
+  <section id="kSayfa-menu" class="gizli">
+    <button class="btn sari" id="urunEkleBtn" style="margin-bottom:8px">＋ Ürün ekle</button>
+    <p class="ipucu">Ürüne dokunarak adını, fiyatını veya bölümünü değiştirin. Sırayı ⠿ ile değiştirebilirsiniz.</p>
+    <div id="menuListe"></div>
+  </section>
+</main>
+<nav id="kNav">
+  <button data-ksayfa="satislar" aria-current="true"><span class="ik">🧾</span>Satışlar</button>
+  <button data-ksayfa="menu" aria-current="false"><span class="ik">📋</span>Menü</button>
+</nav>
+
+<dialog id="masaPencere" class="alt-pencere">
+  <div class="ap-ic" style="padding-bottom:0">
+    <div class="ap-bas"><div><h2 class="num" id="mBaslik" style="font-size:1.5rem"></h2><div id="mDurumYazi" style="color:var(--muted);font-size:.92rem"></div></div>
+      <button type="button" class="kapat" id="mKapat" aria-label="Kapat">✕</button></div>
+    <label for="mAciklama">Açıklama</label>
+    <input id="mAciklama" autocomplete="off" placeholder="örn. bahçe, 4 kişi" maxlength="80" enterkeyhint="done">
+    <h3 class="ap-baslik" style="margin-top:14px">Siparişler</h3>
+    <div id="mKalemler" class="ap-liste"></div>
+    <div id="mEkleKutu">
+      <h3 class="ap-baslik">Ürün ekle</h3>
+      <input id="mAra" type="search" autocomplete="off" placeholder="Menüde ara (örn. çay)" enterkeyhint="search">
+      <div id="mSonuc" class="ap-liste" style="margin-top:8px"></div>
+    </div>
+    <div class="m-alt">
+      <div class="m-toplam"><span>Toplam</span><b class="num" id="mToplam">0 ₺</b></div>
+      <div id="mAltDugmeler"></div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="odemeAlPencere">
+  <form method="dialog">
+    <h2 style="margin:0 0 4px;font-size:1.2rem" id="oaBaslik">Ödeme</h2>
+    <div class="oa-toplam"><span>Toplam</span><b class="num" id="oaToplam"></b></div>
+    <div class="alanlar">
+      <div><label for="oaNakit">Nakit (₺)</label><input id="oaNakit" inputmode="decimal" autocomplete="off" placeholder="0"></div>
+      <div><label for="oaKart">Kart (₺)</label><input id="oaKart" inputmode="decimal" autocomplete="off" placeholder="0"></div>
+    </div>
+    <div class="hizli" style="margin-top:-4px">
+      <button type="button" class="kucuk" data-oa="nakit">Tamamı nakit</button>
+      <button type="button" class="kucuk" data-oa="kart">Tamamı kart</button>
+      <button type="button" class="kucuk" data-oa="kalanKart">Kalanı kart</button>
+    </div>
+    <p class="ipucu" id="oaFark" style="margin:6px 0 0"></p>
+    <p class="hata" id="oaHata"></p>
+    <div class="dugmeler">
+      <button type="button" class="btn ince" id="oaIptal">Vazgeç</button>
+      <button type="button" class="btn sari" id="oaOnay">Ödendi</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="urunPencere">
+  <form method="dialog">
+    <h2 style="margin:0 0 14px;font-size:1.2rem" id="uBaslik">Ürün</h2>
+    <div class="alanlar">
+      <div class="tam"><label for="uAd">Ürün adı</label><input id="uAd" autocomplete="off" placeholder="örn. Türk kahvesi"></div>
+      <div><label for="uFiyat">Fiyat (₺)</label><input id="uFiyat" inputmode="decimal" autocomplete="off" placeholder="0"></div>
+      <div><label for="uKat">Bölüm</label><input id="uKat" autocomplete="off" list="kategoriListe" placeholder="örn. Sıcak içecekler"></div>
+    </div>
+    <datalist id="kategoriListe"></datalist>
+    <p class="hata" id="uHata"></p>
+    <div class="dugmeler">
+      <button type="button" class="btn ince" id="uIptal">Vazgeç</button>
+      <button type="button" class="btn sari" id="uKaydet">Kaydet</button>
+    </div>
+    <button type="button" class="btn ince sil-btn gizli" id="uSil" style="margin-top:12px">Ürünü menüden sil</button>
+  </form>
+</dialog>
+</div>
+
 <!-- ================= BATARYA TAKİBİ ================= -->
 <div id="bataryaUygulama" class="gizli">
 <header>
@@ -756,7 +894,7 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
    Şifreler açık yazılmaz, özet (hash) olarak saklanır.
    Yönetici: 4141   Pist: 0000
    ========================================================= */
-const SIFRE_OZET = { admin: "gvi5xj4k17", pist: "1qg2d0b5m92", batarya: "1qg2d0b5m92" };  // Batarya: 0000
+const SIFRE_OZET = { admin: "gvi5xj4k17", pist: "1qg2d0b5m92", batarya: "1qg2d0b5m92", kafe: "1qg2d0b5m92" };  // Batarya: 0000
 
 const firebaseConfig = {
   apiKey: "AIzaSyAhFKv9979KOfyg7nLM0PE-jJDhyjzEtPw",
@@ -831,7 +969,7 @@ const Veri = {
   },
   gunleriDinle(cb) {
     return db.collection("gunler").orderBy("tarih","desc").limit(365).onSnapshot(
-      s => cb(s.docs.map(d => d.data()).filter(g => (g.sayi||0) + (g.odemeSayi||0) > 0)), e => console.error(e));
+      s => cb(s.docs.map(d => d.data()).filter(g => (g.sayi||0) + (g.odemeSayi||0) + (g.kafeSayi||0) > 0)), e => console.error(e));
   }
 };
 function durum(bagli) {
@@ -1176,6 +1314,9 @@ function bugunuDinle() {
   ekAbonelik = db.collection("odemeler").where("gun","==",bugun).onSnapshot(
     sn => { ekOdemeler = sn.docs.map(d => ({ id:d.id, ...d.data() })); odemeCiz(bugunListe); },
     e => console.error(e));
+  if (kafeOdemeAbonelik) kafeOdemeAbonelik();
+  kafeOdemeAbonelik = db.collection("masalar").where("gun","==",bugun).onSnapshot(
+    sn => { kafeOdenen = odenenMasalar(sn); odemeCiz(bugunListe); }, e => console.error(e));
 }
 let ekOdemeler = [], ekAbonelik = null;
 function gunleriDinle() {
@@ -1187,7 +1328,7 @@ function gunListesiCiz() {
   [...gunSecili].forEach(g => { if (!gunlerVeri.some(x => x.tarih === g)) gunSecili.delete(g); });
   $("gunListesi").innerHTML = gunlerVeri.map(g => {
     const sec = gunSecili.has(g.tarih);
-    const ozet = [`${g.sayi || 0} bilet`, g.odemeSayi ? `${g.odemeSayi} ödeme` : ""].filter(Boolean).join(", ");
+    const ozet = [`${g.sayi || 0} bilet`, g.odemeSayi ? `${g.odemeSayi} ödeme` : "", g.kafeSayi ? `${g.kafeSayi} kafe` : ""].filter(Boolean).join(", ");
     return `<div class="gun-satir${sec ? " secili" : ""}">
       <button class="gun-sec${sec ? " secili" : ""}" data-gunsec="${esc(g.tarih)}" aria-label="Günü seç"><i>${sec ? "✓" : ""}</i></button>
       <button class="gun" data-gun="${esc(g.tarih)}"><b>${esc(gunYazi(g.tarih))}${g.tarih === bugun ? " (bugün)" : ""}</b><span>${ozet} ›</span></button>
@@ -1203,11 +1344,13 @@ $("gunTumuSec").onclick = () => {
 };
 // Bir günün bilet ve ödeme kayıtlarını getir
 async function gunKayitlari(gun) {
-  const [b, o] = await Promise.all([
+  const [b, o, m] = await Promise.all([
     db.collection("biletler").where("gun","==",gun).get(),
-    db.collection("odemeler").where("gun","==",gun).get()
+    db.collection("odemeler").where("gun","==",gun).get(),
+    db.collection("masalar").where("gun","==",gun).get()
   ]);
-  return { biletler:b.docs.map(d => ({ id:d.id, ...d.data() })), odemeler:o.docs.map(d => ({ id:d.id, ...d.data() })) };
+  const al = x => x.docs.map(d => ({ id:d.id, ...d.data() }));
+  return { biletler:al(b), odemeler:al(o), masalar:al(m) };
 }
 // Çok sayıda yazmayı 400'lük paketlere böl
 async function topluYaz(islemler) {
@@ -1227,6 +1370,7 @@ async function gunleriSil(gunler) {
     const k = await gunKayitlari(g);
     k.biletler.forEach(b => islemler.push(bt => bt.delete(db.collection("biletler").doc(b.id))));
     k.odemeler.forEach(o => islemler.push(bt => bt.delete(db.collection("odemeler").doc(o.id))));
+    k.masalar.forEach(m => islemler.push(bt => bt.delete(db.collection("masalar").doc(m.id))));
     islemler.push(bt => bt.delete(db.collection("gunler").doc(g)));
   }
   await topluYaz(islemler);
@@ -1312,7 +1456,7 @@ document.querySelectorAll("#biletNav button").forEach(b => b.onclick = () => say
 let basladi = false;
 function uygulamayiBaslat(sayfa) {
   try { localStorage.setItem("mod", "bilet"); } catch {}
-  $("anaSecim").classList.add("gizli"); $("bataryaUygulama").classList.add("gizli");
+  $("anaSecim").classList.add("gizli"); $("bataryaUygulama").classList.add("gizli"); $("kafeUygulama").classList.add("gizli");
   $("biletUygulama").classList.remove("gizli");
   menuGuncelle();
   if (!basladi) { basladi = true; bugunuDinle(); } else bugunuCiz();
@@ -1333,6 +1477,10 @@ $("gunListesi").onclick = e => {
   detayAbonelik = Veri.gunuDinle(seciliGun, l => { gunDetayListe = l; gunDetayCiz(); gunOdemeCiz(); });
   gunEkAbonelik = db.collection("odemeler").where("gun","==",seciliGun).onSnapshot(
     sn => { gunEkOdemeler = sn.docs.map(d => ({ id:d.id, ...d.data() })); gunOdemeCiz(); }, err => console.error(err));
+  if (gunKafeAbonelik) gunKafeAbonelik();
+  gunKafeOdenen = [];
+  gunKafeAbonelik = db.collection("masalar").where("gun","==",seciliGun).onSnapshot(
+    sn => { gunKafeOdenen = odenenMasalar(sn); gunOdemeCiz(); }, err => console.error(err));
   window.scrollTo(0, 0);
 };
 let gunEkOdemeler = [], gunEkAbonelik = null;
@@ -1381,6 +1529,7 @@ $("gunuSilBtn").onclick = async () => {
 $("geriBtn").onclick = () => {
   if (detayAbonelik) { detayAbonelik(); detayAbonelik = null; }
   if (gunEkAbonelik) { gunEkAbonelik(); gunEkAbonelik = null; }
+  if (gunKafeAbonelik) { gunKafeAbonelik(); gunKafeAbonelik = null; }
   seciliGun = null;
   $("gunDetayKutu").classList.add("gizli"); $("gunListesiKutu").classList.remove("gizli");
 };
@@ -1424,8 +1573,8 @@ $("kaydetBtn").onclick = kaydet;
 });
 
 /* ---------- Kategoriler: Go Kart / Airsoft / Rodeo / Jeton ---------- */
-const KATEGORI = { gokart:"Go Kart", airsoft:"Airsoft", rodeo:"Rodeo", jeton:"Jeton", woist:"WOİST" };
-const KAT_RENK = { gokart:"#111111", airsoft:"#56702A", rodeo:"#8A5A2B", jeton:"#7B4BC4", woist:"#2F6FDE" };
+const KATEGORI = { gokart:"Go Kart", airsoft:"Airsoft", rodeo:"Rodeo", jeton:"Jeton", woist:"WOİST", kafe:"Kafe" };
+const KAT_RENK = { gokart:"#111111", airsoft:"#56702A", rodeo:"#8A5A2B", jeton:"#7B4BC4", woist:"#2F6FDE", kafe:"#B5462F" };
 let aktifKat = "gokart";
 document.querySelectorAll(".kat-sekmeler [data-kat]").forEach(b => b.onclick = () => {
   aktifKat = b.dataset.kat;
@@ -1518,17 +1667,20 @@ document.addEventListener("click", e => {
   odemePanelCiz(h);
 });
 const odemePanelCiz = h => h === "bugun" ? odemeCiz(bugunListe) : gunOdemeCiz();
-function odemeCiz(l) { odemeRender("bugun", l, ekOdemeler, "Bugün"); }
-function gunOdemeCiz() { if (seciliGun) odemeRender("gecmis", gunDetayListe, gunEkOdemeler, "Gün"); }
+function odemeCiz(l) { odemeRender("bugun", l, ekOdemeler, "Bugün", kafeOdenen); }
+function gunOdemeCiz() { if (seciliGun) odemeRender("gecmis", gunDetayListe, gunEkOdemeler, "Gün", gunKafeOdenen); }
+let kafeOdenen = [], kafeOdemeAbonelik = null, gunKafeOdenen = [], gunKafeAbonelik = null;
+const odenenMasalar = sn => sn.docs.map(d => ({ id:d.id, ...d.data() })).filter(m => m.durum === "odendi");
 
-function odemeRender(h, biletler, ekler, onEk) {
+function odemeRender(h, biletler, ekler, onEk, kafeler = []) {
   const panel = document.querySelector(`[data-odeme-panel="${h}"]`), d = odemeDurum[h];
   panel.querySelectorAll("[data-filtre]").forEach(b => { if (b.dataset.filtre !== "tumu") b.setAttribute("aria-pressed", d.kat.has(b.dataset.filtre)); });
   panel.querySelectorAll("[data-tur]").forEach(b => b.setAttribute("aria-pressed", d.tur.has(b.dataset.tur)));
   const N = d.tur.has("nakit"), K = d.tur.has("kart");
   const kayitlar = [
     ...biletler.map(b => ({ ...b, tip:"gokart" })),
-    ...ekler.map(o => ({ ...o, tip:o.tur, ek:true }))
+    ...ekler.map(o => ({ ...o, tip:o.tur, ek:true })),
+    ...kafeler.map(m => ({ ...m, tip:"kafe", kafe:true, zaman:m.kapanis || m.acilis }))
   ].filter(x => d.kat.has(x.tip))
    .filter(x => (N && K) ? true : (N && x.nakit) || (K && x.kart));
   let tn = 0, tk = 0, in_ = 0, ik = 0;
@@ -1550,6 +1702,15 @@ function odemeRender(h, biletler, ekler, onEk) {
   kayitlar.sort((a, b) => (b.zaman || 0) - (a.zaman || 0));
   panel.querySelector("[data-od-liste]").innerHTML = (N || K) ? (kayitlar.map(b => {
     const rozet = `<span class="kat-rozet" style="background:${KAT_RENK[b.tip] || "#111"}">${esc((KATEGORI[b.tip] || b.tip).toUpperCase())}</span>`;
+    if (b.kafe) {
+      const urunler = (b.kalemler || []).map(k => `${k.adet}× ${k.ad}`).join(", ");
+      return `<div class="odeme">
+        ${rozet}
+        <div class="od-ust"><div class="od-tutar">${tutarHTML(b)}</div></div>
+        <div class="od-alt">Masa ${esc(b.no)}${b.aciklama ? ", " + esc(b.aciklama) : ""}, ödeme ${esc(b.kapanisSaat || "")}</div>
+        ${urunler ? `<div class="od-alt">${esc(urunler)}</div>` : ""}
+      </div>`;
+    }
     if (b.ek) {
       const bilgi = b.tur === "woist"
         ? [b.ad, b.telefon, b.araclar ? "araçlar: " + b.araclar : "", b.sure ? b.sure + " dk" : "", "satış " + b.saat].filter(Boolean).map(esc).join(", ")
@@ -1860,6 +2021,7 @@ function birak(st) {
   surukleniyor = false;
   const tur = st.liste.dataset.tur;
   if (tur === "arac" || tur === "batarya") { bSiraBirak(tur, ids, st.hedef !== st.idx); return; }
+  if (tur === "menu") { menuSiraBirak(ids, st.hedef !== st.idx); return; }
   if (st.hedef === st.idx) { if (cizimBekliyor) { cizimBekliyor = false; bugunuCiz(); } return; }
   const degisenler = [], gorunen = new Set(ids); let k = 0;
   const tamSira = sirala(bugunListe).map(b => b.id).map(id => gorunen.has(id) ? ids[k++] : id);
@@ -2040,6 +2202,7 @@ function tohumla() {
 function bataryaBaslat() {
   try { localStorage.setItem("mod", "batarya"); } catch {}
   $("anaSecim").classList.add("gizli"); $("giris").classList.add("gizli"); $("biletUygulama").classList.add("gizli");
+  $("kafeUygulama").classList.add("gizli");
   $("bataryaUygulama").classList.remove("gizli");
   window.scrollTo(0, 0);
   if (bBasladi) { bCiz(); return; }
@@ -2266,11 +2429,330 @@ function bSiraBirak(tur, ids, degisti) {
 }
 
 /* =====================================================================
+   KAFE TAKİBİ
+   ===================================================================== */
+// Menü fotoğrafındaki ürünler buraya eklenecek: { ad, fiyat, kategori }
+const MENU_TOHUM = [];
+let menu = [], masalar = [], kBasladi = false, kCizimBekliyor = false, kBugun = gunAnahtari();
+let acikMasa = null, mSecUrun = null, mSecAdet = 1, odemeMasa = null, duzenlenenUrun = null;
+const MC = () => db.collection("menu"), MS = () => db.collection("masalar");
+const trNorm = t => String(t || "").toLocaleLowerCase("tr-TR").replace(/[çğıöşüâî]/g, c => ({ç:"c",ğ:"g",ı:"i",ö:"o",ş:"s",ü:"u",â:"a",î:"i"}[c]));
+const masaToplam = m => (m.kalemler || []).reduce((t, k) => t + (k.fiyat || 0) * (k.adet || 0), 0);
+const masaBul = id => masalar.find(m => m.id === id);
+const menuSirali = () => [...menu].sort((a, b) => (a.sira || 0) - (b.sira || 0));
+function menuBolumleri() {
+  const g = new Map();
+  menuSirali().forEach(u => { const k = u.kategori || "Diğer"; if (!g.has(k)) g.set(k, []); g.get(k).push(u); });
+  return [...g.entries()];
+}
+function kDurumGoster(b) { $("kDurum").className = "durum" + (b ? "" : " yok"); $("kDurum").lastElementChild.textContent = b ? "Canlı" : "Bağlantı yok"; }
+
+function kafeBaslat() {
+  try { localStorage.setItem("mod", "kafe"); } catch {}
+  ["anaSecim","giris","biletUygulama","bataryaUygulama"].forEach(id => $(id).classList.add("gizli"));
+  $("kafeUygulama").classList.remove("gizli");
+  window.scrollTo(0, 0);
+  if (kBasladi) { kafeCiz(); return; }
+  kBasladi = true;
+  let tohumKontrol = false;
+  MC().onSnapshot(sn => {
+    kDurumGoster(true);
+    menu = sn.docs.map(d => ({ id:d.id, ...d.data() }));
+    if (!tohumKontrol && !sn.metadata.fromCache) {
+      tohumKontrol = true;
+      if (!menu.length && MENU_TOHUM.length) {
+        const bt = db.batch();
+        MENU_TOHUM.forEach((u, i) => bt.set(MC().doc(), { ad:u.ad, fiyat:u.fiyat, kategori:u.kategori || "", sira:(i + 1) * 1024 }));
+        bt.commit().catch(console.error);
+      }
+    }
+    kafeCiz();
+  }, e => { kDurumGoster(false); console.error(e); });
+  masaDinle();
+  setInterval(() => { const g = gunAnahtari(); if (g !== kBugun) { kBugun = g; masaDinle(); } }, 30000);
+}
+// Bugünün masaları + önceki günden açık kalan masalar
+let mAbone = [];
+function masaDinle() {
+  mAbone.forEach(f => f()); mAbone = [];
+  let bugunku = [], acik = [];
+  const birlestir = () => { const m = new Map(); [...bugunku, ...acik].forEach(x => m.set(x.id, x)); masalar = [...m.values()]; kafeCiz(); };
+  mAbone.push(MS().where("gun","==",kBugun).onSnapshot(sn => { bugunku = sn.docs.map(d => ({ id:d.id, ...d.data() })); birlestir(); }, console.error));
+  mAbone.push(MS().where("durum","==","acik").onSnapshot(sn => { acik = sn.docs.map(d => ({ id:d.id, ...d.data() })); birlestir(); }, console.error));
+}
+
+function kafeCiz() {
+  if (surukleniyor) { kCizimBekliyor = true; return; }
+  kCizimBekliyor = false;
+  // Satışlar
+  const acik = masalar.filter(m => m.durum !== "odendi").sort((a, b) => (a.acilis || 0) - (b.acilis || 0));
+  const odenen = masalar.filter(m => m.durum === "odendi" && m.gun === kBugun).sort((a, b) => (b.kapanis || 0) - (a.kapanis || 0));
+  const acikTop = acik.reduce((t, m) => t + masaToplam(m), 0), odTop = odenen.reduce((t, m) => t + (m.nakit || 0) + (m.kart || 0), 0);
+  $("kSayac").innerHTML = `<div class="sayac yesil"><div class="et">Açık masa</div><div class="deger num">${acik.length}</div><div class="kisi"><b>${tl(acikTop)}</b></div></div>
+    <div class="sayac"><div class="et">Bugün ödenen</div><div class="deger num">${odenen.length}</div><div class="kisi"><b>${tl(odTop)}</b></div></div>`;
+  $("kOzet").textContent = `${acik.length} açık masa, ${menu.length} ürün`;
+  const kart = m => {
+    const n = (m.kalemler || []).reduce((t, k) => t + (k.adet || 0), 0), od = m.durum === "odendi";
+    const alt = od ? [m.nakit ? `Nakit ${tl(m.nakit)}` : "", m.kart ? `Kart ${tl(m.kart)}` : ""].filter(Boolean).join(", ") || "Ödendi" : `${n} ürün`;
+    return `<button class="masa ${od ? "odendi" : "acik"}" data-masa="${esc(m.id)}">
+      <div class="masa-ust"><b class="num">Masa ${esc(m.no)}</b><span class="cip">${od ? "ÖDENDİ " + esc(m.kapanisSaat || "") : "AÇIK " + esc(m.acilisSaat || "")}</span></div>
+      ${m.aciklama ? `<div class="masa-ack">${esc(m.aciklama)}</div>` : ""}
+      <div class="masa-alt"><span>${alt}</span><b class="num">${tl(od ? (m.nakit || 0) + (m.kart || 0) : masaToplam(m))}</b></div>
+    </button>`;
+  };
+  $("masaListe").innerHTML = (acik.map(kart).join("") + odenen.map(kart).join("")) || `<div class="bos">Henüz masa yok. Yukarıdaki "＋ Masa ekle" ile başlayın.</div>`;
+  // Menü
+  const bolumler = menuBolumleri();
+  $("menuListe").innerHTML = bolumler.map(([ad, urunler]) => `<div class="menu-bolum">${esc(ad)}</div>
+    <div class="menu-liste" data-tur="menu">${urunler.map(u => `<div class="menu-urun surukle-oge" data-id="${esc(u.id)}">
+      <button class="mu-ad" data-urun="${esc(u.id)}">${esc(u.ad)}</button><span class="mu-fiyat num">${tl(u.fiyat)}</span>
+      <button class="tutamac" aria-label="Sürükleyerek sırayı değiştir">⠿</button></div>`).join("")}</div>`).join("")
+    || `<div class="bos">Menü boş. Sağdaki "＋ Ürün ekle" ile ürün ekleyin.</div>`;
+  $("kategoriListe").innerHTML = bolumler.map(([ad]) => `<option value="${esc(ad)}">`).join("");
+  if (acikMasa && $("masaPencere").open) masaPencereCiz();
+}
+
+/* ---------- Sekmeler ve çıkış ---------- */
+document.querySelectorAll("#kNav button").forEach(b => b.onclick = () => {
+  const ad = b.dataset.ksayfa;
+  ["satislar","menu"].forEach(x => $("kSayfa-" + x).classList.toggle("gizli", x !== ad));
+  document.querySelectorAll("#kNav button").forEach(x => x.setAttribute("aria-current", x === b));
+  window.scrollTo(0, 0);
+});
+$("kCikisBtn").onclick = () => {
+  if (!confirm("Kafe takibinden çıkılsın mı?")) return;
+  try { localStorage.removeItem("kGiris"); localStorage.removeItem("mod"); } catch {}
+  anaSecimAc();
+};
+
+/* ---------- Menü düzenleme ---------- */
+function urunAc(u) {
+  duzenlenenUrun = u || null;
+  $("uBaslik").textContent = u ? "Ürünü düzenle" : "Yeni ürün";
+  $("uAd").value = u ? u.ad : ""; $("uFiyat").value = u ? String(u.fiyat).replace(".", ",") : "";
+  $("uKat").value = u ? (u.kategori || "") : (menuBolumleri().slice(-1)[0] || [""])[0];
+  $("uSil").classList.toggle("gizli", !u); $("uHata").textContent = "";
+  $("urunPencere").showModal(); setTimeout(() => $("uAd").focus(), 60);
+}
+$("urunEkleBtn").onclick = () => urunAc(null);
+$("menuListe").addEventListener("click", e => { const b = e.target.closest("[data-urun]"); if (b) urunAc(menu.find(u => u.id === b.dataset.urun)); });
+$("uIptal").onclick = () => $("urunPencere").close();
+async function urunKaydet() {
+  const ad = $("uAd").value.trim(), fiyat = tutarOku($("uFiyat").value), kategori = $("uKat").value.trim();
+  if (!ad) { $("uHata").textContent = "Ürün adını yazın."; return; }
+  if (fiyat === undefined || fiyat === null) { $("uHata").textContent = "Fiyatı rakamla girin (örn. 40 veya 37,50)."; return; }
+  try {
+    if (duzenlenenUrun) await MC().doc(duzenlenenUrun.id).update({ ad, fiyat, kategori });
+    else {
+      const ayni = menu.filter(u => (u.kategori || "") === kategori);
+      const sira = ayni.length ? Math.max(...ayni.map(u => u.sira || 0)) + 1 : (menu.length ? Math.max(...menu.map(u => u.sira || 0)) + 1024 : 1024);
+      await MC().add({ ad, fiyat, kategori, sira });
+    }
+    $("urunPencere").close();
+  } catch (e) { console.error(e); $("uHata").textContent = "Kaydedilemedi. İnternet bağlantısını kontrol edin."; }
+}
+$("uKaydet").onclick = urunKaydet;
+["uAd","uFiyat","uKat"].forEach((id, i, a) => $(id).onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); i < a.length - 1 ? $(a[i+1]).focus() : urunKaydet(); } });
+$("uSil").onclick = async () => {
+  if (!duzenlenenUrun || !confirm(`"${duzenlenenUrun.ad}" menüden silinsin mi?\n\nAçık masalardaki siparişler etkilenmez.`)) return;
+  try { await MC().doc(duzenlenenUrun.id).delete(); $("urunPencere").close(); } catch (e) { console.error(e); hataGoster(); }
+};
+function menuSiraBirak(ids, degisti) {
+  if (!degisti) { if (kCizimBekliyor) kafeCiz(); return; }
+  const siralar = ids.map(id => (menu.find(u => u.id === id) || {}).sira || 0).sort((a, b) => a - b);
+  const bt = db.batch();
+  ids.forEach((id, i) => { const u = menu.find(x => x.id === id); if (u && u.sira !== siralar[i]) { u.sira = siralar[i]; bt.update(MC().doc(id), { sira:siralar[i] }); } });
+  kafeCiz();
+  bt.commit().catch(e => { console.error(e); hataGoster(); });
+}
+
+/* ---------- Masalar ---------- */
+$("masaEkleBtn").onclick = async () => {
+  const simdi = new Date();
+  const no = Math.max(0, ...masalar.filter(m => m.gun === kBugun).map(m => +m.no || 0)) + 1;
+  try {
+    const ref = MS().doc();
+    const yeni = { no, aciklama:"", kalemler:[], durum:"acik", gun:gunAnahtari(simdi), acilis:simdi.getTime(), acilisSaat:saatYazi(simdi) };
+    await ref.set(yeni);
+    if (!masaBul(ref.id)) masalar.push({ id:ref.id, ...yeni });
+    masaAc(ref.id, true);
+  } catch (e) { console.error(e); hataGoster(); }
+};
+$("masaListe").addEventListener("click", e => { const b = e.target.closest("[data-masa]"); if (b) masaAc(b.dataset.masa, false); });
+function masaAc(id, yeni) {
+  acikMasa = id; mSecUrun = null; mSecAdet = 1;
+  const m = masaBul(id);
+  $("mAciklama").value = m ? (m.aciklama || "") : ""; $("mAra").value = "";
+  masaPencereCiz();
+  if (!$("masaPencere").open) $("masaPencere").showModal();
+  $("masaPencere").scrollTop = 0;
+  if (yeni) setTimeout(() => $("mAra").focus(), 80);
+}
+$("mKapat").onclick = () => $("masaPencere").close();
+$("masaPencere").addEventListener("close", () => { acikMasa = null; });
+function masaPencereCiz() {
+  const m = masaBul(acikMasa);
+  if (!m) return;
+  const od = m.durum === "odendi";
+  $("mBaslik").textContent = `Masa ${m.no}`;
+  $("mDurumYazi").textContent = od ? `Ödendi ${m.kapanisSaat || ""}: ${[m.nakit ? "nakit " + tl(m.nakit) : "", m.kart ? "kart " + tl(m.kart) : ""].filter(Boolean).join(", ")}` : `Açık, ${m.acilisSaat || ""}`;
+  if (document.activeElement !== $("mAciklama")) $("mAciklama").value = m.aciklama || "";
+  $("mAciklama").disabled = od;
+  const k = m.kalemler || [];
+  $("mKalemler").innerHTML = k.map((x, i) => `<div class="kalem">
+      <div class="k-ad"><b>${esc(x.ad)}</b><span>${x.adet} × ${tl(x.fiyat)}</span></div>
+      ${od ? "" : `<div class="adet"><button type="button" data-mk="azalt" data-i="${i}" aria-label="Azalt">−</button><b>${x.adet}</b><button type="button" data-mk="arttir" data-i="${i}" aria-label="Arttır">+</button></div>`}
+      <span class="k-tutar num">${tl(x.fiyat * x.adet)}</span>
+      ${od ? "" : `<button type="button" class="k-sil" data-mk="sil" data-i="${i}" aria-label="Kaldır">✕</button>`}
+    </div>`).join("") || `<div class="bos" style="padding:18px">Henüz sipariş yok. Aşağıdan ürün ekleyin.</div>`;
+  $("mEkleKutu").classList.toggle("gizli", od);
+  $("mToplam").textContent = tl(masaToplam(m));
+  $("mAltDugmeler").innerHTML = od
+    ? `<div class="dugmeler"><button type="button" class="btn ince" data-ma="geriAl">Ödemeyi geri al</button><button type="button" class="btn ince sil-btn" data-ma="sil">Masayı sil</button></div>`
+    : `<button type="button" class="btn sari" data-ma="bitti">✓ Bitti, ödeme al</button>
+       <button type="button" class="btn ince sil-btn" data-ma="sil" style="margin-top:8px">Masayı sil</button>`;
+  sonucCiz();
+}
+function sonucCiz() {
+  const q = trNorm($("mAra").value.trim());
+  let html = "";
+  menuBolumleri().forEach(([bolum, urunler]) => {
+    const l = q ? urunler.filter(u => trNorm(u.ad).includes(q) || trNorm(bolum).includes(q)) : urunler;
+    if (!l.length) return;
+    html += `<div class="menu-bolum" style="margin-top:6px">${esc(bolum)}</div>` + l.map(u => {
+      const ac = mSecUrun === u.id;
+      return `<div class="sonuc${ac ? " acik" : ""}">
+        <button type="button" class="sonuc-ust" data-msec="${esc(u.id)}" style="width:100%;background:transparent;color:inherit;padding:0;font:inherit;font-weight:600"><span>${esc(u.ad)}</span><span class="num">${tl(u.fiyat)}</span></button>
+        ${ac ? `<div class="sonuc-ekle"><div class="adet"><button type="button" data-madet="-1" aria-label="Azalt">−</button><b>${mSecAdet}</b><button type="button" data-madet="1" aria-label="Arttır">+</button></div>
+          <button type="button" class="btn sari" data-mekle="${esc(u.id)}">Ekle (${tl(u.fiyat * mSecAdet)})</button></div>` : ""}
+      </div>`;
+    }).join("");
+  });
+  $("mSonuc").innerHTML = html || `<div class="bos" style="padding:18px">${menu.length ? "Aramaya uyan ürün yok." : "Menü boş. Önce Menü sekmesinden ürün ekleyin."}</div>`;
+}
+$("mAra").addEventListener("input", () => { mSecUrun = null; mSecAdet = 1; sonucCiz(); });
+$("mAra").addEventListener("keydown", e => {
+  if (e.key !== "Enter") return;
+  e.preventDefault();
+  const ilk = $("mSonuc").querySelector("[data-msec]");
+  if (ilk) { mSecUrun = ilk.dataset.msec; mSecAdet = 1; sonucCiz(); }
+});
+$("mAciklama").addEventListener("change", () => {
+  if (!acikMasa) return;
+  MS().doc(acikMasa).update({ aciklama:$("mAciklama").value.trim() }).catch(e => { console.error(e); hataGoster(); });
+});
+$("mAciklama").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); e.target.blur(); } });
+async function kalemYaz(m, kalemler) { await MS().doc(m.id).update({ kalemler }); }
+$("masaPencere").addEventListener("click", async e => {
+  const m = masaBul(acikMasa); if (!m) return;
+  const t = e.target;
+  try {
+    const sec = t.closest("[data-msec]");
+    if (sec) { mSecUrun = mSecUrun === sec.dataset.msec ? null : sec.dataset.msec; mSecAdet = 1; sonucCiz(); return; }
+    const ad = t.closest("[data-madet]");
+    if (ad) { mSecAdet = Math.max(1, mSecAdet + +ad.dataset.madet); sonucCiz(); return; }
+    const ek = t.closest("[data-mekle]");
+    if (ek) {
+      const u = menu.find(x => x.id === ek.dataset.mekle); if (!u) return;
+      const k = [...(m.kalemler || [])], i = k.findIndex(x => x.menuId === u.id && x.fiyat === u.fiyat);
+      if (i >= 0) k[i] = { ...k[i], adet:k[i].adet + mSecAdet };
+      else k.push({ menuId:u.id, ad:u.ad, fiyat:u.fiyat, adet:mSecAdet });
+      mSecUrun = null; mSecAdet = 1; $("mAra").value = "";
+      await kalemYaz(m, k); return;
+    }
+    const mk = t.closest("[data-mk]");
+    if (mk) {
+      const k = [...(m.kalemler || [])], i = +mk.dataset.i; if (!k[i]) return;
+      if (mk.dataset.mk === "arttir") k[i] = { ...k[i], adet:k[i].adet + 1 };
+      if (mk.dataset.mk === "azalt") { if (k[i].adet > 1) k[i] = { ...k[i], adet:k[i].adet - 1 }; else if (confirm(`${k[i].ad} siparişten çıkarılsın mı?`)) k.splice(i, 1); else return; }
+      if (mk.dataset.mk === "sil") { if (!confirm(`${k[i].ad} siparişten çıkarılsın mı?`)) return; k.splice(i, 1); }
+      await kalemYaz(m, k); return;
+    }
+    const ma = t.closest("[data-ma]");
+    if (!ma) return;
+    if (ma.dataset.ma === "bitti") {
+      if (!(m.kalemler || []).length) { alert("Masada sipariş yok."); return; }
+      odemeMasa = m;
+      $("oaBaslik").textContent = `Masa ${m.no} ödemesi`;
+      $("oaToplam").textContent = tl(masaToplam(m));
+      $("oaNakit").value = ""; $("oaKart").value = ""; $("oaHata").textContent = ""; farkGoster();
+      $("odemeAlPencere").showModal();
+    }
+    if (ma.dataset.ma === "geriAl") {
+      if (!confirm(`Masa ${m.no} ödemesi geri alınsın mı? Masa tekrar açık olur ve ödeme kaydı kaldırılır.`)) return;
+      const bt = db.batch();
+      bt.update(MS().doc(m.id), { durum:"acik", nakit:null, kart:null, kapanis:null, kapanisSaat:null });
+      bt.set(db.collection("gunler").doc(m.gun), { tarih:m.gun, kafeSayi:inc(-1) }, { merge:true });
+      await bt.commit();
+    }
+    if (ma.dataset.ma === "sil") {
+      if (!confirm(`Masa ${m.no} tamamen silinsin mi?${m.durum === "odendi" ? "\n\nÖdeme kaydı da silinir." : ""}`)) return;
+      const bt = db.batch();
+      bt.delete(MS().doc(m.id));
+      if (m.durum === "odendi") bt.set(db.collection("gunler").doc(m.gun), { tarih:m.gun, kafeSayi:inc(-1) }, { merge:true });
+      await bt.commit(); $("masaPencere").close();
+    }
+  } catch (err) { console.error(err); hataGoster(); }
+});
+
+/* ---------- Ödeme alma ---------- */
+function farkGoster() {
+  if (!odemeMasa) return;
+  const top = masaToplam(odemeMasa), n = tutarOku($("oaNakit").value) || 0, k = tutarOku($("oaKart").value) || 0, fark = Math.round((top - n - k) * 100) / 100;
+  $("oaFark").textContent = fark === 0 ? "✓ Tutar tamam." : fark > 0 ? `Kalan: ${tl(fark)}` : `Fazla girildi: ${tl(-fark)}`;
+  $("oaFark").style.color = fark === 0 ? "var(--ok)" : "var(--muted)";
+}
+["oaNakit","oaKart"].forEach(id => $(id).addEventListener("input", farkGoster));
+document.querySelectorAll("[data-oa]").forEach(b => b.onclick = () => {
+  const top = masaToplam(odemeMasa), yaz = v => String(Math.round(v * 100) / 100).replace(".", ",");
+  if (b.dataset.oa === "nakit") { $("oaNakit").value = yaz(top); $("oaKart").value = ""; }
+  if (b.dataset.oa === "kart") { $("oaKart").value = yaz(top); $("oaNakit").value = ""; }
+  if (b.dataset.oa === "kalanKart") { const n = tutarOku($("oaNakit").value) || 0; $("oaKart").value = yaz(Math.max(0, top - n)); }
+  farkGoster();
+});
+$("oaIptal").onclick = () => $("odemeAlPencere").close();
+$("oaOnay").onclick = async () => {
+  const m = odemeMasa; if (!m) return;
+  const n = tutarOku($("oaNakit").value), k = tutarOku($("oaKart").value);
+  if (n === undefined || k === undefined) { $("oaHata").textContent = "Tutarı rakamla girin (örn. 120 veya 37,50)."; return; }
+  if (!n && !k) { $("oaHata").textContent = "Nakit veya kart tutarı girin."; return; }
+  const top = masaToplam(m), girilen = (n || 0) + (k || 0);
+  if (Math.abs(girilen - top) > 0.009 && !confirm(`Girilen tutar (${tl(girilen)}) masa toplamından (${tl(top)}) farklı. Yine de ödendi olarak kaydedilsin mi?`)) return;
+  const simdi = new Date();
+  try {
+    const bt = db.batch();
+    bt.update(MS().doc(m.id), { durum:"odendi", nakit:n, kart:k, toplam:top, kapanis:simdi.getTime(), kapanisSaat:saatYazi(simdi) });
+    bt.set(db.collection("gunler").doc(m.gun), { tarih:m.gun, kafeSayi:inc(1) }, { merge:true });
+    await bt.commit();
+    $("odemeAlPencere").close(); $("masaPencere").close();
+  } catch (e) { console.error(e); $("oaHata").textContent = "Kaydedilemedi. İnternet bağlantısını kontrol edin."; }
+};
+$("oaNakit").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); $("oaKart").focus(); } };
+$("oaKart").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); $("oaOnay").click(); } };
+
+/* ---------- Giriş ---------- */
+$("secKafe").onclick = () => {
+  let kayitli = false; try { kayitli = localStorage.getItem("kGiris") === "1"; } catch {}
+  if (kayitli) { kafeBaslat(); return; }
+  $("secimGorunum").classList.add("gizli"); $("kGirisGorunum").classList.remove("gizli");
+  $("kSifre").value = ""; $("kSifreHata").textContent = ""; setTimeout(() => $("kSifre").focus(), 50);
+};
+$("kGirisGeri").onclick = () => anaSecimAc();
+function kGirisYap() {
+  if (ozet("gokart:" + $("kSifre").value) !== SIFRE_OZET.kafe) { $("kSifreHata").textContent = "Şifre yanlış. Tekrar deneyin."; return; }
+  try { localStorage.setItem("kGiris", "1"); } catch {}
+  kafeBaslat();
+}
+$("kGirisBtn").onclick = kGirisYap;
+$("kSifre").onkeydown = e => { if (e.key === "Enter") kGirisYap(); };
+
+/* =====================================================================
    ANA SEÇİM VE AÇILIŞ
    ===================================================================== */
 function anaSecimAc() {
   $("biletUygulama").classList.add("gizli"); $("bataryaUygulama").classList.add("gizli"); $("giris").classList.add("gizli");
-  $("secimGorunum").classList.remove("gizli"); $("bGirisGorunum").classList.add("gizli");
+  $("kafeUygulama").classList.add("gizli");
+  $("secimGorunum").classList.remove("gizli"); $("bGirisGorunum").classList.add("gizli"); $("kGirisGorunum").classList.add("gizli");
   $("anaSecim").classList.remove("gizli");
 }
 $("secBilet").onclick = () => {
@@ -2298,6 +2780,7 @@ $("bSifre").onkeydown = e => { if (e.key === "Enter") bGirisYap(); };
   try { mod = localStorage.getItem("mod"); bg = localStorage.getItem("bGiris") === "1"; } catch {}
   if (mod === "bilet" && rol) uygulamayiBaslat(rol === "admin" ? "admin" : "pist");
   else if (mod === "batarya" && bg) bataryaBaslat();
+  else if (mod === "kafe" && localStorage.getItem("kGiris") === "1") kafeBaslat();
   else anaSecimAc();
 })();
 </script>
