@@ -181,11 +181,26 @@ main{max-width:640px;margin:0 auto;padding:14px 12px 110px}
 .gd-alt{font-size:.9rem;color:var(--muted);margin-top:2px}
 .gd-bilet .islemler{margin-top:8px}
 /* Kategori sekmeleri */
-.kat-sekmeler{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;background:var(--bg);padding:4px;border-radius:10px;margin-bottom:14px}
-.kat-sekmeler button{background:transparent;color:var(--muted);padding:10px 2px;font-weight:600;font-size:.95rem}
+.kat-sekmeler{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;background:var(--bg);padding:4px;border-radius:10px;margin-bottom:14px}
+.kat-sekmeler button{background:transparent;color:var(--muted);padding:10px 1px;font-weight:600;font-size:.88rem;white-space:nowrap}
+.kat-sekmeler.iki{grid-template-columns:1fr 1fr}
+.kat-sekmeler.iki button{font-size:1rem}
+.toplu-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;background:var(--paper);border-radius:10px;padding:10px;margin-bottom:12px}
+.toplu-bar span{font-weight:600;font-size:.95rem}
+.gun-satir{display:flex;align-items:stretch;gap:0;background:var(--paper);border-radius:10px;overflow:hidden}
+.gun-satir .gun{flex:1;border-radius:0}
+.gun-sec,.sec-kutu{flex:none;width:52px;display:flex;align-items:center;justify-content:center;background:transparent;border-radius:0}
+.gun-sec i,.sec-kutu i{width:26px;height:26px;border-radius:6px;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:700;background:var(--paper)}
+.gun-sec.secili i,.sec-kutu.secili i{background:var(--ok);border-color:var(--ok);color:#fff}
+.gun-satir.secili{box-shadow:0 0 0 2px var(--ok)}
+.sec-kutu{width:40px;height:40px;margin:-6px -6px 0 0;border-radius:8px}
+.bilet.secildi{box-shadow:0 0 0 3px var(--ok)}
+.filtre-et{font-size:.78rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin:0 2px 4px}
+.filtre.tur{grid-template-columns:repeat(2,minmax(0,1fr))}
+.filtre.kat{grid-template-columns:repeat(3,minmax(0,1fr))}
 .kat-sekmeler button[aria-selected="true"]{background:var(--paper);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.15)}
 /* Ödeme filtresi */
-.filtre{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin-bottom:12px}
+.filtre{display:grid;gap:5px;margin-bottom:10px}
 .filtre button{padding:9px 2px;font-weight:600;font-size:.85rem;white-space:nowrap;background:var(--paper);color:var(--muted);border:1.5px solid var(--line)}
 .filtre button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .filtre button.tumu{background:transparent;border-style:dashed}
@@ -212,8 +227,8 @@ main{max-width:640px;margin:0 auto;padding:14px 12px 110px}
 .iptal-kucuk{background:transparent;color:var(--turuncu);font-size:.72rem;font-weight:700;padding:3px 4px;border:1px solid var(--turuncu);border-radius:5px;line-height:1.1}
 /* Ödemeler */
 .odeme-toplam{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
-.ot-kutu{background:var(--paper);border-radius:10px;padding:12px;border-top:4px solid var(--ok)}
-.ot-kutu.kart-k{border-top-color:#2F6FDE}
+.ot-kutu{background:var(--paper);border-radius:10px;padding:12px;border-top:4px solid var(--line)}
+.odeme-toplam.tek{grid-template-columns:1fr}
 .ot-kutu .et{font-size:.78rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
 .ot-kutu .deger{font-size:1.6rem;line-height:1.15;white-space:nowrap;overflow-wrap:normal}
 .ot-kutu .iade{font-size:.88rem;color:var(--danger);margin-top:2px}
@@ -229,7 +244,7 @@ main{max-width:640px;margin:0 auto;padding:14px 12px 110px}
 .od-alt{font-size:.88rem;color:var(--muted);margin-top:4px}
 .od-cip{font-size:.72rem;font-weight:700;letter-spacing:.05em;padding:3px 7px;border-radius:5px;color:#fff;white-space:nowrap}
 .od-cip.iptal{background:var(--turuncu)} .od-cip.iade{background:var(--danger)} .od-cip.kontrol{background:var(--accent);color:var(--accent-ink)}
-.odeme.nakitli{border-left-color:var(--ok)} .odeme.kartli{border-left-color:#2F6FDE}
+
 .odeme.iptal{border-left-color:var(--turuncu)}
 .odeme.iade{border-left-color:var(--danger)} .odeme.iade .od-tutar b{text-decoration:line-through;color:var(--muted)}
 .odeme.kontrol{border-left-color:var(--accent);animation:yanip 1.2s ease-in-out infinite}
@@ -433,7 +448,16 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
   <!-- GEÇMİŞ -->
   <section id="sayfa-gecmis" class="gizli">
     <div id="gunListesiKutu">
-      <div class="ust-satir"><h2>Geçmiş günler</h2></div>
+      <div class="ust-satir"><h2>Geçmiş günler</h2><button class="btn ince" id="gunTumuSec">Tümünü seç</button></div>
+      <div class="toplu-bar gizli" id="gunTopluBar">
+        <span id="gunSeciliYazi"></span>
+        <div class="islemler" style="margin:0">
+          <button class="kucuk aktifle" data-gtoplu="aktif">Biletleri aktif yap</button>
+          <button class="kucuk pasifle" data-gtoplu="pasif">Biletleri pasif yap</button>
+          <button class="kucuk sil" data-gtoplu="sil">Günleri sil</button>
+          <button class="kucuk" data-gtoplu="temizle">Seçimi kaldır</button>
+        </div>
+      </div>
       <div class="liste" id="gunListesi"></div>
     </div>
     <div id="gunDetayKutu" class="gizli">
@@ -441,8 +465,27 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
         <button class="btn ince" id="geriBtn">‹ Günler</button>
         <h2 id="gunBaslik"></h2>
       </div>
-      <div class="sayaclar" id="sayacGun"></div>
-      <div class="liste" id="listeGun"></div>
+      <div class="kat-sekmeler iki" role="tablist">
+        <button type="button" role="tab" data-gsekme="biletler" aria-selected="true">Biletler</button>
+        <button type="button" role="tab" data-gsekme="odemeler" aria-selected="false">Ödemeler</button>
+      </div>
+      <div id="gdBiletler">
+        <div class="sayaclar" id="sayacGun"></div>
+        <div class="toplu-bar">
+          <button class="kucuk" id="biletTumuSec">Tümünü seç</button>
+          <span id="biletSeciliYazi">0 seçili</span>
+          <div class="islemler" style="margin:0;width:100%">
+            <button class="kucuk aktifle" data-btoplu="aktif">Seçilenleri aktif yap</button>
+            <button class="kucuk pasifle" data-btoplu="pasif">Seçilenleri pasif yap</button>
+            <button class="kucuk sil" data-btoplu="sil">Seçilenleri sil</button>
+          </div>
+        </div>
+        <div class="liste" id="listeGun"></div>
+      </div>
+      <div id="gdOdemeler" class="gizli">
+        <div data-odeme-panel="gecmis"></div>
+      </div>
+      <button class="btn ince sil-btn" id="gunuSilBtn" style="margin-top:18px">Bu günün tüm kayıtlarını sil</button>
     </div>
   </section>
 
@@ -459,16 +502,7 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
   <!-- ADMIN -->
   <!-- ÖDEMELER (yalnızca yönetici) -->
   <section id="sayfa-odemeler" class="gizli">
-    <div class="filtre" id="odemeFiltre" role="group" aria-label="Ödeme filtresi">
-      <button type="button" data-filtre="gokart" aria-pressed="true">Go Kart</button>
-      <button type="button" data-filtre="airsoft" aria-pressed="true">Airsoft</button>
-      <button type="button" data-filtre="rodeo" aria-pressed="true">Rodeo</button>
-      <button type="button" data-filtre="jeton" aria-pressed="true">Jeton</button>
-      <button type="button" data-filtre="tumu" class="tumu">Tümü</button>
-    </div>
-    <div class="odeme-toplam" id="odemeToplam"></div>
-    <p class="genel-toplam" id="genelToplam"></p>
-    <div class="liste" id="listeOdeme"></div>
+    <div data-odeme-panel="bugun"></div>
   </section>
 
   <section id="sayfa-admin" class="gizli">
@@ -478,8 +512,15 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
         <button type="button" role="tab" data-kat="airsoft" aria-selected="false">Airsoft</button>
         <button type="button" role="tab" data-kat="rodeo" aria-selected="false">Rodeo</button>
         <button type="button" role="tab" data-kat="jeton" aria-selected="false">Jeton</button>
+        <button type="button" role="tab" data-kat="woist" aria-selected="false">WOİST</button>
       </div>
       <div id="katDiger" class="gizli">
+        <div class="alanlar gizli" id="woistAlanlar">
+          <div class="tam"><label for="wAd">Ad - Soyad</label><input id="wAd" autocomplete="off" autocapitalize="words" placeholder="örn. Ayşe Yılmaz"></div>
+          <div class="tam"><label for="wTel">Telefon</label><input id="wTel" type="tel" inputmode="tel" autocomplete="off" placeholder="örn. 0532 000 00 00"></div>
+          <div><label for="wArac">Araçlar</label><input id="wArac" autocomplete="off" placeholder="örn. 3, 5"></div>
+          <div><label for="wSure">Süre (dk)</label><input id="wSure" inputmode="numeric" autocomplete="off" placeholder="örn. 30"></div>
+        </div>
         <div class="alanlar">
           <div><label for="eNakit">Nakit (₺)</label><input id="eNakit" inputmode="decimal" autocomplete="off" placeholder="0"></div>
           <div><label for="eKart">Kart (₺)</label><input id="eKart" inputmode="decimal" autocomplete="off" placeholder="0"></div>
@@ -535,6 +576,12 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
   <form method="dialog">
     <h2 style="margin:0 0 4px;font-size:1.2rem" id="fBaslik">Fiyatı düzenle</h2>
     <p id="fAlt" style="margin:0 0 14px;color:var(--muted)"></p>
+    <div class="alanlar gizli" id="fdWoist">
+      <div class="tam"><label for="fdAd">Ad - Soyad</label><input id="fdAd" autocomplete="off"></div>
+      <div class="tam"><label for="fdTel">Telefon</label><input id="fdTel" type="tel" inputmode="tel" autocomplete="off"></div>
+      <div><label for="fdArac">Araçlar</label><input id="fdArac" autocomplete="off"></div>
+      <div><label for="fdSure">Süre (dk)</label><input id="fdSure" inputmode="numeric" autocomplete="off"></div>
+    </div>
     <div class="alanlar">
       <div><label for="fdNakit">Nakit (₺)</label><input id="fdNakit" inputmode="decimal" autocomplete="off" placeholder="0"></div>
       <div><label for="fdKart">Kart (₺)</label><input id="fdKart" inputmode="decimal" autocomplete="off" placeholder="0"></div>
@@ -784,7 +831,7 @@ const Veri = {
   },
   gunleriDinle(cb) {
     return db.collection("gunler").orderBy("tarih","desc").limit(365).onSnapshot(
-      s => cb(s.docs.map(d => d.data()).filter(g => (g.sayi||0) > 0)), e => console.error(e));
+      s => cb(s.docs.map(d => d.data()).filter(g => (g.sayi||0) + (g.odemeSayi||0) > 0)), e => console.error(e));
   }
 };
 function durum(bagli) {
@@ -823,6 +870,9 @@ function biletHTML(b, mod, yeni) {
     else if (mod === "admin") butonlar += `<button class="kucuk aktifle" data-is="durum" data-id="${esc(b.id)}">Aktif yap</button>`;
     butonlar += `<button class="kucuk" data-is="not" data-id="${esc(b.id)}">🚗 ${b.arac || b.not ? "Araç / not" : "Araç ekle"}</button>`;
   }
+  if (mod === "gecmis") butonlar += aktif
+    ? `<button class="kucuk pasifle" data-is="durum" data-id="${esc(b.id)}">Pasif yap</button>`
+    : `<button class="kucuk aktifle" data-is="durum" data-id="${esc(b.id)}">Aktif yap</button>`;
   if (mod === "admin" || mod === "gecmis") {
     butonlar += `<button class="kucuk" data-is="duzenle" data-id="${esc(b.id)}">Düzenle</button>
                  <button class="kucuk sil" data-is="sil" data-id="${esc(b.id)}">Sil</button>`;
@@ -836,6 +886,7 @@ function biletHTML(b, mod, yeni) {
       <div class="ust">
         <div class="no num"><small>No</small>${esc(b.bilet)}</div>
         <span class="cip"></span>
+        ${mod === "gecmis" ? `<button class="sec-kutu${biletSecili.has(b.id) ? " secili" : ""}" data-bsecim="${esc(b.id)}" aria-label="Bileti seç"><i>${biletSecili.has(b.id) ? "✓" : ""}</i></button>` : ""}
         ${yonetim ? `<div class="sag-kolon"><button class="tutamac" aria-label="Sürükleyerek sırayı değiştir">⠿</button>${mod === "admin" && aktif && !b.iptal ? `<button class="iptal-kucuk" data-is="iptal" data-id="${esc(b.id)}">Bilet iptal</button>` : ""}</div>` : ""}
       </div>
       <div class="detay"><b>${esc(b.kisi)}</b> kişi, <b>${esc(b.sure)}</b> dakika</div>
@@ -1104,9 +1155,14 @@ function bugunuCiz() {
   if ($("gdPencere") && $("gdPencere").open) gdCiz();
   oncekiIdler = new Set(l.map(b => b.id)); ilkYukleme = false;
 }
+let biletSecili = new Set();
 function gunDetayCiz() {
   const l = sirala(gunDetayListe);
+  [...biletSecili].forEach(id => { if (!l.some(b => b.id === id)) biletSecili.delete(id); });
   listeCiz($("listeGun"), l, "gecmis", null);
+  $("listeGun").querySelectorAll(".bilet").forEach(k => k.classList.toggle("secildi", biletSecili.has(k.dataset.id)));
+  $("biletSeciliYazi").textContent = `${biletSecili.size} seçili`;
+  $("biletTumuSec").textContent = l.length && biletSecili.size === l.length ? "Seçimi kaldır" : "Tümünü seç";
   $("sayacGun").innerHTML = sayacHTML(l).replace("Bugün toplam", "Gün toplamı");
 }
 
@@ -1124,12 +1180,85 @@ function bugunuDinle() {
 let ekOdemeler = [], ekAbonelik = null;
 function gunleriDinle() {
   if (gunlerAbonelik) return;
-  gunlerAbonelik = Veri.gunleriDinle(gunler => {
-    $("gunListesi").innerHTML = gunler.map(g =>
-      `<button class="gun" data-gun="${esc(g.tarih)}"><b>${esc(gunYazi(g.tarih))}</b><span>${g.sayi} bilet ›</span></button>`
-    ).join("") || `<div class="bos">Henüz kayıtlı gün yok.</div>`;
-  });
+  gunlerAbonelik = Veri.gunleriDinle(gunler => { gunlerVeri = gunler; gunListesiCiz(); });
 }
+let gunlerVeri = [], gunSecili = new Set();
+function gunListesiCiz() {
+  [...gunSecili].forEach(g => { if (!gunlerVeri.some(x => x.tarih === g)) gunSecili.delete(g); });
+  $("gunListesi").innerHTML = gunlerVeri.map(g => {
+    const sec = gunSecili.has(g.tarih);
+    const ozet = [`${g.sayi || 0} bilet`, g.odemeSayi ? `${g.odemeSayi} ödeme` : ""].filter(Boolean).join(", ");
+    return `<div class="gun-satir${sec ? " secili" : ""}">
+      <button class="gun-sec${sec ? " secili" : ""}" data-gunsec="${esc(g.tarih)}" aria-label="Günü seç"><i>${sec ? "✓" : ""}</i></button>
+      <button class="gun" data-gun="${esc(g.tarih)}"><b>${esc(gunYazi(g.tarih))}${g.tarih === bugun ? " (bugün)" : ""}</b><span>${ozet} ›</span></button>
+    </div>`;
+  }).join("") || `<div class="bos">Henüz kayıtlı gün yok.</div>`;
+  $("gunTopluBar").classList.toggle("gizli", !gunSecili.size);
+  $("gunSeciliYazi").textContent = `${gunSecili.size} gün seçili`;
+  $("gunTumuSec").textContent = gunlerVeri.length && gunSecili.size === gunlerVeri.length ? "Seçimi kaldır" : "Tümünü seç";
+}
+$("gunTumuSec").onclick = () => {
+  if (gunSecili.size === gunlerVeri.length) gunSecili.clear(); else gunlerVeri.forEach(g => gunSecili.add(g.tarih));
+  gunListesiCiz();
+};
+// Bir günün bilet ve ödeme kayıtlarını getir
+async function gunKayitlari(gun) {
+  const [b, o] = await Promise.all([
+    db.collection("biletler").where("gun","==",gun).get(),
+    db.collection("odemeler").where("gun","==",gun).get()
+  ]);
+  return { biletler:b.docs.map(d => ({ id:d.id, ...d.data() })), odemeler:o.docs.map(d => ({ id:d.id, ...d.data() })) };
+}
+// Çok sayıda yazmayı 400'lük paketlere böl
+async function topluYaz(islemler) {
+  for (let i = 0; i < islemler.length; i += 400) {
+    const bt = db.batch(); islemler.slice(i, i + 400).forEach(f => f(bt)); await bt.commit();
+  }
+}
+const aktifYapIslem = id => bt => bt.update(db.collection("biletler").doc(id), { aktif:true, pasifZaman:null, iptal:false });
+const pasifYapIslem = (b, simdi) => bt => {
+  const z = zamanBilgi(b), a = { aktif:false, pasifZaman:simdi };
+  if (z.calisiyor) Object.assign(a, { calisiyor:null, birikim:z.birikim + (simdi - z.calisiyor), durma:null });
+  bt.update(db.collection("biletler").doc(b.id), a);
+};
+async function gunleriSil(gunler) {
+  const islemler = [];
+  for (const g of gunler) {
+    const k = await gunKayitlari(g);
+    k.biletler.forEach(b => islemler.push(bt => bt.delete(db.collection("biletler").doc(b.id))));
+    k.odemeler.forEach(o => islemler.push(bt => bt.delete(db.collection("odemeler").doc(o.id))));
+    islemler.push(bt => bt.delete(db.collection("gunler").doc(g)));
+  }
+  await topluYaz(islemler);
+}
+document.querySelector("#gunListesiKutu").addEventListener("click", async e => {
+  const s = e.target.closest("[data-gunsec]");
+  if (s) { const g = s.dataset.gunsec; gunSecili.has(g) ? gunSecili.delete(g) : gunSecili.add(g); gunListesiCiz(); return; }
+  const t = e.target.closest("[data-gtoplu]"); if (!t || rol !== "admin") return;
+  const is = t.dataset.gtoplu, gunler = [...gunSecili].sort();
+  if (is === "temizle") { gunSecili.clear(); gunListesiCiz(); return; }
+  if (!gunler.length) return;
+  const liste = gunler.map(gunYazi).join("\n");
+  try {
+    if (is === "sil") {
+      if (!confirm(`${gunler.length} günün TÜM bilet ve ödeme kayıtları kalıcı olarak silinsin mi?\n\n${liste}`)) return;
+      if (gunler.includes(bugun) && !confirm("Seçimde BUGÜN de var. Bugünün kayıtları da silinecek. Emin misiniz?")) return;
+      t.disabled = true; await gunleriSil(gunler); gunSecili.clear();
+    } else {
+      const aktif = is === "aktif";
+      if (!confirm(`${gunler.length} günün tüm biletleri ${aktif ? "AKTİF" : "PASİF"} yapılsın mı?\n\n${liste}`)) return;
+      t.disabled = true;
+      const simdi = Date.now(), islemler = [];
+      for (const g of gunler) (await gunKayitlari(g)).biletler.forEach(b => {
+        if (aktif && !aktifMi(b)) islemler.push(aktifYapIslem(b.id));
+        if (!aktif && aktifMi(b)) islemler.push(pasifYapIslem(b, simdi));
+      });
+      await topluYaz(islemler);
+      alert(`${islemler.length} bilet ${aktif ? "aktif" : "pasif"} yapıldı.`);
+    }
+  } catch (err) { console.error(err); hataGoster(); }
+  t.disabled = false; gunListesiCiz();
+});
 setInterval(() => { const g = gunAnahtari(); if (rol && g !== bugun) { bugun = g; bugunuDinle(); } }, 30000);
 
 /* ---------- Giriş ve yetki ---------- */
@@ -1198,10 +1327,60 @@ $("gunListesi").onclick = e => {
   $("gunBaslik").textContent = gunYazi(seciliGun);
   $("gunListesiKutu").classList.add("gizli"); $("gunDetayKutu").classList.remove("gizli");
   if (detayAbonelik) detayAbonelik();
-  detayAbonelik = Veri.gunuDinle(seciliGun, l => { gunDetayListe = l; gunDetayCiz(); });
+  if (gunEkAbonelik) gunEkAbonelik();
+  biletSecili = new Set(); gunDetayListe = []; gunEkOdemeler = [];
+  gecmisSekme("biletler");
+  detayAbonelik = Veri.gunuDinle(seciliGun, l => { gunDetayListe = l; gunDetayCiz(); gunOdemeCiz(); });
+  gunEkAbonelik = db.collection("odemeler").where("gun","==",seciliGun).onSnapshot(
+    sn => { gunEkOdemeler = sn.docs.map(d => ({ id:d.id, ...d.data() })); gunOdemeCiz(); }, err => console.error(err));
+  window.scrollTo(0, 0);
+};
+let gunEkOdemeler = [], gunEkAbonelik = null;
+function gecmisSekme(ad) {
+  document.querySelectorAll("[data-gsekme]").forEach(b => b.setAttribute("aria-selected", b.dataset.gsekme === ad));
+  $("gdBiletler").classList.toggle("gizli", ad !== "biletler");
+  $("gdOdemeler").classList.toggle("gizli", ad !== "odemeler");
+}
+document.querySelectorAll("[data-gsekme]").forEach(b => b.onclick = () => gecmisSekme(b.dataset.gsekme));
+$("listeGun").addEventListener("click", e => {
+  const s = e.target.closest("[data-bsecim]"); if (!s) return;
+  const id = s.dataset.bsecim; biletSecili.has(id) ? biletSecili.delete(id) : biletSecili.add(id);
+  gunDetayCiz();
+});
+$("biletTumuSec").onclick = () => {
+  if (biletSecili.size === gunDetayListe.length) biletSecili.clear(); else gunDetayListe.forEach(b => biletSecili.add(b.id));
+  gunDetayCiz();
+};
+document.querySelectorAll("[data-btoplu]").forEach(btn => btn.onclick = async () => {
+  if (rol !== "admin") return;
+  const secilen = gunDetayListe.filter(b => biletSecili.has(b.id));
+  if (!secilen.length) { alert("Önce bilet seçin."); return; }
+  const is = btn.dataset.btoplu, no = secilen.map(b => b.bilet).join(", "), simdi = Date.now();
+  try {
+    if (is === "sil") {
+      if (!confirm(`${secilen.length} bilet kalıcı olarak silinsin mi?\n\nNo ${no}`)) return;
+      const say = {};
+      const islemler = secilen.map(b => { say[b.gun] = (say[b.gun] || 0) + 1; return bt => bt.delete(db.collection("biletler").doc(b.id)); });
+      Object.entries(say).forEach(([g, n]) => islemler.push(bt => bt.set(db.collection("gunler").doc(g), { tarih:g, sayi:inc(-n) }, { merge:true })));
+      await topluYaz(islemler);
+      biletSecili.clear();
+    } else {
+      const aktif = is === "aktif";
+      if (!confirm(`${secilen.length} bilet ${aktif ? "AKTİF" : "PASİF"} yapılsın mı?\n\nNo ${no}`)) return;
+      await topluYaz(secilen.filter(b => aktif ? !aktifMi(b) : aktifMi(b)).map(b => aktif ? aktifYapIslem(b.id) : pasifYapIslem(b, simdi)));
+    }
+  } catch (err) { console.error(err); hataGoster(); }
+});
+$("gunuSilBtn").onclick = async () => {
+  if (rol !== "admin" || !seciliGun) return;
+  const g = seciliGun;
+  if (!confirm(`${gunYazi(g)} gününün TÜM bilet ve ödeme kayıtları kalıcı olarak silinsin mi?`)) return;
+  if (g === bugun && !confirm("Bu gün BUGÜN. Bugünün tüm kayıtları silinecek. Emin misiniz?")) return;
+  try { await gunleriSil([g]); $("geriBtn").click(); } catch (err) { console.error(err); hataGoster(); }
 };
 $("geriBtn").onclick = () => {
   if (detayAbonelik) { detayAbonelik(); detayAbonelik = null; }
+  if (gunEkAbonelik) { gunEkAbonelik(); gunEkAbonelik = null; }
   seciliGun = null;
   $("gunDetayKutu").classList.add("gizli"); $("gunListesiKutu").classList.remove("gizli");
 };
@@ -1245,14 +1424,15 @@ $("kaydetBtn").onclick = kaydet;
 });
 
 /* ---------- Kategoriler: Go Kart / Airsoft / Rodeo / Jeton ---------- */
-const KATEGORI = { gokart:"Go Kart", airsoft:"Airsoft", rodeo:"Rodeo", jeton:"Jeton" };
-const KAT_RENK = { gokart:"#123540", airsoft:"#56702A", rodeo:"#8A5A2B", jeton:"#7B4BC4" };
+const KATEGORI = { gokart:"Go Kart", airsoft:"Airsoft", rodeo:"Rodeo", jeton:"Jeton", woist:"WOİST" };
+const KAT_RENK = { gokart:"#111111", airsoft:"#56702A", rodeo:"#8A5A2B", jeton:"#7B4BC4", woist:"#2F6FDE" };
 let aktifKat = "gokart";
 document.querySelectorAll(".kat-sekmeler [data-kat]").forEach(b => b.onclick = () => {
   aktifKat = b.dataset.kat;
   document.querySelectorAll(".kat-sekmeler [data-kat]").forEach(x => x.setAttribute("aria-selected", x === b));
   $("katGokart").classList.toggle("gizli", aktifKat !== "gokart");
   $("katDiger").classList.toggle("gizli", aktifKat === "gokart");
+  $("woistAlanlar").classList.toggle("gizli", aktifKat !== "woist");
   $("eKaydet").textContent = `${KATEGORI[aktifKat]} ödemesini kaydet`;
   $("eHata").textContent = ""; $("eSon").textContent = "";
 });
@@ -1260,18 +1440,29 @@ async function ekOdemeKaydet() {
   if (rol !== "admin" || aktifKat === "gokart") return;
   const n = tutarOku($("eNakit").value), k = tutarOku($("eKart").value);
   if (n === undefined || k === undefined) { $("eHata").textContent = "Ücreti rakamla girin (örn. 500 veya 250,50)."; return; }
+  const kat = aktifKat, woist = kat === "woist";
+  const ek = woist ? { ad:$("wAd").value.trim(), telefon:$("wTel").value.trim(), araclar:$("wArac").value.trim(), sure:$("wSure").value.trim() } : {};
+  if (woist && !ek.ad) { $("eHata").textContent = "Ad - Soyad girin."; $("wAd").focus(); return; }
+  if (woist && ek.sure && !/^\d+$/.test(ek.sure)) { $("eHata").textContent = "Süreyi dakika olarak rakamla girin."; return; }
   if (!n && !k) { $("eHata").textContent = "Nakit veya kart tutarı girin."; return; }
-  const simdi = new Date(), kat = aktifKat;
+  const simdi = new Date(), gun = gunAnahtari(simdi);
   $("eKaydet").disabled = true;
   try {
-    await db.collection("odemeler").add({ tur:kat, gun:gunAnahtari(simdi), saat:saatYazi(simdi), zaman:simdi.getTime(), nakit:n, kart:k });
+    const bt = db.batch();
+    bt.set(db.collection("odemeler").doc(), { tur:kat, gun, saat:saatYazi(simdi), zaman:simdi.getTime(), nakit:n, kart:k, ...ek });
+    bt.set(db.collection("gunler").doc(gun), { tarih:gun, odemeSayi:inc(1) }, { merge:true });
+    await bt.commit();
     $("eNakit").value = ""; $("eKart").value = ""; $("eHata").textContent = "";
+    ["wAd","wTel","wArac","wSure"].forEach(id => $(id).value = "");
     $("eSon").textContent = `✓ ${KATEGORI[kat]}: ${[n ? tl(n) + " nakit" : "", k ? tl(k) + " kart" : ""].filter(Boolean).join(", ")} kaydedildi (${saatYazi(simdi)})`;
   } catch (e) { console.error(e); $("eHata").textContent = "Kaydedilemedi. İnternet bağlantısını kontrol edin."; }
   $("eKaydet").disabled = false;
 }
 $("eKaydet").onclick = ekOdemeKaydet;
 $("eNakit").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); $("eKart").focus(); } };
+["wAd","wTel","wArac","wSure"].forEach((id, i, a) => $(id).onkeydown = e => {
+  if (e.key === "Enter") { e.preventDefault(); $(i < a.length - 1 ? a[i+1] : "eNakit").focus(); }
+});
 $("eKart").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); ekOdemeKaydet(); } };
 
 /* ---------- Ücret (demo) ---------- */
@@ -1296,48 +1487,82 @@ function ucretAnahtarGoster() {
 $("ucretAnahtar").onclick = () => { try { localStorage.setItem("ucretGirisi", ucretAcik() ? "0" : "1"); } catch {} ucretAnahtarGoster(); };
 ucretAnahtarGoster();
 
-const odemeFiltre = new Set(["gokart","airsoft","rodeo","jeton"]);
-function filtreGoster() {
-  document.querySelectorAll("#odemeFiltre [data-filtre]").forEach(b => {
-    if (b.dataset.filtre !== "tumu") b.setAttribute("aria-pressed", odemeFiltre.has(b.dataset.filtre));
-  });
-}
-$("odemeFiltre").addEventListener("click", e => {
-  const b = e.target.closest("[data-filtre]"); if (!b) return;
-  const f = b.dataset.filtre;
-  if (f === "tumu") Object.keys(KATEGORI).forEach(k => odemeFiltre.add(k));
-  else odemeFiltre.has(f) ? odemeFiltre.delete(f) : odemeFiltre.add(f);
-  filtreGoster(); odemeCiz(bugunListe);
+/* ---------- Ödemeler paneli (bugün ve geçmiş günler için ortak) ---------- */
+const odemeDurum = {
+  bugun:  { kat:new Set(Object.keys(KATEGORI)), tur:new Set(["nakit","kart"]) },
+  gecmis: { kat:new Set(Object.keys(KATEGORI)), tur:new Set(["nakit","kart"]) }
+};
+document.querySelectorAll("[data-odeme-panel]").forEach(p => {
+  const h = p.dataset.odemePanel;
+  p.innerHTML = `
+    <div class="filtre-et">Bölüm</div>
+    <div class="filtre kat" data-panel="${h}">
+      ${Object.keys(KATEGORI).map(k => `<button type="button" data-filtre="${k}" aria-pressed="true">${esc(KATEGORI[k])}</button>`).join("")}
+      <button type="button" data-filtre="tumu" class="tumu">Tümü</button>
+    </div>
+    <div class="filtre-et">Ödeme türü</div>
+    <div class="filtre tur" data-panel="${h}">
+      <button type="button" data-tur="nakit" aria-pressed="true">Nakit</button>
+      <button type="button" data-tur="kart" aria-pressed="true">Kart</button>
+    </div>
+    <div class="odeme-toplam" data-od-toplam></div>
+    <p class="genel-toplam" data-od-genel></p>
+    <div class="liste odeme-liste" data-od-liste></div>`;
 });
-function odemeCiz(l) {
+document.addEventListener("click", e => {
+  const b = e.target.closest(".filtre [data-filtre], .filtre [data-tur]"); if (!b) return;
+  const h = b.closest("[data-panel]").dataset.panel, d = odemeDurum[h];
+  if (b.dataset.tur) { const t = b.dataset.tur; d.tur.has(t) ? d.tur.delete(t) : d.tur.add(t); }
+  else if (b.dataset.filtre === "tumu") Object.keys(KATEGORI).forEach(k => d.kat.add(k));
+  else { const f = b.dataset.filtre; d.kat.has(f) ? d.kat.delete(f) : d.kat.add(f); }
+  odemePanelCiz(h);
+});
+const odemePanelCiz = h => h === "bugun" ? odemeCiz(bugunListe) : gunOdemeCiz();
+function odemeCiz(l) { odemeRender("bugun", l, ekOdemeler, "Bugün"); }
+function gunOdemeCiz() { if (seciliGun) odemeRender("gecmis", gunDetayListe, gunEkOdemeler, "Gün"); }
+
+function odemeRender(h, biletler, ekler, onEk) {
+  const panel = document.querySelector(`[data-odeme-panel="${h}"]`), d = odemeDurum[h];
+  panel.querySelectorAll("[data-filtre]").forEach(b => { if (b.dataset.filtre !== "tumu") b.setAttribute("aria-pressed", d.kat.has(b.dataset.filtre)); });
+  panel.querySelectorAll("[data-tur]").forEach(b => b.setAttribute("aria-pressed", d.tur.has(b.dataset.tur)));
+  const N = d.tur.has("nakit"), K = d.tur.has("kart");
   const kayitlar = [
-    ...l.map(b => ({ ...b, tip:"gokart" })),
-    ...ekOdemeler.map(o => ({ ...o, tip:o.tur, ek:true }))
-  ].filter(x => odemeFiltre.has(x.tip));
+    ...biletler.map(b => ({ ...b, tip:"gokart" })),
+    ...ekler.map(o => ({ ...o, tip:o.tur, ek:true }))
+  ].filter(x => d.kat.has(x.tip))
+   .filter(x => (N && K) ? true : (N && x.nakit) || (K && x.kart));
   let tn = 0, tk = 0, in_ = 0, ik = 0;
   kayitlar.forEach(b => { if (b.iade) { in_ += b.nakit || 0; ik += b.kart || 0; } else { tn += b.nakit || 0; tk += b.kart || 0; } });
-  $("odemeToplam").innerHTML = `
-    <div class="ot-kutu"><div class="et">Toplam nakit</div><div class="deger num">${tl(tn)}</div>${in_ ? `<div class="iade">İade nakit: ${tl(in_)}</div>` : ""}</div>
-    <div class="ot-kutu kart-k"><div class="et">Toplam kart</div><div class="deger num">${tl(tk)}</div>${ik ? `<div class="iade">İade kart: ${tl(ik)}</div>` : ""}</div>`;
-  const secilen = Object.keys(KATEGORI).filter(k => odemeFiltre.has(k)).map(k => KATEGORI[k]);
-  $("genelToplam").innerHTML = `${secilen.length === 4 ? "Genel toplam" : esc(secilen.join(" + ") || "Seçim yok") + " toplamı"}: <b>${tl(tn + tk)}</b>`
-    + (in_ + ik ? `, iade: <b style="color:var(--danger)">${tl(in_ + ik)}</b>` : "");
-  const sirali = kayitlar.sort((a, b) => (b.zaman || 0) - (a.zaman || 0));
-  $("listeOdeme").innerHTML = sirali.map(b => {
-    const tutar = (b.nakit ? `<div><b class="num">${tl(b.nakit)}</b><span>nakit</span></div>` : "")
-                + (b.kart ? `<div><b class="num">${tl(b.kart)}</b><span>kart</span></div>` : "")
-                || `<div class="yok">Ücret girilmedi</div>`;
-    const rozet = `<span class="kat-rozet" style="background:${KAT_RENK[b.tip] || "#123540"}">${esc((KATEGORI[b.tip] || b.tip).toUpperCase())}</span>`;
+  const top = panel.querySelector("[data-od-toplam]");
+  top.classList.toggle("tek", N !== K);
+  top.innerHTML = (N ? `<div class="ot-kutu"><div class="et">Toplam nakit</div><div class="deger num">${tl(tn)}</div>${in_ ? `<div class="iade">İade nakit: ${tl(in_)}</div>` : ""}</div>` : "")
+                + (K ? `<div class="ot-kutu"><div class="et">Toplam kart</div><div class="deger num">${tl(tk)}</div>${ik ? `<div class="iade">İade kart: ${tl(ik)}</div>` : ""}</div>` : "");
+  const secilen = Object.keys(KATEGORI).filter(k => d.kat.has(k)).map(k => KATEGORI[k]);
+  const turYazi = N && K ? "" : N ? " (nakit)" : K ? " (kart)" : "";
+  const genel = (N ? tn : 0) + (K ? tk : 0), iade = (N ? in_ : 0) + (K ? ik : 0);
+  panel.querySelector("[data-od-genel]").innerHTML = (N || K)
+    ? `${secilen.length === Object.keys(KATEGORI).length ? "Genel toplam" : esc(secilen.join(" + ") || "Seçim yok") + " toplamı"}${turYazi}: <b>${tl(genel)}</b>`
+      + (iade ? `, iade: <b style="color:var(--danger)">${tl(iade)}</b>` : "")
+    : "Ödeme türü seçin.";
+  const tutarHTML = b => ((N && b.nakit) ? `<div><b class="num">${tl(b.nakit)}</b><span>nakit</span></div>` : "")
+                       + ((K && b.kart) ? `<div><b class="num">${tl(b.kart)}</b><span>kart</span></div>` : "")
+                       || `<div class="yok">Ücret girilmedi</div>`;
+  kayitlar.sort((a, b) => (b.zaman || 0) - (a.zaman || 0));
+  panel.querySelector("[data-od-liste]").innerHTML = (N || K) ? (kayitlar.map(b => {
+    const rozet = `<span class="kat-rozet" style="background:${KAT_RENK[b.tip] || "#111"}">${esc((KATEGORI[b.tip] || b.tip).toUpperCase())}</span>`;
     if (b.ek) {
-      return `<div class="odeme ${b.nakit ? "nakitli" : "kartli"}">
+      const bilgi = b.tur === "woist"
+        ? [b.ad, b.telefon, b.araclar ? "araçlar: " + b.araclar : "", b.sure ? b.sure + " dk" : "", "satış " + b.saat].filter(Boolean).map(esc).join(", ")
+        : `${esc(KATEGORI[b.tip] || b.tip)} ödemesi, satış ${esc(b.saat)}`;
+      return `<div class="odeme">
         ${rozet}
-        <div class="od-ust"><div class="od-tutar">${tutar}</div></div>
-        <div class="od-alt">${esc(KATEGORI[b.tip] || b.tip)} ödemesi, satış ${esc(b.saat)}</div>
+        <div class="od-ust"><div class="od-tutar">${tutarHTML(b)}</div></div>
+        <div class="od-alt">${bilgi}</div>
         <div class="islemler"><button class="kucuk" data-od="ekFiyat" data-id="${esc(b.id)}">Düzenle</button>
           <button class="kucuk sil" data-od="ekSil" data-id="${esc(b.id)}">Sil</button></div>
       </div>`;
     }
-    const sinif = [b.iade ? "iade" : b.iptal ? "iptal" : "", b.fiyatKontrol ? "kontrol" : "", b.nakit ? "nakitli" : b.kart ? "kartli" : ""].join(" ");
+    const sinif = [b.iade ? "iade" : b.iptal ? "iptal" : "", b.fiyatKontrol ? "kontrol" : ""].join(" ");
     const cip = (b.iade ? `<span class="od-cip iade">İADE</span>` : b.iptal ? `<span class="od-cip iptal">İPTAL</span>` : "")
               + (b.fiyatKontrol ? `<span class="od-cip kontrol">SÜRE DEĞİŞTİ</span>` : "");
     let dug = `<button class="kucuk${b.fiyatKontrol ? " kontrol-btn" : ""}" data-od="fiyat" data-id="${esc(b.id)}">${b.fiyatKontrol ? "Fiyatı kontrol et" : "Fiyatı düzenle"}</button>`;
@@ -1345,35 +1570,45 @@ function odemeCiz(l) {
     if (b.iade) dug += `<button class="kucuk" data-od="iadeGeri" data-id="${esc(b.id)}">İadeyi geri al</button>`;
     return `<div class="odeme ${sinif}">
       ${rozet}
-      <div class="od-ust"><div class="od-tutar">${tutar}</div><div class="od-cipler">${cip}</div></div>
+      <div class="od-ust"><div class="od-tutar">${tutarHTML(b)}</div><div class="od-cipler">${cip}</div></div>
       <div class="od-alt">No ${esc(b.bilet)}, ${esc(b.kisi)} kişi, ${esc(b.sure)} dakika, satış ${esc(b.saat)}</div>
       <div class="islemler">${dug}</div>
     </div>`;
-  }).join("") || `<div class="bos">${odemeFiltre.size ? "Bu seçim için bugün ödeme yok." : "Filtreden en az bir bölüm seçin."}</div>`;
+  }).join("") || `<div class="bos">${d.kat.size ? `${onEk} için bu seçimde ödeme yok.` : "Filtreden en az bir bölüm seçin."}</div>`) : "";
 }
+
 let fiyatBilet = null;
-$("listeOdeme").addEventListener("click", async e => {
-  const t = e.target.closest("[data-od]"); if (!t || rol !== "admin") return;
+const ekBul = id => ekOdemeler.find(x => x.id === id) || gunEkOdemeler.find(x => x.id === id);
+document.addEventListener("click", async e => {
+  const t = e.target.closest(".odeme-liste [data-od]"); if (!t || rol !== "admin") return;
   if (t.dataset.od === "ekFiyat" || t.dataset.od === "ekSil") {
-    const o = ekOdemeler.find(x => x.id === t.dataset.id); if (!o) return;
+    const o = ekBul(t.dataset.id); if (!o) return;
     if (t.dataset.od === "ekSil") {
-      if (!confirm(`${KATEGORI[o.tur]} ödemesi (${o.saat}) silinsin mi?`)) return;
-      try { await db.collection("odemeler").doc(o.id).delete(); } catch (err) { console.error(err); hataGoster(); }
+      if (!confirm(`${KATEGORI[o.tur] || o.tur} ödemesi (${o.saat}) silinsin mi?`)) return;
+      try {
+        const bt = db.batch();
+        bt.delete(db.collection("odemeler").doc(o.id));
+        bt.set(db.collection("gunler").doc(o.gun), { tarih:o.gun, odemeSayi:inc(-1) }, { merge:true });
+        await bt.commit();
+      } catch (err) { console.error(err); hataGoster(); }
       return;
     }
     fiyatBilet = { ...o, ek:true };
-    $("fBaslik").textContent = `${KATEGORI[o.tur]} ödemesi`;
+    $("fBaslik").textContent = `${KATEGORI[o.tur] || o.tur} ödemesi`;
     $("fAlt").textContent = `Satış ${o.saat}`;
+    $("fdWoist").classList.toggle("gizli", o.tur !== "woist");
+    $("fdAd").value = o.ad || ""; $("fdTel").value = o.telefon || ""; $("fdArac").value = o.araclar || ""; $("fdSure").value = o.sure || "";
     $("fdNakit").value = o.nakit ? String(o.nakit).replace(".", ",") : "";
     $("fdKart").value = o.kart ? String(o.kart).replace(".", ",") : "";
     $("fdHata").textContent = "";
     $("fiyatPencere").showModal();
     return;
   }
-  const b = bugunListe.find(x => x.id === t.dataset.id); if (!b) return;
+  const b = bul(t.dataset.id); if (!b) return;
   try {
     if (t.dataset.od === "fiyat") {
       fiyatBilet = b;
+      $("fdWoist").classList.add("gizli");
       $("fBaslik").textContent = `No ${b.bilet} fiyatı`;
       $("fAlt").textContent = `${b.kisi} kişi, ${b.sure} dakika` + (b.fiyatKontrol ? ". Süre değiştirildi, fiyatı kontrol edin." : "");
       $("fdNakit").value = b.nakit ? String(b.nakit).replace(".", ",") : "";
@@ -1395,9 +1630,15 @@ $("fdIptal").onclick = () => $("fiyatPencere").close();
 async function fiyatKaydet() {
   const n = tutarOku($("fdNakit").value), k = tutarOku($("fdKart").value);
   if (n === undefined || k === undefined) { $("fdHata").textContent = "Ücreti rakamla girin (örn. 500 veya 250,50)."; return; }
+  const guncel = { nakit:n, kart:k };
+  if (fiyatBilet.ek && fiyatBilet.tur === "woist") {
+    Object.assign(guncel, { ad:$("fdAd").value.trim(), telefon:$("fdTel").value.trim(), araclar:$("fdArac").value.trim(), sure:$("fdSure").value.trim() });
+    if (!guncel.ad) { $("fdHata").textContent = "Ad - Soyad girin."; return; }
+    if (guncel.sure && !/^\d+$/.test(guncel.sure)) { $("fdHata").textContent = "Süreyi dakika olarak rakamla girin."; return; }
+  }
   try {
-    if (fiyatBilet.ek) await db.collection("odemeler").doc(fiyatBilet.id).update({ nakit:n, kart:k });
-    else await Veri.guncelle(fiyatBilet.id, { nakit:n, kart:k, fiyatKontrol:false });
+    if (fiyatBilet.ek) await db.collection("odemeler").doc(fiyatBilet.id).update(guncel);
+    else await Veri.guncelle(fiyatBilet.id, { ...guncel, fiyatKontrol:false });
     $("fiyatPencere").close();
   }
   catch (e) { $("fdHata").textContent = "Kaydedilemedi. İnternet bağlantısını kontrol edin."; }
