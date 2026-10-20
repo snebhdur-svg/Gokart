@@ -217,6 +217,9 @@ main{max-width:640px;margin:0 auto;padding:14px 12px 110px}
 .m-toplam{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
 .m-toplam span{font-weight:600;color:var(--muted)}
 .m-toplam b{font-size:2rem}
+#odemeAlPencere .hizli{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+#odemeAlPencere .hizli .kucuk{padding:11px 6px;font-size:.95rem}
+#odemeAlPencere .oa-kalan{margin-top:2px}
 .oa-toplam{display:flex;justify-content:space-between;align-items:baseline;background:var(--bg);border-radius:10px;padding:10px 14px;margin:8px 0 14px}
 .oa-toplam b{font-size:2rem}
 /* Kategori sekmeleri */
@@ -278,6 +281,8 @@ main{max-width:640px;margin:0 auto;padding:14px 12px 110px}
 .od-tutar div{line-height:1.15}
 .od-tutar b{font-size:1.75rem}
 .od-tutar span{font-size:.95rem;color:var(--muted);margin-left:4px}
+.od-tutar .haric b,.od-tutar .haric span{color:var(--ink);opacity:.35}
+.od-tutar .haric b{text-decoration:line-through;text-decoration-thickness:2px}
 .od-tutar .yok{color:var(--muted);font-size:1.05rem;font-style:italic}
 .od-cipler{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
 .od-alt{font-size:.88rem;color:var(--muted);margin-top:4px}
@@ -755,6 +760,8 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
   <div class="ap-ic" style="padding-bottom:0">
     <div class="ap-bas"><div><h2 class="num" id="mBaslik" style="font-size:1.5rem"></h2><div id="mDurumYazi" style="color:var(--muted);font-size:.92rem"></div></div>
       <button type="button" class="kapat" id="mKapat" aria-label="Kapat">✕</button></div>
+    <label for="mAd">Masa adı / numarası</label>
+    <input id="mAd" autocomplete="off" maxlength="30" enterkeyhint="done" style="margin-bottom:10px">
     <label for="mAciklama">Açıklama</label>
     <input id="mAciklama" autocomplete="off" placeholder="örn. bahçe, 4 kişi" maxlength="80" enterkeyhint="done">
     <h3 class="ap-baslik" style="margin-top:14px">Siparişler</h3>
@@ -771,6 +778,19 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
   </div>
 </dialog>
 
+<dialog id="masaAdPencere">
+  <form method="dialog">
+    <h2 style="margin:0 0 14px;font-size:1.2rem">Yeni masa</h2>
+    <label for="maAd">Masa adı / numarası</label>
+    <input id="maAd" autocomplete="off" maxlength="30" placeholder="örn. 5, Bahçe 2, VIP" enterkeyhint="go">
+    <p class="hata" id="maHata"></p>
+    <div class="dugmeler">
+      <button type="button" class="btn ince" id="maIptal">Vazgeç</button>
+      <button type="button" class="btn sari" id="maOnay">Masayı aç</button>
+    </div>
+  </form>
+</dialog>
+
 <dialog id="odemeAlPencere">
   <form method="dialog">
     <h2 style="margin:0 0 4px;font-size:1.2rem" id="oaBaslik">Ödeme</h2>
@@ -782,6 +802,9 @@ h3.ap-baslik{font-size:1.05rem;margin:4px 0 8px}
     <div class="hizli" style="margin-top:-4px">
       <button type="button" class="kucuk" data-oa="nakit">Tamamı nakit</button>
       <button type="button" class="kucuk" data-oa="kart">Tamamı kart</button>
+    </div>
+    <div class="hizli oa-kalan">
+      <button type="button" class="kucuk" data-oa="kalanNakit">Kalanı nakit</button>
       <button type="button" class="kucuk" data-oa="kalanKart">Kalanı kart</button>
     </div>
     <p class="ipucu" id="oaFark" style="margin:6px 0 0"></p>
@@ -1696,19 +1719,24 @@ function odemeRender(h, biletler, ekler, onEk, kafeler = []) {
     ? `${secilen.length === Object.keys(KATEGORI).length ? "Genel toplam" : esc(secilen.join(" + ") || "Seçim yok") + " toplamı"}${turYazi}: <b>${tl(genel)}</b>`
       + (iade ? `, iade: <b style="color:var(--danger)">${tl(iade)}</b>` : "")
     : "Ödeme türü seçin.";
-  const tutarHTML = b => ((N && b.nakit) ? `<div><b class="num">${tl(b.nakit)}</b><span>nakit</span></div>` : "")
-                       + ((K && b.kart) ? `<div><b class="num">${tl(b.kart)}</b><span>kart</span></div>` : "")
+  // Filtre dışındaki ödeme kısmı görünür kalır ama soluk ve toplama dahil değil
+  const parca = (v, ad, dahil) => `<div class="${dahil ? "" : "haric"}"><b class="num">${tl(v)}</b><span>${ad}${dahil ? "" : " (toplama dahil değil)"}</span></div>`;
+  const tutarHTML = b => (b.nakit ? parca(b.nakit, "nakit", N) : "") + (b.kart ? parca(b.kart, "kart", K) : "")
                        || `<div class="yok">Ücret girilmedi</div>`;
   kayitlar.sort((a, b) => (b.zaman || 0) - (a.zaman || 0));
   panel.querySelector("[data-od-liste]").innerHTML = (N || K) ? (kayitlar.map(b => {
     const rozet = `<span class="kat-rozet" style="background:${KAT_RENK[b.tip] || "#111"}">${esc((KATEGORI[b.tip] || b.tip).toUpperCase())}</span>`;
     if (b.kafe) {
       const urunler = (b.kalemler || []).map(k => `${k.adet}× ${k.ad}`).join(", ");
+      const fark = Math.abs(((b.nakit || 0) + (b.kart || 0)) - masaToplam(b)) > 0.009;
       return `<div class="odeme">
         ${rozet}
-        <div class="od-ust"><div class="od-tutar">${tutarHTML(b)}</div></div>
-        <div class="od-alt">Masa ${esc(b.no)}${b.aciklama ? ", " + esc(b.aciklama) : ""}, ödeme ${esc(b.kapanisSaat || "")}</div>
+        <div class="od-ust"><div class="od-tutar">${tutarHTML(b)}</div><div class="od-cipler">${fark ? `<span class="od-cip kontrol">TUTAR FARKLI</span>` : ""}</div></div>
+        <div class="od-alt">${esc(masaAdi(b))}${b.aciklama ? ", " + esc(b.aciklama) : ""}, ödeme ${esc(b.kapanisSaat || "")}${fark ? `, masa toplamı ${tl(masaToplam(b))}` : ""}</div>
         ${urunler ? `<div class="od-alt">${esc(urunler)}</div>` : ""}
+        <div class="islemler"><button class="kucuk" data-od="kafeFiyat" data-id="${esc(b.id)}">Düzenle</button>
+          <button class="kucuk" data-od="kafeGeri" data-id="${esc(b.id)}">Ödemeyi sil</button>
+          <button class="kucuk sil" data-od="kafeSil" data-id="${esc(b.id)}">Satışı sil</button></div>
       </div>`;
     }
     if (b.ek) {
@@ -1740,8 +1768,40 @@ function odemeRender(h, biletler, ekler, onEk, kafeler = []) {
 
 let fiyatBilet = null;
 const ekBul = id => ekOdemeler.find(x => x.id === id) || gunEkOdemeler.find(x => x.id === id);
+const kafeBul = id => kafeOdenen.find(x => x.id === id) || gunKafeOdenen.find(x => x.id === id);
 document.addEventListener("click", async e => {
   const t = e.target.closest(".odeme-liste [data-od]"); if (!t || rol !== "admin") return;
+  if (t.dataset.od.startsWith("kafe")) {
+    const m = kafeBul(t.dataset.id); if (!m) return;
+    const ref = db.collection("masalar").doc(m.id), gunRef = db.collection("gunler").doc(m.gun);
+    try {
+      if (t.dataset.od === "kafeFiyat") {
+        fiyatBilet = { ...m, kafe:true };
+        $("fdWoist").classList.add("gizli");
+        $("fBaslik").textContent = `${masaAdi(m)} ödemesi`;
+        $("fAlt").textContent = `Masa toplamı ${tl(masaToplam(m))}, ödeme ${m.kapanisSaat || ""}`;
+        $("fdNakit").value = m.nakit ? String(m.nakit).replace(".", ",") : "";
+        $("fdKart").value = m.kart ? String(m.kart).replace(".", ",") : "";
+        $("fdHata").textContent = "";
+        $("fiyatPencere").showModal();
+      }
+      if (t.dataset.od === "kafeGeri") {
+        if (!confirm(`${masaAdi(m)} ödeme kaydı silinsin mi?\n\nMasa, kafe ekranında tekrar AÇIK olarak görünür.`)) return;
+        const bt = db.batch();
+        bt.update(ref, { durum:"acik", nakit:null, kart:null, kapanis:null, kapanisSaat:null });
+        bt.set(gunRef, { tarih:m.gun, kafeSayi:inc(-1) }, { merge:true });
+        await bt.commit();
+      }
+      if (t.dataset.od === "kafeSil") {
+        if (!confirm(`${masaAdi(m)} satışı tamamen silinsin mi?\n\nMasa ve siparişleri kafe ekranından da kaldırılır.`)) return;
+        const bt = db.batch();
+        bt.delete(ref);
+        bt.set(gunRef, { tarih:m.gun, kafeSayi:inc(-1) }, { merge:true });
+        await bt.commit();
+      }
+    } catch (err) { console.error(err); hataGoster(); }
+    return;
+  }
   if (t.dataset.od === "ekFiyat" || t.dataset.od === "ekSil") {
     const o = ekBul(t.dataset.id); if (!o) return;
     if (t.dataset.od === "ekSil") {
@@ -1798,7 +1858,11 @@ async function fiyatKaydet() {
     if (guncel.sure && !/^\d+$/.test(guncel.sure)) { $("fdHata").textContent = "Süreyi dakika olarak rakamla girin."; return; }
   }
   try {
-    if (fiyatBilet.ek) await db.collection("odemeler").doc(fiyatBilet.id).update(guncel);
+    if (fiyatBilet.kafe) {
+      if (!n && !k) { $("fdHata").textContent = "Nakit veya kart tutarı girin. Ödemeyi kaldırmak için \"Ödemeyi sil\" düğmesini kullanın."; return; }
+      await db.collection("masalar").doc(fiyatBilet.id).update(guncel);
+    }
+    else if (fiyatBilet.ek) await db.collection("odemeler").doc(fiyatBilet.id).update(guncel);
     else await Veri.guncelle(fiyatBilet.id, { ...guncel, fiyatKontrol:false });
     $("fiyatPencere").close();
   }
@@ -2557,7 +2621,7 @@ function kafeCiz() {
     const n = (m.kalemler || []).reduce((t, k) => t + (k.adet || 0), 0), od = m.durum === "odendi";
     const alt = od ? [m.nakit ? `Nakit ${tl(m.nakit)}` : "", m.kart ? `Kart ${tl(m.kart)}` : ""].filter(Boolean).join(", ") || "Ödendi" : `${n} ürün`;
     return `<button class="masa ${od ? "odendi" : "acik"}" data-masa="${esc(m.id)}">
-      <div class="masa-ust"><b class="num">Masa ${esc(m.no)}</b><span class="cip">${od ? "ÖDENDİ " + esc(m.kapanisSaat || "") : "AÇIK " + esc(m.acilisSaat || "")}</span></div>
+      <div class="masa-ust"><b class="num">${esc(masaAdi(m))}</b><span class="cip">${od ? "ÖDENDİ " + esc(m.kapanisSaat || "") : "AÇIK " + esc(m.acilisSaat || "")}</span></div>
       ${m.aciklama ? `<div class="masa-ack">${esc(m.aciklama)}</div>` : ""}
       <div class="masa-alt"><span>${alt}</span><b class="num">${tl(od ? (m.nakit || 0) + (m.kart || 0) : masaToplam(m))}</b></div>
     </button>`;
@@ -2629,12 +2693,23 @@ function menuSiraBirak(ids, degisti) {
 }
 
 /* ---------- Masalar ---------- */
-$("masaEkleBtn").onclick = async () => {
+function masaAdi(m) { return m ? (m.ad || (m.no != null ? `Masa ${m.no}` : "Masa")) : ""; }
+$("masaEkleBtn").onclick = () => {
+  $("maAd").value = ""; $("maHata").textContent = "";
+  $("masaAdPencere").showModal(); setTimeout(() => $("maAd").focus(), 60);
+};
+$("maIptal").onclick = () => $("masaAdPencere").close();
+$("maAd").onkeydown = e => { if (e.key === "Enter") { e.preventDefault(); $("maOnay").click(); } };
+$("maOnay").onclick = async () => {
+  const ad = $("maAd").value.trim();
+  if (!ad) { $("maHata").textContent = "Masa adını veya numarasını yazın."; return; }
+  if (masalar.some(m => m.durum !== "odendi" && trNorm(masaAdi(m)) === trNorm(ad))
+      && !confirm(`"${ad}" adında açık bir masa zaten var. Yine de yeni masa açılsın mı?`)) return;
+  $("masaAdPencere").close();
   const simdi = new Date();
-  const no = Math.max(0, ...masalar.filter(m => m.gun === kBugun).map(m => +m.no || 0)) + 1;
   try {
     const ref = MS().doc();
-    const yeni = { no, aciklama:"", kalemler:[], durum:"acik", gun:gunAnahtari(simdi), acilis:simdi.getTime(), acilisSaat:saatYazi(simdi) };
+    const yeni = { ad, aciklama:"", kalemler:[], durum:"acik", gun:gunAnahtari(simdi), acilis:simdi.getTime(), acilisSaat:saatYazi(simdi) };
     await ref.set(yeni);
     if (!masaBul(ref.id)) masalar.push({ id:ref.id, ...yeni });
     masaAc(ref.id, true);
@@ -2656,7 +2731,9 @@ function masaPencereCiz() {
   const m = masaBul(acikMasa);
   if (!m) return;
   const od = m.durum === "odendi";
-  $("mBaslik").textContent = `Masa ${m.no}`;
+  $("mBaslik").textContent = masaAdi(m);
+  if (document.activeElement !== $("mAd")) $("mAd").value = masaAdi(m);
+  $("mAd").disabled = od;
   $("mDurumYazi").textContent = od ? `Ödendi ${m.kapanisSaat || ""}: ${[m.nakit ? "nakit " + tl(m.nakit) : "", m.kart ? "kart " + tl(m.kart) : ""].filter(Boolean).join(", ")}` : `Açık, ${m.acilisSaat || ""}`;
   if (document.activeElement !== $("mAciklama")) $("mAciklama").value = m.aciklama || "";
   $("mAciklama").disabled = od;
@@ -2699,6 +2776,13 @@ $("mAra").addEventListener("keydown", e => {
   const ilk = $("mSonuc").querySelector("[data-msec]");
   if (ilk) { mSecUrun = ilk.dataset.msec; mSecAdet = 1; sonucCiz(); }
 });
+$("mAd").addEventListener("change", () => {
+  const ad = $("mAd").value.trim();
+  if (!acikMasa) return;
+  if (!ad) { const m = masaBul(acikMasa); $("mAd").value = masaAdi(m); return; }
+  MS().doc(acikMasa).update({ ad }).catch(e => { console.error(e); hataGoster(); });
+});
+$("mAd").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); e.target.blur(); } });
 $("mAciklama").addEventListener("change", () => {
   if (!acikMasa) return;
   MS().doc(acikMasa).update({ aciklama:$("mAciklama").value.trim() }).catch(e => { console.error(e); hataGoster(); });
@@ -2735,20 +2819,20 @@ $("masaPencere").addEventListener("click", async e => {
     if (ma.dataset.ma === "bitti") {
       if (!(m.kalemler || []).length) { alert("Masada sipariş yok."); return; }
       odemeMasa = m;
-      $("oaBaslik").textContent = `Masa ${m.no} ödemesi`;
+      $("oaBaslik").textContent = `${masaAdi(m)} ödemesi`;
       $("oaToplam").textContent = tl(masaToplam(m));
       $("oaNakit").value = ""; $("oaKart").value = ""; $("oaHata").textContent = ""; farkGoster();
       $("odemeAlPencere").showModal();
     }
     if (ma.dataset.ma === "geriAl") {
-      if (!confirm(`Masa ${m.no} ödemesi geri alınsın mı? Masa tekrar açık olur ve ödeme kaydı kaldırılır.`)) return;
+      if (!confirm(`${masaAdi(m)} ödemesi geri alınsın mı? Masa tekrar açık olur ve ödeme kaydı kaldırılır.`)) return;
       const bt = db.batch();
       bt.update(MS().doc(m.id), { durum:"acik", nakit:null, kart:null, kapanis:null, kapanisSaat:null });
       bt.set(db.collection("gunler").doc(m.gun), { tarih:m.gun, kafeSayi:inc(-1) }, { merge:true });
       await bt.commit();
     }
     if (ma.dataset.ma === "sil") {
-      if (!confirm(`Masa ${m.no} tamamen silinsin mi?${m.durum === "odendi" ? "\n\nÖdeme kaydı da silinir." : ""}`)) return;
+      if (!confirm(`${masaAdi(m)} tamamen silinsin mi?${m.durum === "odendi" ? "\n\nÖdeme kaydı da silinir." : ""}`)) return;
       const bt = db.batch();
       bt.delete(MS().doc(m.id));
       if (m.durum === "odendi") bt.set(db.collection("gunler").doc(m.gun), { tarih:m.gun, kafeSayi:inc(-1) }, { merge:true });
@@ -2769,6 +2853,7 @@ document.querySelectorAll("[data-oa]").forEach(b => b.onclick = () => {
   const top = masaToplam(odemeMasa), yaz = v => String(Math.round(v * 100) / 100).replace(".", ",");
   if (b.dataset.oa === "nakit") { $("oaNakit").value = yaz(top); $("oaKart").value = ""; }
   if (b.dataset.oa === "kart") { $("oaKart").value = yaz(top); $("oaNakit").value = ""; }
+  if (b.dataset.oa === "kalanNakit") { const k = tutarOku($("oaKart").value) || 0; $("oaNakit").value = yaz(Math.max(0, top - k)); }
   if (b.dataset.oa === "kalanKart") { const n = tutarOku($("oaNakit").value) || 0; $("oaKart").value = yaz(Math.max(0, top - n)); }
   farkGoster();
 });
